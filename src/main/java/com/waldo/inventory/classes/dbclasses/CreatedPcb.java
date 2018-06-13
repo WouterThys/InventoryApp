@@ -22,8 +22,8 @@ public class CreatedPcb extends DbObject {
     private long projectPcbId;
     private ProjectPcb projectPcb;
 
-    private long orderId; // Was created when this order was received
-    private Order order;
+    private long orderId; // Was created when this itemOrder was received
+    private ItemOrder itemOrder;
 
     private Date dateCreated;
     private Date dateSoldered;
@@ -39,17 +39,17 @@ public class CreatedPcb extends DbObject {
         super(TABLE_NAME);
     }
 
-    public CreatedPcb(String name, ProjectPcb projectPcb, Order order) {
+    public CreatedPcb(String name, ProjectPcb projectPcb, ItemOrder itemOrder) {
         this();
         setName(name);
         this.projectPcb = projectPcb;
-        this.order = order;
+        this.itemOrder = itemOrder;
 
         if (projectPcb != null) {
             this.projectPcbId = projectPcb.getId();
         }
-        if (order != null) {
-            this.orderId = order.getId();
+        if (itemOrder != null) {
+            this.orderId = itemOrder.getId();
         }
     }
 
@@ -175,17 +175,17 @@ public class CreatedPcb extends DbObject {
     }
 
     public void setOrderId(long orderId) {
-        if (order != null && order.getId() != orderId) {
-            order = null;
+        if (itemOrder != null && itemOrder.getId() != orderId) {
+            itemOrder = null;
         }
         this.orderId = orderId;
     }
 
-    public Order getOrder() {
-        if (order == null && getOrderId() > DbObject.UNKNOWN_ID) {
-            order = SearchManager.sm().findOrderById(orderId);
+    public ItemOrder getItemOrder() {
+        if (itemOrder == null && getOrderId() > DbObject.UNKNOWN_ID) {
+            itemOrder = SearchManager.sm().findItemOrderById(orderId);
         }
-        return order;
+        return itemOrder;
     }
 
     public Date getDateCreated() {

@@ -261,7 +261,7 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
             }
         };
         dataSheetAa.putValue(AbstractAction.SHORT_DESCRIPTION, "Data sheet");
-        orderAa = new AbstractAction("Order", imageResource.readIcon("Items.Buttons.Order")) {
+        orderAa = new AbstractAction("ItemOrder", imageResource.readIcon("Items.Buttons.Order")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (selectedItem != null && itemDetailListener != null) {
@@ -269,7 +269,7 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
                 }
             }
         };
-        orderAa.putValue(AbstractAction.SHORT_DESCRIPTION, "Order");
+        orderAa.putValue(AbstractAction.SHORT_DESCRIPTION, "ItemOrder");
         historyAa = new AbstractAction("History", imageResource.readIcon("Items.Buttons.History")) {
             @Override
             public void actionPerformed(ActionEvent e) {

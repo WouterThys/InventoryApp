@@ -109,7 +109,7 @@ public class EditItemOrderPanel<T extends Item> extends JPanel implements GuiUti
         gbc.addLine("Auto order by: ", autoOrderByCb);
 
         linksPanel.add(helperPnl, BorderLayout.NORTH);
-        linksPanel.setBorder(GuiUtils.createInlineTitleBorder("Order rules"));
+        linksPanel.setBorder(GuiUtils.createInlineTitleBorder("ItemOrder rules"));
         return linksPanel;
     }
 
@@ -430,7 +430,7 @@ public class EditItemOrderPanel<T extends Item> extends JPanel implements GuiUti
                 first = false;
             }
 
-            // Order rules
+            // ItemOrder rules
             discourageOrderCb.setSelected(newItem.isDiscourageOrder());
             autoOrderCb.setSelected(newItem.isAutoOrder());
 

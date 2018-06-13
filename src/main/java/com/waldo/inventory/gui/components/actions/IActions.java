@@ -130,15 +130,15 @@ public class IActions {
 
     public static abstract class OrderDetailsAction extends IAbstractAction {
         protected OrderDetailsAction() {
-            super("Order details", imageResource.readIcon("Actions.OrderDetails"));
-            setTooltip("Order details");
+            super("ItemOrder details", imageResource.readIcon("Actions.OrderDetails"));
+            setTooltip("ItemOrder details");
         }
     }
 
     public static abstract class OrderItemAction extends IAbstractAction {
         protected OrderItemAction() {
-            super("Order item", imageResource.readIcon("Actions.ItemOrder"));
-            setTooltip("Order item");
+            super("ItemOrder item", imageResource.readIcon("Actions.ItemOrder"));
+            setTooltip("ItemOrder item");
         }
     }
 

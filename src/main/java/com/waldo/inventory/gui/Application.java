@@ -6,7 +6,7 @@ import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.Utils.resource.ImageResource;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
-import com.waldo.inventory.classes.dbclasses.Order;
+import com.waldo.inventory.classes.dbclasses.ItemOrder;
 import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.database.interfaces.DbErrorListener;
 import com.waldo.inventory.gui.dialogs.SelectDataSheetDialog;
@@ -161,7 +161,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
         Status().updateConnectionStatus();
     }
 
-    public void addItemsToOrder(List<Item> itemsToOrder, Order order) {
+    public void addItemsToOrder(List<Item> itemsToOrder, ItemOrder itemOrder) {
         Application.beginWait(Application.this);
         try {
             // Switch tab
@@ -175,7 +175,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
             endWait(this);
         }
         // Add
-        Map<String, Item> failedItems = order.addItemsToOrder(itemsToOrder);//orderPanel.addItemsToOrder(itemsToOrder, order);
+        Map<String, Item> failedItems = itemOrder.addItemsToOrder(itemsToOrder);//orderPanel.addItemsToOrder(itemsToOrder, itemOrder);
         if (failedItems != null && failedItems.size() > 0) {
             StringBuilder builder = new StringBuilder();
             for (String er : failedItems.keySet()) {
@@ -184,8 +184,8 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
 
             JOptionPane.showMessageDialog(
                     this,
-                    "Failed to order: \n " + builder.toString(),
-                    "Order error",
+                    "Failed to itemOrder: \n " + builder.toString(),
+                    "ItemOrder error",
                     JOptionPane.ERROR_MESSAGE
             );
         }
@@ -377,9 +377,9 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
             }
         }
 
-        // Order
+        // ItemOrder
         if (result == JOptionPane.YES_OPTION) {
-            AddToOrderDialog dialog = new AddToOrderDialog(this, "Order " + item.getName(), item, true, true);
+            AddToOrderDialog dialog = new AddToOrderDialog(this, "ItemOrder " + item.getName(), item, true, true);
             dialog.showDialog();
         }
     }
@@ -420,9 +420,9 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
         }
 
 
-        // Order
+        // ItemOrder
         if (itemList.size() > 0) {
-            AddToOrderDialog dialog = new AddToOrderDialog(this, "Order items", itemList, true, true);
+            AddToOrderDialog dialog = new AddToOrderDialog(this, "ItemOrder items", itemList, true, true);
             dialog.showDialog();
         }
     }

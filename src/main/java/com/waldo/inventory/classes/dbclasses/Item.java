@@ -58,7 +58,7 @@ public class Item extends DbObject {
     private float rating;
     private String remarksFile;
 
-    // Order rules
+    // ItemOrder rules
     private boolean discourageOrder;
     private boolean autoOrder;
 
@@ -287,7 +287,7 @@ public class Item extends DbObject {
 //                    return false;
 //                }
 //                if (!(ref.getOrderState() == getOrderState())) {
-//                    if (Main.DEBUG_MODE) System.out.println("Order st: " + ref.getOrderState() + " != " + getOrderState());
+//                    if (Main.DEBUG_MODE) System.out.println("ItemOrder st: " + ref.getOrderState() + " != " + getOrderState());
 //                    return false;
 //                }
 //                if (!(ref.getPackageTypeId() == getPackageTypeId())) {
@@ -624,13 +624,13 @@ public class Item extends DbObject {
 
     public Statics.OrderStates getOrderState() {
         if (orderState == null) {
-            List<Order> orders = SearchManager.sm().findOrdersForItem(getId());
+            List<ItemOrder> itemOrders = SearchManager.sm().findOrdersForItem(getId());
             orderState = Statics.OrderStates.NoOrder;
 
             int inPlanned = 0;
             int inOrdered = 0;
 
-            for (Order o : orders) {
+            for (ItemOrder o : itemOrders) {
                 if (o.isPlanned()) {
                     inPlanned++;
                 }

@@ -81,7 +81,7 @@ public class DistributorsDialog extends IResourceDialog<Distributor> implements 
         });
 
         browseDistributorPanel = new GuiUtils.IBrowseWebPanel("Web site", "website", this);
-        browseOrderLinkPanel = new GuiUtils.IBrowseWebPanel("Order link", "orderLink", this);
+        browseOrderLinkPanel = new GuiUtils.IBrowseWebPanel("ItemOrder link", "orderLink", this);
 
         tableModel = new IOrderFlowTableModel();
         orderFlowTable = new ITable<>(tableModel);
@@ -137,7 +137,7 @@ public class DistributorsDialog extends IResourceDialog<Distributor> implements 
         scrollPane.setPreferredSize(new Dimension(400,200));
         orderFlowPanel.add(orderFlowTbPnl, BorderLayout.SOUTH);
         orderFlowPanel.add(scrollPane, BorderLayout.CENTER);
-        orderFlowPanel.setBorder(GuiUtils.createInlineTitleBorder("Order flow"));
+        orderFlowPanel.setBorder(GuiUtils.createInlineTitleBorder("ItemOrder flow"));
 
         // - Text fields
         GuiUtils.GridBagHelper gbh = new GuiUtils.GridBagHelper(textFieldPanel);
@@ -147,15 +147,15 @@ public class DistributorsDialog extends IResourceDialog<Distributor> implements 
         gbh.add(detailLogo, 1, 3, 1, 1);
         textFieldPanel.setBorder(GuiUtils.createInlineTitleBorder("Details"));
 
-        // - Order stuff
+        // - ItemOrder stuff
         gbh = new GuiUtils.GridBagHelper(orderPanel);
-        gbh.addLine("Order link: ", browseOrderLinkPanel);
+        gbh.addLine("ItemOrder link: ", browseOrderLinkPanel);
         gbh.gridwidth = 2;
         gbh.addLine("File format: ", detailOrderFileFormatCb, GridBagConstraints.BOTH);
         gbh.gridwidth = 1;
         gbh.anchor = GridBagConstraints.EAST;
         gbh.add(orderFileTbPnl, 1, 2);
-        orderPanel.setBorder(GuiUtils.createInlineTitleBorder("Order file"));
+        orderPanel.setBorder(GuiUtils.createInlineTitleBorder("ItemOrder file"));
 
         // Add all
         panel.add(textFieldPanel, BorderLayout.NORTH);
@@ -198,7 +198,7 @@ public class DistributorsDialog extends IResourceDialog<Distributor> implements 
             detailLogo.setImage(distributor.getIconPath());
             distributorTypeCb.setSelectedItem(distributor.getDistributorType());
 
-            // Order flow
+            // ItemOrder flow
             tableModel.setItemList(distributor.getOrderFlowTemplate());
 
             // Orders
@@ -238,7 +238,7 @@ public class DistributorsDialog extends IResourceDialog<Distributor> implements 
         browseDistributorPanel.clearText();
         detailLogo.setImage(imageResource.getDefaultImage(ImageType.DistributorImage));
 
-        // Order flow
+        // ItemOrder flow
         //..
 
         // List

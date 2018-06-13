@@ -99,14 +99,14 @@ public class ComparatorUtils {
     //
     // Orders
     //
-    public static class ReceivedOrderComparator implements Comparator<Order> {
+    public static class ReceivedOrderComparator implements Comparator<ItemOrder> {
         @Override
         public String toString() {
             return "Received orders";
         }
 
         @Override
-        public int compare(Order o1, Order o2) {
+        public int compare(ItemOrder o1, ItemOrder o2) {
             if (o1 == null && o2 != null) {
                 return -1;
             } else if (o1 != null && o2 == null) {
@@ -270,7 +270,7 @@ public class ComparatorUtils {
     }
 
     //
-    // Distributor Order Flow
+    // Distributor ItemOrder Flow
     //
     public static class DistributorOrderFlowComparator implements Comparator<DistributorOrderFlow> {
         @Override

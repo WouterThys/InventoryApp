@@ -5,7 +5,7 @@ import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.Utils.Statics.OrderImportType;
 import com.waldo.inventory.classes.dbclasses.DbObject;
-import com.waldo.inventory.classes.dbclasses.Order;
+import com.waldo.inventory.classes.dbclasses.ItemOrder;
 import com.waldo.inventory.classes.dbclasses.ProjectPcb;
 import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.components.iDialog;
@@ -28,8 +28,8 @@ abstract class OrderItemWizardDialogLayout extends iDialog {
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-    // Order
-    IComboBox<Order> orderCb;
+    // ItemOrder
+    IComboBox<ItemOrder> orderCb;
     private ILabel distributorLbl;
 
     // Select
@@ -51,16 +51,16 @@ abstract class OrderItemWizardDialogLayout extends iDialog {
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    Order selectedOrder;
+    ItemOrder selectedItemOrder;
     private OrderImportType orderImportType;
     private ProjectPcb projectPcb;
 
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    OrderItemWizardDialogLayout(Window window, Order selectedOrder, OrderImportType orderImportType, ProjectPcb projectPcb) {
+    OrderItemWizardDialogLayout(Window window, ItemOrder selectedItemOrder, OrderImportType orderImportType, ProjectPcb projectPcb) {
         super(window, "Find items to order");
-        this.selectedOrder = selectedOrder;
+        this.selectedItemOrder = selectedItemOrder;
         this.orderImportType = orderImportType;
         this.projectPcb = projectPcb;
     }
@@ -86,23 +86,23 @@ abstract class OrderItemWizardDialogLayout extends iDialog {
         return tableModel.getItemList();
     }
 
-    private void addOrder(Order order) {
-        selectedOrder = order;
-        if (order != null) {
-            orderCb.addItem(selectedOrder);
-            orderCb.setSelectedItem(selectedOrder);
-            if (order.getDistributorId() > DbObject.UNKNOWN_ID) {
-                distributorLbl.setText(selectedOrder.getDistributor().toString());
+    private void addOrder(ItemOrder itemOrder) {
+        selectedItemOrder = itemOrder;
+        if (itemOrder != null) {
+            orderCb.addItem(selectedItemOrder);
+            orderCb.setSelectedItem(selectedItemOrder);
+            if (itemOrder.getDistributorId() > DbObject.UNKNOWN_ID) {
+                distributorLbl.setText(selectedItemOrder.getDistributor().toString());
             }
         }
         updateEnabledComponents();
     }
 
-    private void editOrder(Order order) {
-        selectedOrder = order;
-        if (order != null) {
-            if (order.getDistributorId() > DbObject.UNKNOWN_ID) {
-                distributorLbl.setText(selectedOrder.getDistributor().toString());
+    private void editOrder(ItemOrder itemOrder) {
+        selectedItemOrder = itemOrder;
+        if (itemOrder != null) {
+            if (itemOrder.getDistributorId() > DbObject.UNKNOWN_ID) {
+                distributorLbl.setText(selectedItemOrder.getDistributor().toString());
             }
         }
         updateEnabledComponents();
@@ -112,21 +112,21 @@ abstract class OrderItemWizardDialogLayout extends iDialog {
         JPanel orderPanel = new JPanel();
 
         GridBagHelper gbc = new GridBagHelper(orderPanel);
-        if (selectedOrder == null) {
-            gbc.addLine("Order: ", GuiUtils.createComponentWithAddAction(orderCb, e -> {
-                EditOrdersDialog dialog = new EditOrdersDialog(OrderItemWizardDialogLayout.this, new Order(), Statics.DistributorType.Items, false);
+        if (selectedItemOrder == null) {
+            gbc.addLine("ItemOrder: ", GuiUtils.createComponentWithAddAction(orderCb, e -> {
+                EditOrdersDialog dialog = new EditOrdersDialog(OrderItemWizardDialogLayout.this, new ItemOrder(), Statics.DistributorType.Items, false);
                 if (dialog.showDialog() == IDialog.OK) {
                     addOrder(dialog.getOrder());
                 }
             }));
         } else {
-            gbc.addLine("Order: ", orderCb);
+            gbc.addLine("ItemOrder: ", orderCb);
         }
         gbc.addLine("Distributor: ", distributorLbl);
         gbc.addLine("  ", allowEmptyReferenceCb);
         gbc.addLine("Type: ", importTypeCb);
 
-        orderPanel.setBorder(GuiUtils.createInlineTitleBorder("Order"));
+        orderPanel.setBorder(GuiUtils.createInlineTitleBorder("ItemOrder"));
 
         return orderPanel;
     }
@@ -167,9 +167,9 @@ abstract class OrderItemWizardDialogLayout extends iDialog {
         showTitlePanel(false);
         setResizable(true);
 
-        // Order
+        // ItemOrder
         orderCb = new IComboBox<>(SearchManager.sm().findPlannedOrders(), new ComparatorUtils.DbObjectNameComparator<>(), true);
-        orderCb.addItemListener(e -> editOrder((Order) orderCb.getSelectedItem()));
+        orderCb.addItemListener(e -> editOrder((ItemOrder) orderCb.getSelectedItem()));
         distributorLbl = new ILabel();
         distributorLbl.setEnabled(false);
 
@@ -258,12 +258,12 @@ abstract class OrderItemWizardDialogLayout extends iDialog {
 
     @Override
     public void updateComponents(Object... args) {
-        if (selectedOrder != null) {
-            orderCb.setSelectedItem(selectedOrder);
-            editOrder(selectedOrder);
+        if (selectedItemOrder != null) {
+            orderCb.setSelectedItem(selectedItemOrder);
+            editOrder(selectedItemOrder);
         } else {
-            selectedOrder = orderCb.getItemAt(0);
-            editOrder(selectedOrder);
+            selectedItemOrder = orderCb.getItemAt(0);
+            editOrder(selectedItemOrder);
         }
 
         if (orderImportType != null) {

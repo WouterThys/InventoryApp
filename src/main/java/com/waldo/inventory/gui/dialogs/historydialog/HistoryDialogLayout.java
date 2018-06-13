@@ -1,9 +1,8 @@
 package com.waldo.inventory.gui.dialogs.historydialog;
 
 import com.waldo.inventory.Utils.GuiUtils;
-import com.waldo.inventory.Utils.resource.ImageResource;
 import com.waldo.inventory.classes.dbclasses.Item;
-import com.waldo.inventory.classes.dbclasses.Order;
+import com.waldo.inventory.classes.dbclasses.ItemOrder;
 import com.waldo.inventory.classes.dbclasses.ProjectPcb;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IImagePanel;
@@ -27,7 +26,7 @@ abstract class HistoryDialogLayout extends iDialog implements GuiUtils.GuiInterf
     private JScrollPane pcbPane;
 
     private IOrderHistoryTableModel orderHistoryModel;
-    private ITable<Order> orderHistoryTable;
+    private ITable<ItemOrder> orderHistoryTable;
 
     private IPcbHistoryTableModel pcbHistoryModel;
     private ITable<ProjectPcb> pcbHistoryTable;
@@ -114,7 +113,7 @@ abstract class HistoryDialogLayout extends iDialog implements GuiUtils.GuiInterf
 //            @Override
 //            public void actionPerformed(ActionEvent e) {
 //                int modelRow = Integer.valueOf(e.getActionCommand());
-//                Order order = (Order) orderHistoryModel.getValueAt(modelRow, 1);
+//                ItemOrder order = (ItemOrder) orderHistoryModel.getValueAt(modelRow, 1);
 //                // Go to orders tab
 //                application.setSelectedTab(Application.TAB_ORDERS);
 //                // Select order
@@ -137,7 +136,7 @@ abstract class HistoryDialogLayout extends iDialog implements GuiUtils.GuiInterf
         pcbPane = new JScrollPane(pcbHistoryTable);
 
         labelPanel.setBorder(GuiUtils.createTitleBorder("AUD"));
-        orderPane.setBorder(GuiUtils.createTitleBorder("Order history"));
+        orderPane.setBorder(GuiUtils.createTitleBorder("ItemOrder history"));
         pcbPane.setBorder(GuiUtils.createTitleBorder("Pcb history"));
 
         tablePanel.setLayout(new BoxLayout(tablePanel, BoxLayout.Y_AXIS));

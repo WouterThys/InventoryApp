@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.components.popups;
 
 import com.waldo.inventory.classes.dbclasses.Item;
-import com.waldo.inventory.classes.dbclasses.OrderLine;
+import com.waldo.inventory.classes.dbclasses.ItemOrderLine;
 import com.waldo.inventory.gui.components.actions.IActions;
 
 import javax.swing.*;
@@ -9,14 +9,14 @@ import java.awt.event.ActionEvent;
 
 public abstract class OrderLinePopup extends JPopupMenu {
 
-    protected OrderLinePopup(OrderLine orderItem) {
+    protected OrderLinePopup(ItemOrderLine orderItem) {
         super();
 
         init(orderItem);
     }
 
-    public abstract void onDeleteOrderItem(OrderLine orderItem);
-    public abstract void onEditReference(OrderLine orderItem);
+    public abstract void onDeleteOrderItem(ItemOrderLine orderItem);
+    public abstract void onEditReference(ItemOrderLine orderItem);
 
     public abstract void onEditItem(Item item);
     public abstract void onOpenLocalDataSheet(Item item);
@@ -24,12 +24,12 @@ public abstract class OrderLinePopup extends JPopupMenu {
     public abstract void onOrderItem(Item item);
     public abstract void onShowHistory(Item item);
 
-    private void init(OrderLine orderLine) {
-        // Order item
+    private void init(ItemOrderLine itemOrderLine) {
+        // ItemOrder item
         IActions.DeleteAction deleteOrderItemAction = new IActions.DeleteAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                OrderLinePopup.this.onDeleteOrderItem(orderLine);
+                OrderLinePopup.this.onDeleteOrderItem(itemOrderLine);
             }
         };
         deleteOrderItemAction.setName("Delete order item");
@@ -37,16 +37,16 @@ public abstract class OrderLinePopup extends JPopupMenu {
         IActions.EditReferenceAction editReferenceAction = new IActions.EditReferenceAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                OrderLinePopup.this.onEditReference(orderLine);
+                OrderLinePopup.this.onEditReference(itemOrderLine);
             }
         };
 
-        deleteOrderItemAction.setEnabled(!orderLine.isLocked());
-        editReferenceAction.setEnabled(!orderLine.isLocked());
+        deleteOrderItemAction.setEnabled(!itemOrderLine.isLocked());
+        editReferenceAction.setEnabled(!itemOrderLine.isLocked());
         add(deleteOrderItemAction);
         add(editReferenceAction);
 
-        Item item = orderLine.getItem();
+        Item item = itemOrderLine.getItem();
 
         IActions.EditAction editAction = new IActions.EditAction() {
             @Override

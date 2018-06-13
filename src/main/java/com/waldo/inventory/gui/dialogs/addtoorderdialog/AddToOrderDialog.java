@@ -4,7 +4,7 @@ package com.waldo.inventory.gui.dialogs.addtoorderdialog;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.Distributor;
 import com.waldo.inventory.classes.dbclasses.Item;
-import com.waldo.inventory.classes.dbclasses.Order;
+import com.waldo.inventory.classes.dbclasses.ItemOrder;
 import com.waldo.inventory.classes.dbclasses.PendingOrder;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
@@ -16,7 +16,7 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AddToOrderDialog extends AddToOrderCacheDialogLayout implements CacheChangedListener<Order> {
+public class AddToOrderDialog extends AddToOrderCacheDialogLayout implements CacheChangedListener<ItemOrder> {
 
     private final Application application;
     private Item itemToOrder;
@@ -31,7 +31,7 @@ public class AddToOrderDialog extends AddToOrderCacheDialogLayout implements Cac
         this.orderList = false;
         this.createOnConfirm = createOnConfirm;
 
-        addCacheListener(Order.class, this);
+        addCacheListener(ItemOrder.class, this);
 
         initializeComponents();
         initializeLayouts();
@@ -45,15 +45,15 @@ public class AddToOrderDialog extends AddToOrderCacheDialogLayout implements Cac
         this.orderList = true;
         this.createOnConfirm = createOnConfirm;
 
-        addCacheListener(Order.class, this);
+        addCacheListener(ItemOrder.class, this);
 
         initializeComponents();
         initializeLayouts();
         updateComponents();
     }
 
-    public Order getSelectedOrder() {
-        return (Order) orderCb.getSelectedItem();
+    public ItemOrder getSelectedOrder() {
+        return (ItemOrder) orderCb.getSelectedItem();
     }
 
     @Override
@@ -65,11 +65,11 @@ public class AddToOrderDialog extends AddToOrderCacheDialogLayout implements Cac
         if (createOnConfirm) {
             // Add item(s) to list
             if (orderList) {
-                application.addItemsToOrder(itemsToOrderList, (Order) orderCb.getSelectedItem());
+                application.addItemsToOrder(itemsToOrderList, (ItemOrder) orderCb.getSelectedItem());
             } else {
                 itemsToOrderList = new ArrayList<>(1);
                 itemsToOrderList.add(itemToOrder);
-                application.addItemsToOrder(itemsToOrderList, (Order) orderCb.getSelectedItem());
+                application.addItemsToOrder(itemsToOrderList, (ItemOrder) orderCb.getSelectedItem());
             }
         }
         super.onOK();
@@ -103,24 +103,24 @@ public class AddToOrderDialog extends AddToOrderCacheDialogLayout implements Cac
 
     @Override
     void addNewOrder() {
-        EditOrdersDialog dialog = new EditOrdersDialog(this, new Order(), distributorType,false);
+        EditOrdersDialog dialog = new EditOrdersDialog(this, new ItemOrder(), distributorType,false);
         if (dialog.showDialog() == IDialog.OK) {
-            Order newOrder = dialog.getOrder();
-            newOrder.save();
+            ItemOrder newItemOrder = dialog.getOrder();
+            newItemOrder.save();
         }
     }
 
     @Override
-    public void onInserted(Order order) {
-        updateComponents(order);
+    public void onInserted(ItemOrder itemOrder) {
+        updateComponents(itemOrder);
     }
 
     @Override
-    public void onUpdated(Order newOrder) {
+    public void onUpdated(ItemOrder newItemOrder) {
     } // Should not happen
 
     @Override
-    public void onDeleted(Order order) {
+    public void onDeleted(ItemOrder itemOrder) {
     } // Should not happen
 
     @Override

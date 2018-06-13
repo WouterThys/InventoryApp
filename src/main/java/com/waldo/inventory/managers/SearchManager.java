@@ -182,8 +182,8 @@ public class SearchManager {
         return null;
     }
 
-    public Order findOrderById(long id) {
-        for (Order t : cache().getOrders()) {
+    public ItemOrder findItemOrderById(long id) {
+        for (ItemOrder t : cache().getItemOrders()) {
             if (t.getId() == id) {
                 return t;
             }
@@ -191,9 +191,18 @@ public class SearchManager {
         return null;
     }
 
-    public Order findOrderByName(String name) {
+    public PcbOrder findPcbOrderById(long id) {
+        for (PcbOrder t : cache().getPcbOrders()) {
+            if (t.getId() == id) {
+                return t;
+            }
+        }
+        return null;
+    }
+
+    public ItemOrder findOrderByName(String name) {
         if (name != null && !name.isEmpty()) {
-            for (Order o : cache().getOrders()) {
+            for (ItemOrder o : cache().getItemOrders()) {
                 if (o.getName().equals(name)) {
                     return o;
                 }
@@ -202,24 +211,24 @@ public class SearchManager {
         return null;
     }
 
-    public List<Order> findAutoOrdersByState(Statics.OrderStates orderState) {
-        List<Order> autoOrderList = new ArrayList<>();
+    public List<ItemOrder> findAutoOrdersByState(Statics.OrderStates orderState) {
+        List<ItemOrder> autoItemOrderList = new ArrayList<>();
 
-        for (Order order : cache().getOrders()) {
-            if (order.isAutoOrder()) {
-                if (orderState == null || order.getOrderState().equals(orderState)) {
-                    autoOrderList.add(order);
+        for (ItemOrder itemOrder : cache().getItemOrders()) {
+            if (itemOrder.isAutoOrder()) {
+                if (orderState == null || itemOrder.getOrderState().equals(orderState)) {
+                    autoItemOrderList.add(itemOrder);
                 }
             }
         }
 
-        return autoOrderList;
+        return autoItemOrderList;
     }
 
-    public List<OrderLine> findOrderLinesForOrder(long orderId) {
-        List<OrderLine> lines = new ArrayList<>();
+    public List<ItemOrderLine> findItemOrderLinesForOrder(long orderId) {
+        List<ItemOrderLine> lines = new ArrayList<>();
         if (orderId > DbObject.UNKNOWN_ID) {
-            for (OrderLine i : cache().getOrderLines()) {
+            for (ItemOrderLine i : cache().getItemOrderLines()) {
                 if (i.getOrderId() == orderId) {
                     lines.add(i);
                 }
@@ -228,11 +237,23 @@ public class SearchManager {
         return lines;
     }
 
-    public List<OrderLine> findOrderLinesForPcb(long pcbId) {
-        List<OrderLine> lines = new ArrayList<>();
+    public List<PcbOrderLine> findPcbOrderLinesForOrder(long orderId) {
+        List<PcbOrderLine> lines = new ArrayList<>();
+        if (orderId > DbObject.UNKNOWN_ID) {
+            for (PcbOrderLine i : cache().getPcbOrderLines()) {
+                if (i.getOrderId() == orderId) {
+                    lines.add(i);
+                }
+            }
+        }
+        return lines;
+    }
+
+    public List<PcbOrderLine> findPcbOrderLinesForPcb(long pcbId) {
+        List<PcbOrderLine> lines = new ArrayList<>();
         if (pcbId > DbObject.UNKNOWN_ID) {
-            for (OrderLine ol : cache().getOrderLines()) {
-                if (ol.getItemId() <= DbObject.UNKNOWN_ID && ol.getPcbId() == pcbId) {
+            for (PcbOrderLine ol : cache().getPcbOrderLines()) {
+                if (ol.getPcbId() == pcbId) {
                     lines.add(ol);
                 }
             }
@@ -240,8 +261,29 @@ public class SearchManager {
         return lines;
     }
 
-    public OrderLine findOrderLineById(long id) {
-        for (OrderLine t : cache().getOrderLines()) {
+    public List<ItemOrderLine> findItemOrderLinesForItem(long itemId) {
+        List<ItemOrderLine> lines = new ArrayList<>();
+        if (itemId > DbObject.UNKNOWN_ID) {
+            for (ItemOrderLine ol : cache().getItemOrderLines()) {
+                if (ol.getItemId() == itemId) {
+                    lines.add(ol);
+                }
+            }
+        }
+        return lines;
+    }
+
+    public ItemOrderLine findItemOrderLineById(long id) {
+        for (ItemOrderLine t : cache().getItemOrderLines()) {
+            if (t.getId() == id) {
+                return t;
+            }
+        }
+        return null;
+    }
+
+    public PcbOrderLine findPcbOrderLineById(long id) {
+        for (PcbOrderLine t : cache().getPcbOrderLines()) {
             if (t.getId() == id) {
                 return t;
             }
@@ -329,41 +371,41 @@ public class SearchManager {
         return distributorOrderFlows;
     }
 
-    public List<Order> findOrdersForItem(long itemId) {
-        List<Order> orders = new ArrayList<>();
+    public List<ItemOrder> findOrdersForItem(long itemId) {
+        List<ItemOrder> itemOrders = new ArrayList<>();
         if (itemId > DbObject.UNKNOWN_ID) {
-            for (Order o : cache().getOrders()) {
+            for (ItemOrder o : cache().getItemOrders()) {
                 if (o.getDistributorType() == DistributorType.Items) {
-                    for (OrderLine oi : o.getOrderLines()) {
+                    for (ItemOrderLine oi : o.getItemOrderLines()) {
                         if (oi.getItemId() == itemId) {
-                            orders.add(o);
+                            itemOrders.add(o);
                             break;
                         }
                     }
                 }
             }
         }
-        return orders;
+        return itemOrders;
     }
 
-    public List<Order> findPlannedOrders() {
-        List<Order> orders = new ArrayList<>();
-        for (Order o : cache().getOrders()) {
+    public List<ItemOrder> findPlannedOrders() {
+        List<ItemOrder> itemOrders = new ArrayList<>();
+        for (ItemOrder o : cache().getItemOrders()) {
             if (!o.isUnknown() && !o.isOrdered()) {
-                orders.add(o);
+                itemOrders.add(o);
             }
         }
-        return orders;
+        return itemOrders;
     }
 
-    public List<Order> findPlannedOrders(DistributorType distributorType) {
-        List<Order> orders = new ArrayList<>();
-        for (Order o : cache().getOrders()) {
+    public List<ItemOrder> findPlannedOrders(DistributorType distributorType) {
+        List<ItemOrder> itemOrders = new ArrayList<>();
+        for (ItemOrder o : cache().getItemOrders()) {
             if (!o.isUnknown() && !o.isOrdered() && o.getDistributorType().equals(distributorType)) {
-                orders.add(o);
+                itemOrders.add(o);
             }
         }
-        return orders;
+        return itemOrders;
     }
 
     public List<ProjectPcb> findPcbsForItem(long itemId) {
@@ -386,13 +428,13 @@ public class SearchManager {
      * @param itemId: Id of the item
      * @return last order
      */
-    public Order findLastOrderForItem(long itemId) {
-        List<Order> orders = findOrdersForItem(itemId);
-        if (orders.size() == 0) return null;
-        else if (orders.size() == 1) return orders.get(0);
+    public ItemOrder findLastOrderForItem(long itemId) {
+        List<ItemOrder> itemOrders = findOrdersForItem(itemId);
+        if (itemOrders.size() == 0) return null;
+        else if (itemOrders.size() == 1) return itemOrders.get(0);
         else {
-            orders.sort(new Order.SortAllOrders());
-            return orders.get(orders.size()-1); // Return the last one
+            itemOrders.sort(new ItemOrder.SortAllOrders());
+            return itemOrders.get(itemOrders.size()-1); // Return the last one
         }
     }
 

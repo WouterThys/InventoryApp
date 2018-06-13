@@ -4,7 +4,7 @@ import com.waldo.inventory.Utils.ComparatorUtils.DbObjectNameComparator;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.Utils.Statics.DistributorType;
 import com.waldo.inventory.classes.dbclasses.Distributor;
-import com.waldo.inventory.classes.dbclasses.Order;
+import com.waldo.inventory.classes.dbclasses.ItemOrder;
 import com.waldo.inventory.gui.components.ICacheDialog;
 import com.waldo.inventory.gui.components.actions.IActions.GoAction;
 import com.waldo.inventory.managers.SearchManager;
@@ -27,7 +27,7 @@ abstract class AddToOrderCacheDialogLayout extends ICacheDialog {
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     // New or existing order
     private ILabel selectOrderLbl;
-    IComboBox<Order> orderCb;
+    IComboBox<ItemOrder> orderCb;
     private AddAction addNewOrderAa;
     private GoAction addNowAa;
 
@@ -115,9 +115,9 @@ abstract class AddToOrderCacheDialogLayout extends ICacheDialog {
     @Override
     public void updateComponents(Object... object) {
 
-        DefaultComboBoxModel<Order> orderCbModel = new DefaultComboBoxModel<>();
-        List<Order> plannedOrders = SearchManager.sm().findPlannedOrders(distributorType);
-        for (Order o : plannedOrders) {
+        DefaultComboBoxModel<ItemOrder> orderCbModel = new DefaultComboBoxModel<>();
+        List<ItemOrder> plannedItemOrders = SearchManager.sm().findPlannedOrders(distributorType);
+        for (ItemOrder o : plannedItemOrders) {
             orderCbModel.addElement(o);
         }
 

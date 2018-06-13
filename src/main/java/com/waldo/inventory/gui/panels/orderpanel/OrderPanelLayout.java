@@ -3,8 +3,8 @@ package com.waldo.inventory.gui.panels.orderpanel;
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.Item;
-import com.waldo.inventory.classes.dbclasses.Order;
-import com.waldo.inventory.classes.dbclasses.OrderLine;
+import com.waldo.inventory.classes.dbclasses.ItemOrder;
+import com.waldo.inventory.classes.dbclasses.ItemOrderLine;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IOrderFlowPanel;
 import com.waldo.inventory.gui.components.ITablePanel;
@@ -42,7 +42,7 @@ abstract class OrderPanelLayout extends IPanel implements
     /*
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private ITablePanel<OrderLine> orderLineTable;
+    private ITablePanel<ItemOrderLine> orderLineTable;
     IOrderLineTableModel tableModel;
 
     IOrderTree ordersTree;
@@ -60,10 +60,10 @@ abstract class OrderPanelLayout extends IPanel implements
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     final Application application;
 
-    OrderLine selectedOrderLine;
-    Order selectedOrder;
+    ItemOrderLine selectedItemOrderLine;
+    ItemOrder selectedItemOrder;
 
-    Order rootOrder;
+    ItemOrder rootItemOrder;
 
     /*
      *                  CONSTRUCTOR
@@ -79,25 +79,25 @@ abstract class OrderPanelLayout extends IPanel implements
     abstract void onTreeRightClick(MouseEvent e);
     abstract void onTableRowClicked(MouseEvent e);
 
-    abstract void onMoveToOrdered(Order order);
-    abstract void onMoveToReceived(Order order);
-    abstract void onBackToOrdered(Order order);
-    abstract void onBackToPlanned(Order order);
+    abstract void onMoveToOrdered(ItemOrder itemOrder);
+    abstract void onMoveToReceived(ItemOrder itemOrder);
+    abstract void onBackToOrdered(ItemOrder itemOrder);
+    abstract void onBackToPlanned(ItemOrder itemOrder);
 
-    abstract void onDeleteOrderItem(OrderLine orderItem);
+    abstract void onDeleteOrderItem(ItemOrderLine orderItem);
     abstract void onEditItem(Item orderItem);
 
 
-    Order getSelectedOrder() {
-        return selectedOrder;
+    ItemOrder getSelectedItemOrder() {
+        return selectedItemOrder;
     }
 
     //
     // Tree stuff
     //
 
-    void treeDeleteOrder(Order order) {
-        ordersTree.removeOrder(order);
+    void treeDeleteOrder(ItemOrder itemOrder) {
+        ordersTree.removeOrder(itemOrder);
     }
 
     void treeReload() {
@@ -106,33 +106,33 @@ abstract class OrderPanelLayout extends IPanel implements
 
     long treeUpdate() {
         long orderId = -1;
-        if (selectedOrder != null) {
-            orderId = selectedOrder.getId();
+        if (selectedItemOrder != null) {
+            orderId = selectedItemOrder.getId();
         }
         ordersTree.updateTree();
         ordersTree.expandAll();
         return orderId;
     }
 
-    void treeSelectOrder(Order order) {
-        ordersTree.setSelectedItem(order);
+    void treeSelectOrder(ItemOrder itemOrder) {
+        ordersTree.setSelectedItem(itemOrder);
     }
 
 
     //
     // Table stuff
     //
-    public void tableInitialize(Order order) {
-        if (order != null && !order.getName().equals("All")) {
-            tableModel.setItemList(order.getOrderLines());
+    public void tableInitialize(ItemOrder itemOrder) {
+        if (itemOrder != null && !itemOrder.getName().equals("All")) {
+            tableModel.setItemList(itemOrder.getItemOrderLines());
             orderLineTable.resizeColumns();
         }
     }
 
     long tableUpdate() {
         long orderItemId = -1;
-        if (selectedOrderLine != null) {
-            orderItemId = selectedOrderLine.getId();
+        if (selectedItemOrderLine != null) {
+            orderItemId = selectedItemOrderLine.getId();
         }
         tableModel.updateTable();
         return orderItemId;
@@ -142,36 +142,36 @@ abstract class OrderPanelLayout extends IPanel implements
         tableModel.setItemList(new ArrayList<>());
     }
 
-    private void tableAddOrderItems(List<OrderLine> orderItems) {
+    private void tableAddOrderItems(List<ItemOrderLine> orderItems) {
         tableModel.addItems(orderItems);
     }
 
-    void tableAddOrderItem(OrderLine orderItem) {
-        List<OrderLine> orderItems = new ArrayList<>(1);
+    void tableAddOrderItem(ItemOrderLine orderItem) {
+        List<ItemOrderLine> orderItems = new ArrayList<>(1);
         orderItems.add(orderItem);
         tableAddOrderItems(orderItems);
     }
 
-    void tableSelectOrderItem(OrderLine orderItem) {
+    void tableSelectOrderItem(ItemOrderLine orderItem) {
         orderLineTable.selectItem(orderItem);
     }
 
-    OrderLine tableGetSelectedItem() {
+    ItemOrderLine tableGetSelectedItem() {
         return orderLineTable.getSelectedItem();
     }
 
-    List<OrderLine> tableGetAllSelectedOrderItems() {
+    List<ItemOrderLine> tableGetAllSelectedOrderItems() {
         return orderLineTable.getAllSelectedItems();
     }
 
     //
     // Table tool bar stuff
     //
-    void updateToolBar(Order order) {
-        if (order != null) {
-            tbOrderNameLbl.setText(order.getName());
+    void updateToolBar(ItemOrder itemOrder) {
+        if (itemOrder != null) {
+            tbOrderNameLbl.setText(itemOrder.getName());
 
-            if (order.getOrderState() != Statics.OrderStates.Planned && !order.isLocked()) {
+            if (itemOrder.getOrderState() != Statics.OrderStates.Planned && !itemOrder.isLocked()) {
                 orderLineTable.setHeaderPanelBackground(Color.red);
             } else {
                 orderLineTable.setHeaderPanelBackground(null);
@@ -183,9 +183,9 @@ abstract class OrderPanelLayout extends IPanel implements
     }
 
     void updateEnabledComponents() {
-        boolean orderSelected = (selectedOrder != null && !selectedOrder.isUnknown() && selectedOrder.canBeSaved());
-        boolean itemSelected = (selectedOrderLine != null && !selectedOrderLine.isUnknown());
-        boolean locked = orderSelected && selectedOrder.isLocked();
+        boolean orderSelected = (selectedItemOrder != null && !selectedItemOrder.isUnknown() && selectedItemOrder.canBeSaved());
+        boolean itemSelected = (selectedItemOrderLine != null && !selectedItemOrderLine.isUnknown());
+        boolean locked = orderSelected && selectedItemOrder.isLocked();
 
         if (orderSelected) {
             orderLineTable.setDbToolBarEnabled(true);
@@ -194,8 +194,8 @@ abstract class OrderPanelLayout extends IPanel implements
             orderLineTable.setDbToolBarEnabled(false);
         }
 
-        tbOrderFlowPanel.updateComponents(selectedOrder);
-        previewPanel.updateComponents(selectedOrder);
+        tbOrderFlowPanel.updateComponents(selectedItemOrder);
+        previewPanel.updateComponents(selectedItemOrder);
     }
 
     void updateVisibleComponents() {
@@ -233,10 +233,10 @@ abstract class OrderPanelLayout extends IPanel implements
     @Override
     public void initializeComponents() {
         // Sub division tree
-        rootOrder = new Order("All");
-        rootOrder.setCanBeSaved(false);
+        rootItemOrder = new ItemOrder("All");
+        rootItemOrder.setCanBeSaved(false);
 
-        ordersTree = new IOrderTree(rootOrder, false, false);
+        ordersTree = new IOrderTree(rootItemOrder, false, false);
         ordersTree.addTreeSelectionListener(this);
         ordersTree.addMouseListener(new MouseAdapter() {
             @Override
@@ -301,23 +301,23 @@ abstract class OrderPanelLayout extends IPanel implements
 
         tbOrderFlowPanel = new IOrderFlowPanel() {
             @Override
-            public void moveToOrdered(Order order) {
-                onMoveToOrdered(order);
+            public void moveToOrdered(ItemOrder itemOrder) {
+                onMoveToOrdered(itemOrder);
             }
 
             @Override
-            public void moveToReceived(Order order) {
-                onMoveToReceived(order);
+            public void moveToReceived(ItemOrder itemOrder) {
+                onMoveToReceived(itemOrder);
             }
 
             @Override
-            public void backToOrdered(Order order) {
-                onBackToOrdered(order);
+            public void backToOrdered(ItemOrder itemOrder) {
+                onBackToOrdered(itemOrder);
             }
 
             @Override
-            public void backToPlanned(Order order) {
-                onBackToPlanned(order);
+            public void backToPlanned(ItemOrder itemOrder) {
+                onBackToPlanned(itemOrder);
             }
         };
 
@@ -370,18 +370,18 @@ abstract class OrderPanelLayout extends IPanel implements
         try {
             // Update table if needed
             if (object.length != 0 && object[0] != null) {
-                if (selectedOrder == null || !selectedOrder.equals(object[0])) {
-                    selectedOrder = (Order) object[0];
-                    tableInitialize(selectedOrder);
+                if (selectedItemOrder == null || !selectedItemOrder.equals(object[0])) {
+                    selectedItemOrder = (ItemOrder) object[0];
+                    tableInitialize(selectedItemOrder);
                 }
             }
 
             ordersTree.expandAll();
-            updateToolBar(selectedOrder);
+            updateToolBar(selectedItemOrder);
 
             // Update detail panel
-            if (selectedOrderLine != null) {
-                detailPanel.updateComponents(selectedOrderLine);
+            if (selectedItemOrderLine != null) {
+                detailPanel.updateComponents(selectedItemOrderLine);
             } else {
                 detailPanel.updateComponents();
             }

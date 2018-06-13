@@ -13,7 +13,7 @@ import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public class IOrderLineTableModel extends IAbstractTableModel<OrderLine> {
+public class IOrderLineTableModel extends IAbstractTableModel<ItemOrderLine> {
 
     private static final String[] COLUMN_NAMES = {"", "#", "Name", "Manufacturer", "Reference", "Price", "Total"};
     private static final Class[] COLUMN_CLASSES = {ILabel.class, Integer.class, String.class, String.class, String.class, String.class, String.class};
@@ -25,12 +25,12 @@ public class IOrderLineTableModel extends IAbstractTableModel<OrderLine> {
     }
 
     @Override
-    public void setItemList(List<OrderLine> itemList) {
+    public void setItemList(List<ItemOrderLine> itemList) {
         super.setItemList(itemList);
 
         if (itemList.size() > 0) {
-            Order order = itemList.get(0).getOrder();
-            isEditable = order != null && (order.isPlanned() || !order.isLocked());
+            ItemOrder itemOrder = itemList.get(0).getItemOrder();
+            isEditable = itemOrder != null && (itemOrder.isPlanned() || !itemOrder.isLocked());
         }
     }
 
@@ -42,7 +42,7 @@ public class IOrderLineTableModel extends IAbstractTableModel<OrderLine> {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        OrderLine line = getItemAt(rowIndex);
+        ItemOrderLine line = getItemAt(rowIndex);
         if (line != null) {
             switch (columnIndex) {
                 case 0:
@@ -113,7 +113,7 @@ public class IOrderLineTableModel extends IAbstractTableModel<OrderLine> {
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            if (value instanceof OrderLine) {
+            if (value instanceof ItemOrderLine) {
                 if (!done && row == 0) {
                     TableColumn tableColumn = table.getColumnModel().getColumn(column);
                     tableColumn.setMaxWidth(32);
@@ -127,18 +127,18 @@ public class IOrderLineTableModel extends IAbstractTableModel<OrderLine> {
 
                 c.setBackground(defaultBackground);
                 label.updateBackground(c.getBackground(), row, isSelected);
-                OrderLine orderLine = (OrderLine) value;
+                ItemOrderLine itemOrderLine = (ItemOrderLine) value;
 
-                if (orderLine.getItem() != null) {
-                    Item item = orderLine.getItem();
+                if (itemOrderLine.getItem() != null) {
+                    Item item = itemOrderLine.getItem();
                     if (item.isDiscourageOrder()) {
                         label.setBackground(Color.ORANGE);
                         c.setBackground(Color.ORANGE);
                     }
                 }
 
-                boolean amountOk = orderLine.getAmount() > 0;
-                boolean referenceOk = orderLine.getDistributorPartId() > DbObject.UNKNOWN_ID;
+                boolean amountOk = itemOrderLine.getAmount() > 0;
+                boolean referenceOk = itemOrderLine.getDistributorPartId() > DbObject.UNKNOWN_ID;
                 if (amountOk && referenceOk) {
                     label.setIcon(imageOk);
                     label.setToolTipText(null);

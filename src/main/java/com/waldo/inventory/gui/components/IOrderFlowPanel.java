@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.Utils.GuiUtils;
-import com.waldo.inventory.classes.dbclasses.Order;
+import com.waldo.inventory.classes.dbclasses.ItemOrder;
 import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.utils.DateUtils;
 import com.waldo.utils.icomponents.ILabel;
@@ -34,35 +34,35 @@ public abstract class IOrderFlowPanel extends IPanel {
     private IActions.MoveToOrderedAction moveToOrderedAction = new IActions.MoveToOrderedAction() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            moveToOrdered(order);
+            moveToOrdered(itemOrder);
         }
     };
 
     private IActions.MoveToReceivedAction moveToReceivedAction = new IActions.MoveToReceivedAction() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            moveToReceived(order);
+            moveToReceived(itemOrder);
         }
     };
 
     private IActions.BackToOrderedAction backToOrderedAction = new IActions.BackToOrderedAction() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            backToOrdered(order);
+            backToOrdered(itemOrder);
         }
     };
 
     private IActions.BackToPlannedAction backToPlannedAction = new IActions.BackToPlannedAction() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            backToPlanned(order);
+            backToPlanned(itemOrder);
         }
     };
 
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private Order order;
+    private ItemOrder itemOrder;
 
     /*
      *                  CONSTRUCTOR
@@ -77,10 +77,10 @@ public abstract class IOrderFlowPanel extends IPanel {
     /*
      *                  METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public abstract void moveToOrdered(Order order);
-    public abstract void moveToReceived(Order order);
-    public abstract void backToOrdered(Order order);
-    public abstract void backToPlanned(Order order);
+    public abstract void moveToOrdered(ItemOrder itemOrder);
+    public abstract void moveToReceived(ItemOrder itemOrder);
+    public abstract void backToOrdered(ItemOrder itemOrder);
+    public abstract void backToPlanned(ItemOrder itemOrder);
 
     /*
      *                  LISTENERS
@@ -106,7 +106,7 @@ public abstract class IOrderFlowPanel extends IPanel {
         dateModifiedLbl.setForeground(Color.DARK_GRAY);
 
         dateModifiedLbl.setToolTipText("Last modified");
-        dateOrderedLbl.setToolTipText("Order date");
+        dateOrderedLbl.setToolTipText("ItemOrder date");
         dateReceivedLbl.setToolTipText("Received date");
 
         backToPlannedAction.setTooltip("Back to planned");
@@ -146,12 +146,12 @@ public abstract class IOrderFlowPanel extends IPanel {
 
     @Override
     public void updateComponents(Object... object) {
-        if (object.length != 0 && object[0] != null && object[0] instanceof Order) {
-            order = (Order) object[0];
+        if (object.length != 0 && object[0] != null && object[0] instanceof ItemOrder) {
+            itemOrder = (ItemOrder) object[0];
 
-            switch (order.getOrderState()) {
+            switch (itemOrder.getOrderState()) {
                 case Planned:
-                    dateModifiedLbl.setText(DateUtils.formatDate(order.getDateModified()));
+                    dateModifiedLbl.setText(DateUtils.formatDate(itemOrder.getDateModified()));
                     dateOrderedLbl.setText("");
 
                     backToPlannedAction.setEnabled(false);
@@ -170,8 +170,8 @@ public abstract class IOrderFlowPanel extends IPanel {
                     break;
 
                 case Ordered:
-                    dateModifiedLbl.setText(DateUtils.formatDate(order.getDateModified()));
-                    dateOrderedLbl.setText(DateUtils.formatDate(order.getDateOrdered()));
+                    dateModifiedLbl.setText(DateUtils.formatDate(itemOrder.getDateModified()));
+                    dateOrderedLbl.setText(DateUtils.formatDate(itemOrder.getDateOrdered()));
                     dateReceivedLbl.setText("");
 
                     backToPlannedAction.setEnabled(true);
@@ -190,9 +190,9 @@ public abstract class IOrderFlowPanel extends IPanel {
                     break;
 
                 case Received:
-                    dateModifiedLbl.setText(DateUtils.formatDate(order.getDateModified()));
-                    dateOrderedLbl.setText(DateUtils.formatDate(order.getDateOrdered()));
-                    dateReceivedLbl.setText(DateUtils.formatDate(order.getDateReceived()));
+                    dateModifiedLbl.setText(DateUtils.formatDate(itemOrder.getDateModified()));
+                    dateOrderedLbl.setText(DateUtils.formatDate(itemOrder.getDateOrdered()));
+                    dateReceivedLbl.setText(DateUtils.formatDate(itemOrder.getDateReceived()));
 
                     backToPlannedAction.setEnabled(false);
                     moveToOrderedAction.setEnabled(false);

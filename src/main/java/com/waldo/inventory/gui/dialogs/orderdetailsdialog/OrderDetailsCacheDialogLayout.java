@@ -1,8 +1,8 @@
 package com.waldo.inventory.gui.dialogs.orderdetailsdialog;
 
 import com.waldo.inventory.Utils.GuiUtils;
-import com.waldo.inventory.classes.dbclasses.Order;
-import com.waldo.inventory.classes.dbclasses.OrderLine;
+import com.waldo.inventory.classes.dbclasses.ItemOrder;
+import com.waldo.inventory.classes.dbclasses.ItemOrderLine;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.ICacheDialog;
 import com.waldo.utils.DateUtils;
@@ -24,8 +24,8 @@ import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
 abstract class OrderDetailsCacheDialogLayout extends ICacheDialog implements ListSelectionListener, ActionListener, IEditedListener {
 
-    private static final String TAB_ORDER_FILE = "Order file ";
-    public static final String TAB_ORDER_DETAILS = "Order details";
+    private static final String TAB_ORDER_FILE = "ItemOrder file ";
+    public static final String TAB_ORDER_DETAILS = "ItemOrder details";
 
     /*
      *                  COMPONENTS
@@ -47,11 +47,11 @@ abstract class OrderDetailsCacheDialogLayout extends ICacheDialog implements Lis
     private ILabel orderByLbl;
     ILabel fileOkLbl;
 
-    // Order file panel
+    // ItemOrder file panel
     private JTable orderFileTable;
     private DefaultTableModel orderFileTableModel;
 
-    // Order panel
+    // ItemOrder panel
     private ITextField referenceTf;
     private ITextField trackingNrTf;
     private ITextField dateOrderedTf;
@@ -63,7 +63,7 @@ abstract class OrderDetailsCacheDialogLayout extends ICacheDialog implements Lis
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    Order order, originalOrder;
+    ItemOrder itemOrder, originalItemOrder;
     String currentPanel = TAB_ORDER_FILE;
     boolean parseSuccess = false;
 
@@ -78,25 +78,25 @@ abstract class OrderDetailsCacheDialogLayout extends ICacheDialog implements Lis
     /*
      *                   METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    List<String> checkOrder(Order order) {
+    List<String> checkOrder(ItemOrder itemOrder) {
         List<String> errorList = new ArrayList<>();
 
-        if (order == null) {
-            errorList.add(" - No order selected..");
+        if (itemOrder == null) {
+            errorList.add(" - No itemOrder selected..");
         } else {
-            if (order.getDistributor() == null) {
-                errorList.add(" - Order had no distributor..");
+            if (itemOrder.getDistributor() == null) {
+                errorList.add(" - ItemOrder had no distributor..");
             } else {
-                if (order.getDistributor().getOrderFileFormat() == null || order.getDistributor().getOrderFileFormat().isUnknown()) {
-                    errorList.add(" - Order's distributor had no selected file format");
+                if (itemOrder.getDistributor().getOrderFileFormat() == null || itemOrder.getDistributor().getOrderFileFormat().isUnknown()) {
+                    errorList.add(" - ItemOrder's distributor had no selected file format");
                 } else {
-                    if (order.getOrderLines().size() < 1) {
-                        errorList.add(" - Order has no items..");
+                    if (itemOrder.getItemOrderLines().size() < 1) {
+                        errorList.add(" - ItemOrder has no items..");
                     } else {
-                        List<OrderLine> errorItems = order.missingOrderReferences();
+                        List<ItemOrderLine> errorItems = itemOrder.missingOrderReferences();
                         if (errorItems.size() > 0) {
-                            errorList.add(" - Next order items have no reference: ");
-                            for (OrderLine oi : errorItems) {
+                            errorList.add(" - Next itemOrder items have no reference: ");
+                            for (ItemOrderLine oi : errorItems) {
                                 errorList.add(" \t * " + oi.getName());
                             }
                         }
@@ -110,12 +110,12 @@ abstract class OrderDetailsCacheDialogLayout extends ICacheDialog implements Lis
     }
 
     void fillTableData() {
-        List<OrderLine> orderItemList = order.getOrderLines();
+        List<ItemOrderLine> orderItemList = itemOrder.getItemOrderLines();
         try {
             String[] references = new String[orderItemList.size()];
             String[] amounts = new String[orderItemList.size()];
             for (int i = 0; i < references.length; i++) {
-                OrderLine orderItem = orderItemList.get(i);
+                ItemOrderLine orderItem = orderItemList.get(i);
                 references[i] = orderItem.getDistributorPartLink().getReference();
                 amounts[i] = String.valueOf(orderItem.getAmount());
             }
@@ -146,9 +146,9 @@ abstract class OrderDetailsCacheDialogLayout extends ICacheDialog implements Lis
                 orderUrlBrowseBtn.setVisible(false);
                 break;
             case TAB_ORDER_DETAILS:
-//                switch (order.getOrderState()) {
+//                switch (itemOrder.getOrderState()) {
 //                    case Planned:
-//                        getButtonOK().setText("order");
+//                        getButtonOK().setText("itemOrder");
 //                        break;
 //                    case Ordered:
 //                        getButtonOK().setText("received");
@@ -336,11 +336,11 @@ abstract class OrderDetailsCacheDialogLayout extends ICacheDialog implements Lis
         distributorsBrowseBtn.setToolTipText("Browse distributor website");
         distributorsBrowseBtn.addActionListener(this);
         orderUrlBrowseBtn = new JButton(imageResource.readIcon("Orders.Confirm.BrowseOrder"));
-        orderUrlBrowseBtn.setToolTipText("Go to order page");
+        orderUrlBrowseBtn.setToolTipText("Go to itemOrder page");
         orderUrlBrowseBtn.addActionListener(this);
 
         // Detail panel
-        referenceTf = new ITextField("Distributor order reference");
+        referenceTf = new ITextField("Distributor itemOrder reference");
         referenceTf.addEditedListener(this, "orderReference");
         trackingNrTf = new ITextField("Tracking number");
         trackingNrTf.addEditedListener(this, "trackingNumber");
@@ -379,34 +379,34 @@ abstract class OrderDetailsCacheDialogLayout extends ICacheDialog implements Lis
     @Override
     public void updateComponents(Object... object) {
         if (object.length != 0 && object[0] != null) {
-            order = (Order) object[0];
-            originalOrder = order.createCopy();
+            itemOrder = (ItemOrder) object[0];
+            originalItemOrder = itemOrder.createCopy();
 
             // File
-            if (order.getDistributor() != null) {
-                orderByLbl.setText("Order by: " + order.getDistributor().getName());
+            if (itemOrder.getDistributor() != null) {
+                orderByLbl.setText("ItemOrder by: " + itemOrder.getDistributor().getName());
             }
 
             // Details
-            referenceTf.setText(order.getOrderReference());
-            trackingNrTf.setText(order.getTrackingNumber());
-            if (order.getDateModified() != null) {
-                dateModifiedTf.setText(DateUtils.formatDateTimeLong(order.getDateModified()));
+            referenceTf.setText(itemOrder.getOrderReference());
+            trackingNrTf.setText(itemOrder.getTrackingNumber());
+            if (itemOrder.getDateModified() != null) {
+                dateModifiedTf.setText(DateUtils.formatDateTimeLong(itemOrder.getDateModified()));
             } else {
                 dateModifiedTf.setText("Not modified");
             }
-            if (order.getDateOrdered() != null) {
-                dateOrderedTf.setText(DateUtils.formatDateLong(order.getDateOrdered()));
+            if (itemOrder.getDateOrdered() != null) {
+                dateOrderedTf.setText(DateUtils.formatDateLong(itemOrder.getDateOrdered()));
             } else {
                 dateOrderedTf.setText("Not ordered");
             }
-            if (order.getDateReceived() != null) {
-                dateReceivedTf.setText(DateUtils.formatDateLong(order.getDateReceived()));
+            if (itemOrder.getDateReceived() != null) {
+                dateReceivedTf.setText(DateUtils.formatDateLong(itemOrder.getDateReceived()));
             } else {
                 dateReceivedTf.setText("Not received");
             }
-            itemsTf.setText(String.valueOf(order.getOrderLines().size()));
-            totalPriceTf.setText(String.valueOf(order.getTotalPrice()));
+            itemsTf.setText(String.valueOf(itemOrder.getItemOrderLines().size()));
+            totalPriceTf.setText(String.valueOf(itemOrder.getTotalPrice()));
 
         }
     }

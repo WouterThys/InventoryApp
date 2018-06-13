@@ -23,15 +23,15 @@ import java.util.List;
 
 import static com.waldo.inventory.managers.CacheManager.cache;
 
-public class Order extends DbObject {
+public class ItemOrder extends DbObject {
 
-    public static final String TABLE_NAME = "orders";
+    public static final String TABLE_NAME = "itemorders";
 
     private Date dateOrdered;
     private Date dateModified;
     private Date dateReceived;
 
-    private List<OrderLine> orderLines;
+    private List<ItemOrderLine> itemOrderLines;
 
     private long distributorId;
     private Distributor distributor;
@@ -43,14 +43,14 @@ public class Order extends DbObject {
 
     // Runtime variables
     private boolean isLocked;
-    private final List<OrderLine> tempOrderItems = new ArrayList<>(); // List with items not yet added to order
+    private final List<ItemOrderLine> tempOrderItems = new ArrayList<>(); // List with items not yet added to order
     private final List<Item> autoOrderItems = new ArrayList<>();
 
-    public Order() {
+    public ItemOrder() {
         super(TABLE_NAME);
     }
 
-    public Order(String name) {
+    public ItemOrder(String name) {
         super(TABLE_NAME);
         this.name = name;
     }
@@ -96,37 +96,37 @@ public class Order extends DbObject {
     }
 
     @Override
-    public Order createCopy(DbObject copyInto) {
-        Order order = (Order) copyInto;
-        copyBaseFields(order);
-        order.setDateOrdered(getDateOrdered());
-        order.setDateModified(getDateModified());
-        order.setDateReceived(getDateReceived());
-        order.setDistributorId(getDistributorId());
-        order.setOrderReference(getOrderReference());
-        order.setTrackingNumber(getTrackingNumber());
-        order.setAutoOrder(isAutoOrder());
+    public ItemOrder createCopy(DbObject copyInto) {
+        ItemOrder itemOrder = (ItemOrder) copyInto;
+        copyBaseFields(itemOrder);
+        itemOrder.setDateOrdered(getDateOrdered());
+        itemOrder.setDateModified(getDateModified());
+        itemOrder.setDateReceived(getDateReceived());
+        itemOrder.setDistributorId(getDistributorId());
+        itemOrder.setOrderReference(getOrderReference());
+        itemOrder.setTrackingNumber(getTrackingNumber());
+        itemOrder.setAutoOrder(isAutoOrder());
 
-        return order;
+        return itemOrder;
     }
 
     @Override
-    public Order createCopy() {
-        return createCopy(new Order());
+    public ItemOrder createCopy() {
+        return createCopy(new ItemOrder());
     }
 
     @Override
     public boolean equals(Object obj) {
         boolean result = super.equals(obj);
         if (result) {
-            if (!(obj instanceof Order)) {
+            if (!(obj instanceof ItemOrder)) {
                 return false;
             } else {
-                Order ref = (Order) obj;
+                ItemOrder ref = (ItemOrder) obj;
 
                 if (!compareIfEqual(ref.getDateOrdered(), getDateOrdered())) return false;
                 if (!compareIfEqual(ref.getDateReceived(), getDateReceived())) return false;
-                if (!(ref.getOrderLines().size() == (getOrderLines().size()))) return false;
+                if (!(ref.getItemOrderLines().size() == (getItemOrderLines().size()))) return false;
                 if (!(ref.getDistributorId() == (getDistributorId()))) return false;
                 if (!(ref.getOrderReference().equals(getOrderReference()))) return false;
                 if (!(ref.getTrackingNumber().equals(getTrackingNumber()))) return false;
@@ -137,21 +137,21 @@ public class Order extends DbObject {
         return result;
     }
 
-    public static Order createDummyOrder(String name) {
-        Order order = new Order(name);
-        order.setCanBeSaved(false);
-        return order;
+    public static ItemOrder createDummyOrder(String name) {
+        ItemOrder itemOrder = new ItemOrder(name);
+        itemOrder.setCanBeSaved(false);
+        return itemOrder;
     }
 
-    public static Order createAutoOrder(int autoOrderNumber, Distributor distributor) {
-        Order order = null;
+    public static ItemOrder createAutoOrder(int autoOrderNumber, Distributor distributor) {
+        ItemOrder itemOrder = null;
         if (distributor != null) {
-            order = new Order();
-            order.setAutoOrder(true);
-            order.setName("AUTO-ORDER_" + autoOrderNumber);
-            order.setDistributorId(distributor.getId());
+            itemOrder = new ItemOrder();
+            itemOrder.setAutoOrder(true);
+            itemOrder.setName("AUTO-ORDER_" + autoOrderNumber);
+            itemOrder.setDistributorId(distributor.getId());
         }
-        return order;
+        return itemOrder;
     }
 
     public synchronized void addAutoOrderItem(Item item) {
@@ -187,9 +187,9 @@ public class Order extends DbObject {
         }
     }
 
-    public static class SortAllOrders implements Comparator<Order> {
+    public static class SortAllOrders implements Comparator<ItemOrder> {
         @Override
-        public int compare(Order o1, Order o2) {
+        public int compare(ItemOrder o1, ItemOrder o2) {
             if (o1 == null || o2 == null) {
                 return 1;
             }
@@ -211,9 +211,9 @@ public class Order extends DbObject {
         }
     }
 
-    public static class SortUnordered implements Comparator<Order> {
+    public static class SortUnordered implements Comparator<ItemOrder> {
         @Override
-        public int compare(Order o1, Order o2) {
+        public int compare(ItemOrder o1, ItemOrder o2) {
             if (o1.getDateModified() != null && o2.getDateReceived() == null) {
                 return -1;
             } else if (o1.getDateModified() == null && o2.getDateModified() != null) {
@@ -232,11 +232,11 @@ public class Order extends DbObject {
         if (getDistributorType() == DistributorType.Items) {
             for (Item item : itemsToOrder) {
                 try {
-                    OrderLine orderLine = findOrderLineFor(item);
-                    if (orderLine == null) {
-                        orderLine = new OrderLine(this, item, Math.max(0, item.getMaximum() - item.getAmount()));
+                    ItemOrderLine itemOrderLine = findOrderLineFor(item);
+                    if (itemOrderLine == null) {
+                        itemOrderLine = new ItemOrderLine(this, item, Math.max(0, item.getMaximum() - item.getAmount()));
                     }
-                    orderLine.save();
+                    itemOrderLine.save();
                 } catch (Exception e) {
                     if (failedItems == null) {
                         failedItems = new HashMap<>();
@@ -263,10 +263,10 @@ public class Order extends DbObject {
 
     private String createOrderText() {
         StringBuilder builder = new StringBuilder();
-        for (OrderLine orderLine : getOrderLines()) {
-            builder.append(orderLine.getDistributorPartLink().getReference());
+        for (ItemOrderLine itemOrderLine : getItemOrderLines()) {
+            builder.append(itemOrderLine.getDistributorPartLink().getReference());
             builder.append(getDistributor().getOrderFileFormat().getSeparator());
-            builder.append(orderLine.getAmount());
+            builder.append(itemOrderLine.getAmount());
             builder.append("\n");
         }
         return builder.toString();
@@ -278,8 +278,8 @@ public class Order extends DbObject {
         }
     }
 
-    public static Order getUnknownOrder() {
-        Order o = new Order();
+    public static ItemOrder getUnknownOrder() {
+        ItemOrder o = new ItemOrder();
         o.setName(UNKNOWN_NAME);
         o.setId(UNKNOWN_ID);
         o.setCanBeSaved(false);
@@ -290,20 +290,9 @@ public class Order extends DbObject {
         return findOrderLineFor(item) != null;
     }
 
-    public boolean containsOrderLineFor(ProjectPcb pcb) {
-        if (pcb != null && getDistributorType() == DistributorType.Items) {
-            for (OrderLine ol : getOrderLines()) {
-                if (ol.getItemId() == pcb.getId()) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    public OrderLine findOrderLineFor(Item item) {
-        if (item != null && getDistributorType() == DistributorType.Items) {
-            for (OrderLine ol : getOrderLines()) {
+    public ItemOrderLine findOrderLineFor(Item item) {
+        if (item != null) {
+            for (ItemOrderLine ol : getItemOrderLines()) {
                 if (ol.getItemId() == item.getId()) {
                     return ol;
                 }
@@ -312,16 +301,16 @@ public class Order extends DbObject {
         return null;
     }
 
-    public void addOrderLine(OrderLine line) {
+    public void addOrderLine(ItemOrderLine line) {
         if (line != null) {
-            if (!orderLines.contains(line)) {
-                orderLines.add(line);
+            if (!itemOrderLines.contains(line)) {
+                itemOrderLines.add(line);
                 setDateModified(new Date(System.currentTimeMillis()));
             }
         }
     }
 
-    public void addItemToTempList(OrderLine item) {
+    public void addItemToTempList(ItemOrderLine item) {
         if (item != null) {
             if (!tempOrderItems.contains(item)) {
                 tempOrderItems.add(item);
@@ -329,13 +318,13 @@ public class Order extends DbObject {
         }
     }
 
-    public void removeOrderLine(OrderLine line) {
+    public void removeOrderLine(ItemOrderLine line) {
         if (line != null) {
-            if (orderLines.contains(line)) {
+            if (itemOrderLines.contains(line)) {
                 // Remove OrderItem from db
                 line.delete();
                 // Remove from list
-                orderLines.remove(line);
+                itemOrderLines.remove(line);
                 // Update modification date
                 setDateModified(new Date(System.currentTimeMillis()));
                 // Update the item of the order item
@@ -345,27 +334,27 @@ public class Order extends DbObject {
     }
 
     public void updateItemReferences() {
-        for (OrderLine oi : getOrderLines()) {
+        for (ItemOrderLine oi : getItemOrderLines()) {
             oi.updateDistributorPart();
         }
     }
 
     public Price getTotalPrice() {
         Price total = new Price(0, Statics.PriceUnits.Euro);
-        for (OrderLine oi : getOrderLines()) {
+        for (ItemOrderLine oi : getItemOrderLines()) {
             total = Price.add(total, oi.getTotalPrice());
         }
         return total;
     }
 
     public void updateLineStates() {
-        for (OrderLine oi : getOrderLines()) {
+        for (ItemOrderLine oi : getItemOrderLines()) {
             oi.updateOrderState();
         }
     }
 
     public void updateLineAmounts(boolean increment) {
-        for (OrderLine oi : getOrderLines()) {
+        for (ItemOrderLine oi : getItemOrderLines()) {
             oi.updateLineAmount(increment);
         }
     }
@@ -388,11 +377,11 @@ public class Order extends DbObject {
         }
     }
 
-    public List<OrderLine> getOrderLines() {
-        if (orderLines == null) {
-            orderLines = SearchManager.sm().findOrderLinesForOrder(getId());
+    public List<ItemOrderLine> getItemOrderLines() {
+        if (itemOrderLines == null) {
+            itemOrderLines = SearchManager.sm().findItemOrderLinesForOrder(getId());
         }
-        return orderLines;
+        return itemOrderLines;
     }
 
     public Date getDateModified() {
@@ -440,8 +429,8 @@ public class Order extends DbObject {
     public void setDistributorId(long id) {
         if (distributor != null && distributor.getId() != id) {
             distributor = null;
-            if (getOrderLines().size() > 0) {
-                for (OrderLine orderItem : getOrderLines()) {
+            if (getItemOrderLines().size() > 0) {
+                for (ItemOrderLine orderItem : getItemOrderLines()) {
                     orderItem.updateDistributorPart();
                 }
             }
@@ -473,9 +462,9 @@ public class Order extends DbObject {
         }
     }
 
-    public List<OrderLine> missingOrderReferences() {
-        List<OrderLine> items = new ArrayList<>();
-        for (OrderLine oi : getOrderLines()) {
+    public List<ItemOrderLine> missingOrderReferences() {
+        List<ItemOrderLine> items = new ArrayList<>();
+        for (ItemOrderLine oi : getItemOrderLines()) {
             if (oi.getDistributorPartId() <= UNKNOWN_ID) {
                 items.add(oi);
             }
@@ -519,15 +508,6 @@ public class Order extends DbObject {
 
     public void setLocked(boolean locked) {
         isLocked = locked;
-    }
-
-
-    public List<OrderLine> getTempOrderItems() {
-        return tempOrderItems;
-    }
-
-    public void clearTempOrderList() {
-        tempOrderItems.clear();
     }
 
 

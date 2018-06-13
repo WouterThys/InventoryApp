@@ -204,10 +204,10 @@ public class ProjectPcb extends ProjectObject {
 
     private void findKnownOrders(List<PcbItemProjectLink> projectLinks) {
         if (projectLinks != null && projectLinks.size() > 0) {
-            List<Order> planned = SearchManager.sm().findPlannedOrders(Statics.DistributorType.Items);
+            List<ItemOrder> planned = SearchManager.sm().findPlannedOrders(Statics.DistributorType.Items);
             if (planned.size() > 0) {
-                for (Order order : planned) {
-                    for (OrderLine oi : order.getOrderLines()) {
+                for (ItemOrder itemOrder : planned) {
+                    for (ItemOrderLine oi : itemOrder.getItemOrderLines()) {
                         for (PcbItemProjectLink link : projectLinks) {
                             if (link.getPcbItemItemLinkId() > UNKNOWN_ID) {
                                 if (oi.getItemId() == link.getPcbItemItemLink().getItemId()) {

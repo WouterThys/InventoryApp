@@ -2,7 +2,7 @@ package com.waldo.inventory.gui.dialogs.ordersearchitemdialog;
 
 import com.waldo.inventory.Utils.Statics.OrderImportType;
 import com.waldo.inventory.classes.dbclasses.Item;
-import com.waldo.inventory.classes.dbclasses.Order;
+import com.waldo.inventory.classes.dbclasses.ItemOrder;
 import com.waldo.inventory.classes.dbclasses.ProjectPcb;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.actions.IActions;
@@ -34,16 +34,16 @@ abstract class OrderSearchItemsDialogLayout extends iDialog {
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    Order selectedOrder;
+    ItemOrder selectedItemOrder;
     OrderImportType orderImportType;
     ProjectPcb projectPcb;
 
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    OrderSearchItemsDialogLayout(Application application, Order order, OrderImportType orderImportType, ProjectPcb projectPcb) {
-        super(application, "Search item to order");
-        this.selectedOrder = order;
+    OrderSearchItemsDialogLayout(Application application, ItemOrder itemOrder, OrderImportType orderImportType, ProjectPcb projectPcb) {
+        super(application, "Search item to itemOrder");
+        this.selectedItemOrder = itemOrder;
         this.orderImportType = orderImportType;
         this.projectPcb = projectPcb;
     }
@@ -52,12 +52,12 @@ abstract class OrderSearchItemsDialogLayout extends iDialog {
      *                   METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-    abstract void onImportItems(Order order);
+    abstract void onImportItems(ItemOrder itemOrder);
     abstract void onRowDoubleClicked(int row);
     abstract void onSearchItems();
 
     void updateEnabledComponents() {
-        boolean hasOrder = selectedOrder != null;
+        boolean hasOrder = selectedItemOrder != null;
         boolean hasSelected = getSelectedItems().size() > 0;
 
         getButtonOK().setEnabled(hasOrder && hasSelected);
@@ -120,7 +120,7 @@ abstract class OrderSearchItemsDialogLayout extends iDialog {
         wizardAction = new IActions.WizardAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                SwingUtilities.invokeLater(() -> onImportItems(selectedOrder));
+                SwingUtilities.invokeLater(() -> onImportItems(selectedItemOrder));
             }
         };
 

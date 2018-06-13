@@ -51,7 +51,7 @@ public class PendingOrdersCacheDialog extends PendingOrdersCacheDialogLayout imp
                 itemsToOrder.add(po.getItem());
             }
 
-            AddToOrderDialog dialog = new AddToOrderDialog(application, "Order", itemsToOrder, true, false);
+            AddToOrderDialog dialog = new AddToOrderDialog(application, "ItemOrder", itemsToOrder, true, false);
             if (dialog.showDialog() == ICacheDialog.OK) {
                 for (PendingOrder po : pendingOrders) {
                     po.delete();

@@ -19,25 +19,25 @@ import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public class OrderDetailsCacheDialog extends OrderDetailsCacheDialogLayout implements CacheChangedListener<Order> {
+public class OrderDetailsCacheDialog extends OrderDetailsCacheDialogLayout implements CacheChangedListener<ItemOrder> {
 
-    public OrderDetailsCacheDialog(Application application, String title, Order order) {
+    public OrderDetailsCacheDialog(Application application, String title, ItemOrder itemOrder) {
         super(application, title);
 
         initializeComponents();
         initializeLayouts();
-        updateComponents(order);
+        updateComponents(itemOrder);
 
-        addCacheListener(Order.class,this);
+        addCacheListener(ItemOrder.class,this);
 
         checkAndUpdate();
     }
 
-    private void checkOrderedItemsLocations(Order order) {
-        if (order.isReceived() && order.getDistributorType() == Statics.DistributorType.Items) {
+    private void checkOrderedItemsLocations(ItemOrder itemOrder) {
+        if (itemOrder.isReceived() && itemOrder.getDistributorType() == Statics.DistributorType.Items) {
             // Find items without location
             List<Item> itemsWithoutLocation = new ArrayList<>();
-            for (OrderLine oi : order.getOrderLines()) {
+            for (ItemOrderLine oi : itemOrder.getItemOrderLines()) {
                 if ((oi.getItem().getLocationId() <= DbObject.UNKNOWN_ID)) {
                     itemsWithoutLocation.add(oi.getItem());
                 }
@@ -75,7 +75,7 @@ public class OrderDetailsCacheDialog extends OrderDetailsCacheDialogLayout imple
     }
 
     private void checkAndUpdate() {
-        List<String> errorList = checkOrder(order);
+        List<String> errorList = checkOrder(itemOrder);
         if (errorList.size() == 0) {
             fillTableData();
 
@@ -92,29 +92,29 @@ public class OrderDetailsCacheDialog extends OrderDetailsCacheDialogLayout imple
 
     private void showErrors(List<String> errorList) {
         StringBuilder builder = new StringBuilder();
-        builder.append("Creation of order file failed with next ").append(errorList.size()).append("error(s): ").append("\n");
+        builder.append("Creation of itemOrder file failed with next ").append(errorList.size()).append("error(s): ").append("\n");
         for (String error : errorList) {
             builder.append(error).append("\n");
         }
 
         JOptionPane.showMessageDialog(this,
                 builder.toString(),
-                "Order file errors",
+                "ItemOrder file errors",
                 JOptionPane.ERROR_MESSAGE);
     }
 
     private void copyToClipboard() {
-        String orderText = createOrderText(order);
+        String orderText = createOrderText(itemOrder);
         StringSelection selection = new StringSelection(orderText);
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(selection, selection);
     }
 
-    private String createOrderText(Order order) {
+    private String createOrderText(ItemOrder itemOrder) {
         StringBuilder builder = new StringBuilder();
-        for (OrderLine orderItem : order.getOrderLines()) {
+        for (ItemOrderLine orderItem : itemOrder.getItemOrderLines()) {
             builder.append(orderItem.getDistributorPartLink().getReference());
-            builder.append(order.getDistributor().getOrderFileFormat().getSeparator());
+            builder.append(itemOrder.getDistributor().getOrderFileFormat().getSeparator());
             builder.append(orderItem.getAmount());
             builder.append("\n");
         }
@@ -123,17 +123,17 @@ public class OrderDetailsCacheDialog extends OrderDetailsCacheDialogLayout imple
 
     private void viewParsed() {
         JOptionPane.showMessageDialog(this,
-                createOrderText(order),
-                "Order file",
+                createOrderText(itemOrder),
+                "ItemOrder file",
                 JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void browseDistributor() {
         try {
-            OpenUtils.browseLink(order.getDistributor().getWebsite());
+            OpenUtils.browseLink(itemOrder.getDistributor().getWebsite());
         } catch (IOException e1) {
             JOptionPane.showMessageDialog(OrderDetailsCacheDialog.this,
-                    "Unable to browse: " + order.getDistributor().getWebsite(),
+                    "Unable to browse: " + itemOrder.getDistributor().getWebsite(),
                     "Browse error",
                     JOptionPane.ERROR_MESSAGE);
             e1.printStackTrace();
@@ -142,10 +142,10 @@ public class OrderDetailsCacheDialog extends OrderDetailsCacheDialogLayout imple
 
     private void browseOrderPage() {
         try {
-            OpenUtils.browseLink(order.getDistributor().getOrderLink());
+            OpenUtils.browseLink(itemOrder.getDistributor().getOrderLink());
         } catch (IOException e1) {
             JOptionPane.showMessageDialog(OrderDetailsCacheDialog.this,
-                    "Unable to browse: " + order.getDistributor().getOrderLink(),
+                    "Unable to browse: " + itemOrder.getDistributor().getOrderLink(),
                     "Browse error",
                     JOptionPane.ERROR_MESSAGE);
             e1.printStackTrace();
@@ -156,21 +156,21 @@ public class OrderDetailsCacheDialog extends OrderDetailsCacheDialogLayout imple
     // Db edited listener
     //
     @Override
-    public void onInserted(Order order) {
-        if (order.isReceived()) {
-            checkOrderedItemsLocations(order);
+    public void onInserted(ItemOrder itemOrder) {
+        if (itemOrder.isReceived()) {
+            checkOrderedItemsLocations(itemOrder);
         }
     }
 
     @Override
-    public void onUpdated(Order order) {
-        if (order.isReceived()) {
-            checkOrderedItemsLocations(order);
+    public void onUpdated(ItemOrder itemOrder) {
+        if (itemOrder.isReceived()) {
+            checkOrderedItemsLocations(itemOrder);
         }
     }
 
     @Override
-    public void onDeleted(Order order) {
+    public void onDeleted(ItemOrder itemOrder) {
         // Should not happen
     }
 
@@ -185,7 +185,7 @@ public class OrderDetailsCacheDialog extends OrderDetailsCacheDialogLayout imple
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource().equals(copyToClipboardBtn))  {
-            if (order != null && order.getDistributor() != null && order.getDistributor().getOrderFileFormat() != null) {
+            if (itemOrder != null && itemOrder.getDistributor() != null && itemOrder.getDistributor().getOrderFileFormat() != null) {
                 copyToClipboard();
             } else {
                 JOptionPane.showMessageDialog(OrderDetailsCacheDialog.this,
@@ -196,7 +196,7 @@ public class OrderDetailsCacheDialog extends OrderDetailsCacheDialogLayout imple
         } else if (e.getSource().equals(parseBtn)) {
             checkAndUpdate();
         } else if (e.getSource().equals(viewParsedBtn)) {
-            if (order != null && order.getDistributor() != null && order.getDistributor().getOrderFileFormat() != null) {
+            if (itemOrder != null && itemOrder.getDistributor() != null && itemOrder.getDistributor().getOrderFileFormat() != null) {
                 viewParsed();
             } else {
                 JOptionPane.showMessageDialog(OrderDetailsCacheDialog.this,
@@ -205,7 +205,7 @@ public class OrderDetailsCacheDialog extends OrderDetailsCacheDialogLayout imple
                         JOptionPane.ERROR_MESSAGE);
             }
         } else if (e.getSource().equals(distributorsBrowseBtn)) {
-            if ((order.getDistributor() != null) && !(order.getDistributor().getWebsite().isEmpty())) {
+            if ((itemOrder.getDistributor() != null) && !(itemOrder.getDistributor().getWebsite().isEmpty())) {
                 browseDistributor();
             } else {
                 JOptionPane.showMessageDialog(OrderDetailsCacheDialog.this,
@@ -214,11 +214,11 @@ public class OrderDetailsCacheDialog extends OrderDetailsCacheDialogLayout imple
                         JOptionPane.ERROR_MESSAGE);
             }
         } else if (e.getSource().equals(orderUrlBrowseBtn)) {
-            if ((order.getDistributor() != null) && !(order.getDistributor().getOrderLink().isEmpty())) {
+            if ((itemOrder.getDistributor() != null) && !(itemOrder.getDistributor().getOrderLink().isEmpty())) {
                 browseOrderPage();
             } else {
                 JOptionPane.showMessageDialog(OrderDetailsCacheDialog.this,
-                        "Could browse order page..",
+                        "Could browse itemOrder page..",
                         "Error browsing",
                         JOptionPane.ERROR_MESSAGE);
             }
@@ -233,7 +233,7 @@ public class OrderDetailsCacheDialog extends OrderDetailsCacheDialogLayout imple
     @Override
     public DbObject getGuiObject() {
         if (isShown) {
-            return order;
+            return itemOrder;
         }
         return null;
     }

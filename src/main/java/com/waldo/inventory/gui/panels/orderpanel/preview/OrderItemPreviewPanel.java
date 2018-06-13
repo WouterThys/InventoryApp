@@ -3,7 +3,7 @@ package com.waldo.inventory.gui.panels.orderpanel.preview;
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
-import com.waldo.inventory.classes.dbclasses.OrderLine;
+import com.waldo.inventory.classes.dbclasses.ItemOrderLine;
 import com.waldo.inventory.classes.dbclasses.ProjectPcb;
 import com.waldo.inventory.gui.components.IImagePanel;
 import com.waldo.inventory.gui.components.IdBToolBar;
@@ -39,7 +39,7 @@ public abstract class OrderItemPreviewPanel extends AbstractDetailPanel implemen
     private AbstractAction orderAa;
     private AbstractAction historyAa;
 
-    // Order
+    // ItemOrder
     private ITextField amountTf;
     private ITextField priceTf;
     private ITextField referenceTf;
@@ -55,7 +55,7 @@ public abstract class OrderItemPreviewPanel extends AbstractDetailPanel implemen
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private OrderLine selectedOrderLine;
+    private ItemOrderLine selectedItemOrderLine;
     private final ItemDetailListener itemDetailListener;
     private final OrderDetailListener orderDetailListener;
 
@@ -83,18 +83,18 @@ public abstract class OrderItemPreviewPanel extends AbstractDetailPanel implemen
                 } else {
                     dataSheetAa.setEnabled(true);
                 }
-            } else if (object instanceof OrderLine) {
+            } else if (object instanceof ItemOrderLine) {
                 aliasLbl.setText("");
                 dataSheetAa.setEnabled(false);
             }
         }
     }
 
-    private void updateHeader(OrderLine orderLine) {
-        if (orderLine != null) {
+    private void updateHeader(ItemOrderLine itemOrderLine) {
+        if (itemOrderLine != null) {
 
-            if (orderLine.isItemOrderType()) {
-                Item item = orderLine.getItem();
+            if (itemOrderLine.isItemOrderType()) {
+                Item item = itemOrderLine.getItem();
                 if (item != null) {
                     if (item.getIconPath().isEmpty()) {
                         imagePanel.setImage(imageResource.getDefaultImage(ImageType.ItemImage));
@@ -111,7 +111,7 @@ public abstract class OrderItemPreviewPanel extends AbstractDetailPanel implemen
                     starRater.setRating(0);
                 }
             } else {
-                ProjectPcb pcb = orderLine.getPcb();
+                ProjectPcb pcb = itemOrderLine.getPcb();
                 if (pcb != null) {
                     if (pcb.getProject() != null) {
                         imagePanel.setImage(pcb.getProject().getIconPath());
@@ -131,23 +131,23 @@ public abstract class OrderItemPreviewPanel extends AbstractDetailPanel implemen
         }
     }
 
-    private void updateData(OrderLine orderLine) {
-        if (orderLine != null) {
-            amountTf.setText(String.valueOf(orderLine.getAmount()));
-            if (orderLine.getDistributorPartId() > DbObject.UNKNOWN_ID) {
-                priceTf.setText(orderLine.getPrice().toString());
-                referenceTf.setText(orderLine.getDistributorPartLink().getReference());
+    private void updateData(ItemOrderLine itemOrderLine) {
+        if (itemOrderLine != null) {
+            amountTf.setText(String.valueOf(itemOrderLine.getAmount()));
+            if (itemOrderLine.getDistributorPartId() > DbObject.UNKNOWN_ID) {
+                priceTf.setText(itemOrderLine.getPrice().toString());
+                referenceTf.setText(itemOrderLine.getDistributorPartLink().getReference());
             } else {
                 priceTf.setText("");
                 referenceTf.setText("");
             }
-            boolean locked = orderLine.isLocked();
+            boolean locked = itemOrderLine.isLocked();
             editPriceAction.setEnabled(!locked);
             editReferenceAction.setEnabled(!locked);
             plusOneAction.setEnabled(!locked);
             minOneAction.setEnabled(!locked);
 
-            Item item = orderLine.getItem(); // TODO: same for PCB
+            Item item = itemOrderLine.getItem(); // TODO: same for PCB
             if (item != null) {
                 if (item.getManufacturerId() > DbObject.UNKNOWN_ID) {
                     manufacturerTf.setText(item.getManufacturer().toString());
@@ -188,17 +188,17 @@ public abstract class OrderItemPreviewPanel extends AbstractDetailPanel implemen
 
     }
 
-    private void updateRemarks(OrderLine orderLine) {
-        if (orderLine != null) {
-            if (orderLine.isItemOrderType()) {
-                Item item = orderLine.getItem();
+    private void updateRemarks(ItemOrderLine itemOrderLine) {
+        if (itemOrderLine != null) {
+            if (itemOrderLine.isItemOrderType()) {
+                Item item = itemOrderLine.getItem();
                 if (item != null) {
                     remarksTp.setFile(item.getRemarksFile());
                 } else {
                     remarksTp.setFile(null);
                 }
             } else {
-                ProjectPcb pcb = orderLine.getPcb();
+                ProjectPcb pcb = itemOrderLine.getPcb();
                 if (pcb != null) {
                     remarksTp.setFile(pcb.getRemarksFile());
                 } else {
@@ -341,31 +341,31 @@ public abstract class OrderItemPreviewPanel extends AbstractDetailPanel implemen
         dataSheetAa = new AbstractAction("Datasheet", imageResource.readIcon("Items.Buttons.Datasheet")) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (selectedOrderLine != null && itemDetailListener != null) {
-                    if (selectedOrderLine.getItem() != null) {
-                        itemDetailListener.onShowDataSheet(selectedOrderLine.getItem());
+                if (selectedItemOrderLine != null && itemDetailListener != null) {
+                    if (selectedItemOrderLine.getItem() != null) {
+                        itemDetailListener.onShowDataSheet(selectedItemOrderLine.getItem());
                     }
                 }
             }
         };
         dataSheetAa.putValue(AbstractAction.SHORT_DESCRIPTION, "Data sheet");
-        orderAa = new AbstractAction("Order", imageResource.readIcon("Items.Buttons.Order")) {
+        orderAa = new AbstractAction("ItemOrder", imageResource.readIcon("Items.Buttons.Order")) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (selectedOrderLine != null && itemDetailListener != null) {
-                    if (selectedOrderLine.getItem() != null) {
-                        itemDetailListener.onOrderItem(selectedOrderLine.getItem());
+                if (selectedItemOrderLine != null && itemDetailListener != null) {
+                    if (selectedItemOrderLine.getItem() != null) {
+                        itemDetailListener.onOrderItem(selectedItemOrderLine.getItem());
                     }
                 }
             }
         };
-        orderAa.putValue(AbstractAction.SHORT_DESCRIPTION, "Order");
+        orderAa.putValue(AbstractAction.SHORT_DESCRIPTION, "ItemOrder");
         historyAa = new AbstractAction("History", imageResource.readIcon("Items.Buttons.History")) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (selectedOrderLine != null && itemDetailListener != null) {
-                    if (selectedOrderLine.getItem() != null) {
-                        itemDetailListener.onShowHistory(selectedOrderLine.getItem());
+                if (selectedItemOrderLine != null && itemDetailListener != null) {
+                    if (selectedItemOrderLine.getItem() != null) {
+                        itemDetailListener.onShowHistory(selectedItemOrderLine.getItem());
                     }
                 }
             }
@@ -373,42 +373,42 @@ public abstract class OrderItemPreviewPanel extends AbstractDetailPanel implemen
         historyAa.putValue(AbstractAction.SHORT_DESCRIPTION, "History");
 
 
-        // Order
+        // ItemOrder
         plusOneAction = new IActions.PlusOneAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (selectedOrderLine != null && orderDetailListener != null) {
-                    int currentAmount = selectedOrderLine.getAmount();
-                    orderDetailListener.onSetOrderItemAmount(selectedOrderLine, currentAmount + 1);
-                    updateComponents(selectedOrderLine);
+                if (selectedItemOrderLine != null && orderDetailListener != null) {
+                    int currentAmount = selectedItemOrderLine.getAmount();
+                    orderDetailListener.onSetOrderItemAmount(selectedItemOrderLine, currentAmount + 1);
+                    updateComponents(selectedItemOrderLine);
                 }
             }
         };
         minOneAction = new IActions.MinOneAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (selectedOrderLine != null && orderDetailListener != null) {
-                    int currentAmount = selectedOrderLine.getAmount();
-                    orderDetailListener.onSetOrderItemAmount(selectedOrderLine, currentAmount - 1);
-                    updateComponents(selectedOrderLine);
+                if (selectedItemOrderLine != null && orderDetailListener != null) {
+                    int currentAmount = selectedItemOrderLine.getAmount();
+                    orderDetailListener.onSetOrderItemAmount(selectedItemOrderLine, currentAmount - 1);
+                    updateComponents(selectedItemOrderLine);
                 }
             }
         };
         editReferenceAction = new IActions.EditAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (selectedOrderLine != null && orderDetailListener != null) {
-                    orderDetailListener.onEditReference(selectedOrderLine);
-                    updateComponents(selectedOrderLine);
+                if (selectedItemOrderLine != null && orderDetailListener != null) {
+                    orderDetailListener.onEditReference(selectedItemOrderLine);
+                    updateComponents(selectedItemOrderLine);
                 }
             }
         };
         editPriceAction = new IActions.EditAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (selectedOrderLine != null && orderDetailListener != null) {
-                    orderDetailListener.onEditPrice(selectedOrderLine);
-                    updateComponents(selectedOrderLine);
+                if (selectedItemOrderLine != null && orderDetailListener != null) {
+                    orderDetailListener.onEditPrice(selectedItemOrderLine);
+                    updateComponents(selectedItemOrderLine);
                 }
             }
         };
@@ -440,16 +440,16 @@ public abstract class OrderItemPreviewPanel extends AbstractDetailPanel implemen
     public void updateComponents(Object... args) {
         if (args.length == 0 || args[0] == null) {
             setVisible(false);
-            selectedOrderLine = null;
+            selectedItemOrderLine = null;
         } else {
             setVisible(true);
 
-            selectedOrderLine = (OrderLine) args[0];
-            updateToolbar(selectedOrderLine);
-            updateHeader(selectedOrderLine);
-            updateRemarks(selectedOrderLine);
+            selectedItemOrderLine = (ItemOrderLine) args[0];
+            updateToolbar(selectedItemOrderLine);
+            updateHeader(selectedItemOrderLine);
+            updateRemarks(selectedItemOrderLine);
 
-            updateData(selectedOrderLine);
+            updateData(selectedItemOrderLine);
         }
     }
 

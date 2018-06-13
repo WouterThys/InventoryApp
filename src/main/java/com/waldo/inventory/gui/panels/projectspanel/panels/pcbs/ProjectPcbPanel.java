@@ -67,7 +67,7 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
     protected JPopupMenu showPopup(ProjectPcb projectObject) {
         JPopupMenu popupMenu = super.showPopup(projectObject);
 
-        JMenu orderMenu = new JMenu("Order");
+        JMenu orderMenu = new JMenu("ItemOrder");
         orderMenu.add(orderItemsAa);
         orderMenu.add(orderPcbAa);
 
@@ -97,11 +97,11 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
 
     private void onOrderPcb() {
         if (selectedProjectObject != null) {
-            Order order = new Order(selectedProjectObject.getName());
-            EditOrdersDialog dialog = new EditOrdersDialog(application, order, Statics.DistributorType.Pcbs, false);
+            ItemOrder itemOrder = new ItemOrder(selectedProjectObject.getName());
+            EditOrdersDialog dialog = new EditOrdersDialog(application, itemOrder, Statics.DistributorType.Pcbs, false);
             if (dialog.showDialog() == IDialog.OK) {
-                OrderLine pcbOrderLine = new OrderLine(order, selectedProjectObject, 1);
-                pcbOrderLine.save();
+                ItemOrderLine pcbItemOrderLine = new ItemOrderLine(itemOrder, selectedProjectObject, 1);
+                pcbItemOrderLine.save();
             }
         }
     }
@@ -185,14 +185,14 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
         };
 
         // Actions
-        orderItemsAa = new AbstractAction("Order items", imageResource.readIcon("Items.S.Title")) {
+        orderItemsAa = new AbstractAction("ItemOrder items", imageResource.readIcon("Items.S.Title")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SwingUtilities.invokeLater(() -> onOrderItems());
             }
         };
 
-        orderPcbAa = new AbstractAction("Order PCB", imageResource.readIcon("Projects.Details.Pcb")) {
+        orderPcbAa = new AbstractAction("ItemOrder PCB", imageResource.readIcon("Projects.Details.Pcb")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SwingUtilities.invokeLater(() -> onOrderPcb());

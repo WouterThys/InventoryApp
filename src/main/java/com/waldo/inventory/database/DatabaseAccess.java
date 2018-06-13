@@ -712,20 +712,20 @@ public class DatabaseAccess {
         return locationTypes;
     }
 
-    public List<Order> fetchOrders() {
-        List<Order> orders = new ArrayList<>();
+    public List<ItemOrder> fetchItemOrders() {
+        List<ItemOrder> itemOrders = new ArrayList<>();
         if (Main.CACHE_ONLY) {
-            return orders;
+            return itemOrders;
         }
-        Status().setMessage("Fetching orders from DB");
-        Order o = null;
-        String sql = scriptResource.readString(Order.TABLE_NAME + DbObject.SQL_SELECT_ALL);
+        Status().setMessage("Fetching itemOrders from DB");
+        ItemOrder o = null;
+        String sql = scriptResource.readString(ItemOrder.TABLE_NAME + DbObject.SQL_SELECT_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
 
                 while (rs.next()) {
-                    o = new Order();
+                    o = new ItemOrder();
                     o.setId(rs.getLong("id"));
                     o.setName(rs.getString("name"));
                     o.setIconPath(rs.getString("iconPath"));
@@ -746,7 +746,7 @@ public class DatabaseAccess {
 
                     o.setInserted(true);
                     if (o.getId() != DbObject.UNKNOWN_ID) {
-                        orders.add(o);
+                        itemOrders.add(o);
                     }
                 }
             }
@@ -758,35 +758,34 @@ public class DatabaseAccess {
                 e1.printStackTrace();
             }
         }
-        orders.add(0, Order.getUnknownOrder());
-        orders.sort(new Order.SortAllOrders());
+        itemOrders.add(0, ItemOrder.getUnknownOrder());
+        itemOrders.sort(new ItemOrder.SortAllOrders());
 
-        return orders;
+        return itemOrders;
     }
 
-    public List<OrderLine> fetchOrderLines() {
-        List<OrderLine> orderLines = new ArrayList<>();
+    public List<ItemOrderLine> fetchItemOrderLines() {
+        List<ItemOrderLine> itemOrderLines = new ArrayList<>();
         if (Main.CACHE_ONLY) {
-            return orderLines;
+            return itemOrderLines;
         }
         Status().setMessage("Fetching order lines from DB");
-        OrderLine o = null;
-        String sql = scriptResource.readString(OrderLine.TABLE_NAME + DbObject.SQL_SELECT_ALL);
+        ItemOrderLine o = null;
+        String sql = scriptResource.readString(ItemOrderLine.TABLE_NAME + DbObject.SQL_SELECT_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
 
                 while (rs.next()) {
-                    o = new OrderLine();
+                    o = new ItemOrderLine();
                     o.setId(rs.getLong("id"));
                     o.setOrderId(rs.getLong("orderId"));
                     o.setAmount(rs.getInt("amount"));
                     o.setItemId(rs.getLong("itemId"));
-                    o.setPcbId(rs.getLong("pcbId"));
 
                     o.setInserted(true);
                     if (o.getId() != DbObject.UNKNOWN_ID) {
-                        orderLines.add(o);
+                        itemOrderLines.add(o);
                     }
                 }
             }
@@ -798,29 +797,96 @@ public class DatabaseAccess {
                 e1.printStackTrace();
             }
         }
-        return orderLines;
+        return itemOrderLines;
     }
 
-//    public void removeItemFromOrder(OrderItem orderItem) {
-//        if (Main.CACHE_ONLY) {
-//            return;
-//        }
-//        Status().setMessage("Removing \"" + orderItem.getItem().toString() + "\" from \"" + orderItem.getOrder().toString());
-//
-//        String sql = scriptResource.readString("orderitems.sqlDeleteItemFromOrder");
-//        try (Connection connection = getConnection()) {
-//            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-//                stmt.setLong(1, orderItem.getOrderId());
-//                stmt.setLong(2, orderItem.getObjectId());
-//                stmt.execute();
-//
-//            } catch (SQLException e) {
-//                Status().setError("Failed to delete item from order");
-//            }
-//        } catch (SQLException e) {
-//            Status().setError("Failed to delete item from order");
-//        }
-//    }
+    public List<PcbOrder> fetchPcbOrders() {
+        List<PcbOrder> pcbOrders = new ArrayList<>();
+        if (Main.CACHE_ONLY) {
+            return pcbOrders;
+        }
+        Status().setMessage("Fetching PcbOrder from DB");
+        PcbOrder o = null;
+        String sql = scriptResource.readString(PcbOrder.TABLE_NAME + DbObject.SQL_SELECT_ALL);
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    o = new PcbOrder();
+                    o.setId(rs.getLong("id"));
+                    o.setName(rs.getString("name"));
+                    o.setIconPath(rs.getString("iconPath"));
+                    if (settings().getDbSettings().getDbType().equals(Statics.DbTypes.Online)) {
+                        o.setDateOrdered(rs.getTimestamp("dateOrdered"));
+                        o.setDateModified(rs.getTimestamp("dateModified"));
+                        o.setDateReceived(rs.getTimestamp("dateReceived"));
+                    } else {
+                        o.setDateOrdered(DateUtils.sqLiteToDate(rs.getString("dateOrdered")));
+                        o.setDateModified(DateUtils.sqLiteToDate(rs.getString("dateModified")));
+                        o.setDateReceived(DateUtils.sqLiteToDate(rs.getString("dateReceived")));
+                    }
+                    o.setDistributorId(rs.getLong("distributorId"));
+                    o.setOrderReference(rs.getString("orderReference"));
+                    o.setTrackingNumber(rs.getString("trackingNumber"));
+                    o.setLocked(o.getOrderState() != Statics.OrderStates.Planned);
+                    o.setAutoOrder(rs.getBoolean("isAutoOrder"));
+
+                    o.setInserted(true);
+                    if (o.getId() != DbObject.UNKNOWN_ID) {
+                        pcbOrders.add(o);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            DbErrorObject object = new DbErrorObject(o, e, Select, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+        }
+
+        return pcbOrders;
+    }
+
+
+    public List<PcbOrderLine> fetchPcbOrderLines() {
+        List<PcbOrderLine> pcbOrderLines = new ArrayList<>();
+        if (Main.CACHE_ONLY) {
+            return pcbOrderLines;
+        }
+        Status().setMessage("Fetching PcbOrderLine from DB");
+        PcbOrderLine o = null;
+        String sql = scriptResource.readString(PcbOrderLine.TABLE_NAME + DbObject.SQL_SELECT_ALL);
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    o = new PcbOrderLine();
+                    o.setId(rs.getLong("id"));
+                    o.setPcbOrderId(rs.getLong("orderId"));
+                    o.setAmount(rs.getInt("amount"));
+                    o.setPcbId(rs.getLong("itemId"));
+
+                    o.setInserted(true);
+                    if (o.getId() != DbObject.UNKNOWN_ID) {
+                        pcbOrderLines.add(o);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            DbErrorObject object = new DbErrorObject(o, e, Select, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+        }
+        return pcbOrderLines;
+    }
+
 
     public List<Distributor> fetchDistributors() {
         List<Distributor> distributors = new ArrayList<>();

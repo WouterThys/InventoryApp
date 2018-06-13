@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.components.trees;
 
 import com.waldo.inventory.Utils.ComparatorUtils;
-import com.waldo.inventory.classes.dbclasses.Order;
+import com.waldo.inventory.classes.dbclasses.ItemOrder;
 import com.waldo.inventory.gui.components.ITree;
 import com.waldo.utils.DateUtils;
 
@@ -17,7 +17,7 @@ import java.util.List;
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.managers.CacheManager.cache;
 
-public class IOrderTree extends ITree<Order> {
+public class IOrderTree extends ITree<ItemOrder> {
 
     private final ImageIcon receivedIcon = imageResource.readIcon("Orders.Tree.Received");
     private final ImageIcon orderedIcon = imageResource.readIcon("Orders.Tree.Ordered");
@@ -30,19 +30,19 @@ public class IOrderTree extends ITree<Order> {
     private DefaultMutableTreeNode plannedNode;
     private DefaultMutableTreeNode receivedNode;
 
-    public IOrderTree(Order root, boolean showRoot, boolean allowMultiSelect) {
+    public IOrderTree(ItemOrder root, boolean showRoot, boolean allowMultiSelect) {
         super(root, showRoot, allowMultiSelect);
 
         setRenderer();
     }
 
     @Override
-    protected DefaultTreeModel createModel(Order root) {
+    protected DefaultTreeModel createModel(ItemOrder root) {
         rootNode = new DefaultMutableTreeNode(root);
 
-        Order ordered = Order.createDummyOrder("Ordered");
-        Order planned = Order.createDummyOrder("Planned");
-        Order received = Order.createDummyOrder("Received");
+        ItemOrder ordered = ItemOrder.createDummyOrder("Ordered");
+        ItemOrder planned = ItemOrder.createDummyOrder("Planned");
+        ItemOrder received = ItemOrder.createDummyOrder("Received");
 
         orderedNode = new DefaultMutableTreeNode(ordered);
         plannedNode = new DefaultMutableTreeNode(planned);
@@ -58,25 +58,25 @@ public class IOrderTree extends ITree<Order> {
     }
 
     private void createTreeNodes() {
-        java.util.List<Order> plannedList = new ArrayList<>();
-        java.util.List<Order> orderedList = new ArrayList<>();
-        Map<Integer, List<Order>> receivedList = new TreeMap<>();
+        java.util.List<ItemOrder> plannedList = new ArrayList<>();
+        java.util.List<ItemOrder> orderedList = new ArrayList<>();
+        Map<Integer, List<ItemOrder>> receivedList = new TreeMap<>();
 
-        for (Order order : cache().getOrders()) {
-            if (!order.isUnknown()) {
-                switch (order.getOrderState()) {
+        for (ItemOrder itemOrder : cache().getItemOrders()) {
+            if (!itemOrder.isUnknown()) {
+                switch (itemOrder.getOrderState()) {
                     case Planned:
-                        plannedList.add(order);
+                        plannedList.add(itemOrder);
                         break;
                     case Ordered:
-                        orderedList.add(order);
+                        orderedList.add(itemOrder);
                         break;
                     case Received:
-                        int year = DateUtils.getYear(order.getDateReceived());
+                        int year = DateUtils.getYear(itemOrder.getDateReceived());
                         if (!receivedList.containsKey(year)) {
                             receivedList.put(year, new ArrayList<>());
                         }
-                        receivedList.get(year).add(order);
+                        receivedList.get(year).add(itemOrder);
                         break;
 
                     default:
@@ -90,20 +90,20 @@ public class IOrderTree extends ITree<Order> {
         }
 
         plannedNode.removeAllChildren();
-        for (Order o : plannedList) {
+        for (ItemOrder o : plannedList) {
             plannedNode.add(new DefaultMutableTreeNode(o, false));
         }
 
         orderedNode.removeAllChildren();
-        for (Order o : orderedList) {
+        for (ItemOrder o : orderedList) {
             orderedNode.add(new DefaultMutableTreeNode(o, false));
         }
 
         receivedNode.removeAllChildren();
         for (int year : receivedList.keySet()) {
-            Order dateOrder = Order.createDummyOrder(String.valueOf(year));
-            DefaultMutableTreeNode rNode = new DefaultMutableTreeNode(dateOrder);
-            for (Order o : receivedList.get(year)) {
+            ItemOrder dateItemOrder = ItemOrder.createDummyOrder(String.valueOf(year));
+            DefaultMutableTreeNode rNode = new DefaultMutableTreeNode(dateItemOrder);
+            for (ItemOrder o : receivedList.get(year)) {
                 rNode.add(new DefaultMutableTreeNode(o, false));
             }
             receivedNode.add(rNode);
@@ -131,10 +131,10 @@ public class IOrderTree extends ITree<Order> {
     }
 
     @Override
-    public void addItem(Order order) {
-        if (order != null) {
+    public void addItem(ItemOrder itemOrder) {
+        if (itemOrder != null) {
             DefaultMutableTreeNode parentNode = null;
-            switch (order.getOrderState()) {
+            switch (itemOrder.getOrderState()) {
                 case Planned:
                     parentNode = plannedNode;
                     break;
@@ -142,8 +142,8 @@ public class IOrderTree extends ITree<Order> {
                     parentNode = orderedNode;
                     break;
                 case Received:
-                    String year = String.valueOf(DateUtils.getYear(order.getDateReceived()));
-                    // Find node of year to add new order to
+                    String year = String.valueOf(DateUtils.getYear(itemOrder.getDateReceived()));
+                    // Find node of year to add new itemOrder to
                     Enumeration e = receivedNode.depthFirstEnumeration();
                     while (e.hasMoreElements()) {
                         DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.nextElement();
@@ -153,8 +153,8 @@ public class IOrderTree extends ITree<Order> {
                     }
                     // Create new node
                     if (parentNode == null) {
-                        Order dateOrder = Order.createDummyOrder(year);
-                        DefaultMutableTreeNode rNode = new DefaultMutableTreeNode(dateOrder);
+                        ItemOrder dateItemOrder = ItemOrder.createDummyOrder(year);
+                        DefaultMutableTreeNode rNode = new DefaultMutableTreeNode(dateItemOrder);
                         receivedNode.add(rNode);
                         parentNode = rNode;
                     }
@@ -162,17 +162,17 @@ public class IOrderTree extends ITree<Order> {
                     default:
                         return;
             }
-            DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(order);
+            DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(itemOrder);
 
             treeModel.insertNodeInto(childNode, parentNode, parentNode.getChildCount());
             scrollPathToVisible(new TreePath(childNode.getPath()));
         }
     }
 
-    public void removeOrder(Order order) {
-        if (order != null) {
+    public void removeOrder(ItemOrder itemOrder) {
+        if (itemOrder != null) {
             DefaultMutableTreeNode parentNode = null;
-            switch (order.getOrderState()) {
+            switch (itemOrder.getOrderState()) {
                 case Planned:
                     parentNode = plannedNode;
                     break;
@@ -180,8 +180,8 @@ public class IOrderTree extends ITree<Order> {
                     parentNode = orderedNode;
                     break;
                 case Received:
-                    String year = String.valueOf(DateUtils.getYear(order.getDateReceived()));
-                    // Find node of year to add new order to
+                    String year = String.valueOf(DateUtils.getYear(itemOrder.getDateReceived()));
+                    // Find node of year to add new itemOrder to
                     Enumeration e = receivedNode.depthFirstEnumeration();
                     while (e.hasMoreElements()) {
                         DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.nextElement();
@@ -194,7 +194,7 @@ public class IOrderTree extends ITree<Order> {
                     return;
             }
             if (parentNode != null) {
-                super.removeItem((Order) parentNode.getUserObject(), order);
+                super.removeItem((ItemOrder) parentNode.getUserObject(), itemOrder);
             }
         }
     }
@@ -213,11 +213,11 @@ public class IOrderTree extends ITree<Order> {
                 Component c = super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
 
                 if (value instanceof DefaultMutableTreeNode) {
-                    Order order = (Order) ((DefaultMutableTreeNode) value).getUserObject();
+                    ItemOrder itemOrder = (ItemOrder) ((DefaultMutableTreeNode) value).getUserObject();
                     Font font = getFont();
                     setFont(new Font(font.getName(), Font.PLAIN, font.getSize()));
-                    if (!order.canBeSaved()) {
-                        switch (order.getName()) {
+                    if (!itemOrder.canBeSaved()) {
+                        switch (itemOrder.getName()) {
                             case "Planned":
                                 setIcon(plannedIcon);
                                 break;
@@ -232,12 +232,12 @@ public class IOrderTree extends ITree<Order> {
                                 break;
                         }
                     } else {
-                        switch (order.getDistributorType()) {
+                        switch (itemOrder.getDistributorType()) {
                             default:
                             case Items: setIcon(itemIcon); break;
                             case Pcbs: setIcon(pcbIcon); break;
                         }
-                        if (order.isAutoOrder()) {
+                        if (itemOrder.isAutoOrder()) {
                             setFont(new Font(font.getName(), Font.ITALIC, font.getSize()));
                         }
                     }

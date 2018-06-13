@@ -36,8 +36,10 @@ public class CacheManager {
         objectLogList.add(new ObjectLog("Manufacturers", manufacturers, "manufacturersCount"));
         objectLogList.add(new ObjectLog("Locations", locations, "locationsCount"));
         objectLogList.add(new ObjectLog("Location types", locationTypes));
-        objectLogList.add(new ObjectLog("Orders", orders, "ordersCount"));
-        objectLogList.add(new ObjectLog("Order lines", orderLines));
+        objectLogList.add(new ObjectLog("Orders", itemOrders, "ordersCount"));
+        objectLogList.add(new ObjectLog("ItemOrder lines", itemOrderLines));
+        objectLogList.add(new ObjectLog("Pcb orders", pcbOrders));
+        objectLogList.add(new ObjectLog("PcbORder lines", pcbOrderLines));
         objectLogList.add(new ObjectLog("Distributors", distributors, "distributorsCount"));
         objectLogList.add(new ObjectLog("Distributor part links", distributorPartLinks));
         objectLogList.add(new ObjectLog("Distributor order flows", distributorOrderFlows));
@@ -45,7 +47,7 @@ public class CacheManager {
         objectLogList.add(new ObjectLog("Package types", packageTypes));
         objectLogList.add(new ObjectLog("Projects", projects, "projectsCount"));
         objectLogList.add(new ObjectLog("Project IDEs", projectIDES));
-        objectLogList.add(new ObjectLog("Order file formats", orderFileFormats));
+        objectLogList.add(new ObjectLog("ItemOrder file formats", orderFileFormats));
         objectLogList.add(new ObjectLog("PCB items", pcbItems));
         objectLogList.add(new ObjectLog("PCB item links", pcbItemItemLinks));
         objectLogList.add(new ObjectLog("PCB item project links", pcbItemProjectLinks));
@@ -56,7 +58,7 @@ public class CacheManager {
         objectLogList.add(new ObjectLog("Project item links", pcbItemProjectLinks));
         objectLogList.add(new ObjectLog("Sets", sets));
         objectLogList.add(new ObjectLog("Set item links", setItemLinks));
-        objectLogList.add(new ObjectLog("Pending orders", pendingOrders));
+        objectLogList.add(new ObjectLog("Pending itemOrders", pendingOrders));
         objectLogList.add(new ObjectLog("Created PCBs", createdPcbs));
         initTime = DateUtils.now();
     }
@@ -67,8 +69,10 @@ public class CacheManager {
     private final CacheList<Manufacturer> manufacturers = new CacheList<>();
     private final CacheList<Location> locations = new CacheList<>();
     private final CacheList<LocationType> locationTypes = new CacheList<>();
-    private final CacheList<Order> orders = new CacheList<>();
-    private final CacheList<OrderLine> orderLines = new CacheList<>();
+    private final CacheList<ItemOrder> itemOrders = new CacheList<>();
+    private final CacheList<ItemOrderLine> itemOrderLines = new CacheList<>();
+    private final CacheList<PcbOrder> pcbOrders = new CacheList<>();
+    private final CacheList<PcbOrderLine> pcbOrderLines = new CacheList<>();
     private final CacheList<Distributor> distributors = new CacheList<>();
     private final CacheList<DistributorPartLink> distributorPartLinks = new CacheList<>();
     private final CacheList<DistributorOrderFlow> distributorOrderFlows = new CacheList<>();
@@ -178,8 +182,8 @@ public class CacheManager {
         manufacturers.clear();
         locations.clear();
         locationTypes.clear();
-        orders.clear();
-        orderLines.clear();
+        itemOrders.clear();
+        itemOrderLines.clear();
         distributors.clear();
         distributorPartLinks.clear();
         packageTypes.clear();
@@ -326,41 +330,80 @@ public class CacheManager {
     }
 
 
-    public synchronized CacheList<Order> getOrders() {
-        if (!orders.isFetched()) {
+    public synchronized CacheList<ItemOrder> getItemOrders() {
+        if (!itemOrders.isFetched()) {
             long start = System.nanoTime();
-            orders.setList(db().fetchOrders(), (System.nanoTime() - start));
+            itemOrders.setList(db().fetchItemOrders(), (System.nanoTime() - start));
         }
-        return orders;
+        return itemOrders;
     }
 
-    public synchronized void add(Order element) {
-        if (!getOrders().contains(element)) {
-            orders.add(element);
+    public synchronized void add(ItemOrder element) {
+        if (!getItemOrders().contains(element)) {
+            itemOrders.add(element);
         }
     }
 
-    public synchronized void remove(Order element) {
-        getOrders().remove(element);
+    public synchronized void remove(ItemOrder element) {
+        getItemOrders().remove(element);
     }
 
 
-    public synchronized CacheList<OrderLine> getOrderLines() {
-        if (!orderLines.isFetched()) {
+    public synchronized CacheList<ItemOrderLine> getItemOrderLines() {
+        if (!itemOrderLines.isFetched()) {
             long start = System.nanoTime();
-            orderLines.setList(db().fetchOrderLines(), (System.nanoTime() - start));
+            itemOrderLines.setList(db().fetchItemOrderLines(), (System.nanoTime() - start));
         }
-        return orderLines;
+        return itemOrderLines;
     }
 
-    public synchronized void add(OrderLine element) {
-        if (!getOrderLines().contains(element)) {
-            orderLines.add(element);
+    public synchronized void add(ItemOrderLine element) {
+        if (!getItemOrderLines().contains(element)) {
+            itemOrderLines.add(element);
         }
     }
 
-    public synchronized void remove(OrderLine element) {
-        getOrderLines().remove(element);
+    public synchronized void remove(ItemOrderLine element) {
+        getItemOrderLines().remove(element);
+    }
+
+
+
+    public synchronized CacheList<PcbOrder> getPcbOrders() {
+        if (!pcbOrders.isFetched()) {
+            long start = System.nanoTime();
+            pcbOrders.setList(db().fetchPcbOrders(), (System.nanoTime() - start));
+        }
+        return pcbOrders;
+    }
+
+    public synchronized void add(PcbOrder element) {
+        if (!getPcbOrders().contains(element)) {
+            pcbOrders.add(element);
+        }
+    }
+
+    public synchronized void remove(PcbOrder element) {
+        getPcbOrders().remove(element);
+    }
+
+
+    public synchronized CacheList<PcbOrderLine> getPcbOrderLines() {
+        if (!pcbOrderLines.isFetched()) {
+            long start = System.nanoTime();
+            pcbOrderLines.setList(db().fetchPcbOrderLines(), (System.nanoTime() - start));
+        }
+        return pcbOrderLines;
+    }
+
+    public synchronized void add(PcbOrderLine element) {
+        if (!getPcbOrderLines().contains(element)) {
+            pcbOrderLines.add(element);
+        }
+    }
+
+    public synchronized void remove(PcbOrderLine element) {
+        getPcbOrderLines().remove(element);
     }
 
 

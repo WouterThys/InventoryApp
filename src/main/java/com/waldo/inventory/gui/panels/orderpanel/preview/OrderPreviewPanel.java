@@ -2,8 +2,8 @@ package com.waldo.inventory.gui.panels.orderpanel.preview;
 
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Distributor;
-import com.waldo.inventory.classes.dbclasses.Order;
-import com.waldo.inventory.classes.dbclasses.OrderLine;
+import com.waldo.inventory.classes.dbclasses.ItemOrder;
+import com.waldo.inventory.classes.dbclasses.ItemOrderLine;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.actions.IActions;
@@ -40,7 +40,7 @@ public class OrderPreviewPanel extends IPanel implements IdBToolBar.IdbToolBarLi
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private final Application application;
 
-    private Order selectedOrder;
+    private ItemOrder selectedItemOrder;
 
 
     /*
@@ -57,20 +57,20 @@ public class OrderPreviewPanel extends IPanel implements IdBToolBar.IdbToolBarLi
      *                  METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private void updateEnabledComponents() {
-        boolean orderSelected = selectedOrder != null;
-        boolean locked = orderSelected && selectedOrder.isLocked();
+        boolean orderSelected = selectedItemOrder != null;
+        boolean locked = orderSelected && selectedItemOrder.isLocked();
 
         orderTb.setEditActionEnabled(!locked);
         orderTb.setDeleteActionEnabled(!locked);
         orderDetailsAa.setEnabled(orderSelected);
     }
 
-    private void setDetails(Order order) {
-        if (order != null) {
-            totalItemsTf.setText(String.valueOf(order.getOrderLines().size()));
-            totalPriceTf.setText(String.valueOf(order.getTotalPrice()));
-            if (order.getDistributorId() > DbObject.UNKNOWN_ID) {
-                orderByTf.setText(order.getDistributor().toString());
+    private void setDetails(ItemOrder itemOrder) {
+        if (itemOrder != null) {
+            totalItemsTf.setText(String.valueOf(itemOrder.getItemOrderLines().size()));
+            totalPriceTf.setText(String.valueOf(itemOrder.getTotalPrice()));
+            if (itemOrder.getDistributorId() > DbObject.UNKNOWN_ID) {
+                orderByTf.setText(itemOrder.getDistributor().toString());
             } else {
                 orderByTf.setText("");
             }
@@ -78,35 +78,35 @@ public class OrderPreviewPanel extends IPanel implements IdBToolBar.IdbToolBarLi
     }
 
     public void addOrder() {
-        EditOrdersDialog dialog = new EditOrdersDialog(application, new Order(), null, true);
+        EditOrdersDialog dialog = new EditOrdersDialog(application, new ItemOrder(), null, true);
         dialog.showDialog();
     }
 
-    public void editOrder(Order order) {
-        if (order != null) {
-            Distributor distributor = order.getDistributor();
+    public void editOrder(ItemOrder itemOrder) {
+        if (itemOrder != null) {
+            Distributor distributor = itemOrder.getDistributor();
             EditOrdersDialog dialog;
             if (distributor != null) {
-                dialog = new EditOrdersDialog(application, order,distributor.getDistributorType(),  true);
+                dialog = new EditOrdersDialog(application, itemOrder,distributor.getDistributorType(),  true);
             } else {
-                dialog = new EditOrdersDialog(application, order, null, true);
+                dialog = new EditOrdersDialog(application, itemOrder, null, true);
             }
             dialog.showDialog();
         }
     }
 
-    public void deleteOrder(Order order) {
-        if (order != null && order.canBeSaved()) {
+    public void deleteOrder(ItemOrder itemOrder) {
+        if (itemOrder != null && itemOrder.canBeSaved()) {
             int res = JOptionPane.showConfirmDialog(
                     application,
-                    "Are you sure you want to delete \"" + order.getName() + "\"?");
+                    "Are you sure you want to delete \"" + itemOrder.getName() + "\"?");
             if (res == JOptionPane.OK_OPTION) {
                 SwingUtilities.invokeLater(() -> {
-                    List<OrderLine> orderItems = selectedOrder.getOrderLines();
-                    order.delete(); // Cascaded delete will delete order items too
+                    List<ItemOrderLine> orderItems = selectedItemOrder.getItemOrderLines();
+                    itemOrder.delete(); // Cascaded delete will delete itemOrder items too
 
                     // Do this after delete: items will not be updated in change listener for orders
-                    for (OrderLine orderItem : orderItems) {
+                    for (ItemOrderLine orderItem : orderItems) {
                         orderItem.updateOrderState();
                     }
                 });
@@ -114,10 +114,10 @@ public class OrderPreviewPanel extends IPanel implements IdBToolBar.IdbToolBarLi
         }
     }
 
-    public void viewOrderDetails(Order order) {
-        if (order != null && order.canBeSaved()) {
-            OrderDetailsCacheDialog dialog = new OrderDetailsCacheDialog(application, "Confirm receive", order); // TODO
-            if (order.isReceived()) {
+    public void viewOrderDetails(ItemOrder itemOrder) {
+        if (itemOrder != null && itemOrder.canBeSaved()) {
+            OrderDetailsCacheDialog dialog = new OrderDetailsCacheDialog(application, "Confirm receive", itemOrder); // TODO
+            if (itemOrder.isReceived()) {
                 dialog.showDialog(OrderDetailsCacheDialog.TAB_ORDER_DETAILS, null);
             } else {
                 dialog.showDialog();
@@ -144,7 +144,7 @@ public class OrderPreviewPanel extends IPanel implements IdBToolBar.IdbToolBarLi
     //
     @Override
     public void onToolBarRefresh(IdBToolBar source) {
-        setDetails(selectedOrder);
+        setDetails(selectedItemOrder);
     }
 
     @Override
@@ -154,12 +154,12 @@ public class OrderPreviewPanel extends IPanel implements IdBToolBar.IdbToolBarLi
 
     @Override
     public void onToolBarDelete(IdBToolBar source) {
-        deleteOrder(selectedOrder);
+        deleteOrder(selectedItemOrder);
     }
 
     @Override
     public void onToolBarEdit(IdBToolBar source) {
-        editOrder(selectedOrder);
+        editOrder(selectedItemOrder);
     }
 
     //
@@ -175,7 +175,7 @@ public class OrderPreviewPanel extends IPanel implements IdBToolBar.IdbToolBarLi
         orderDetailsAa = new AbstractAction("Details", imageResource.readIcon("Orders.Flow.Details")) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                viewOrderDetails(selectedOrder);
+                viewOrderDetails(selectedItemOrder);
             }
         };
         orderDetailsAa.putValue(AbstractAction.SHORT_DESCRIPTION, "Details");
@@ -216,7 +216,7 @@ public class OrderPreviewPanel extends IPanel implements IdBToolBar.IdbToolBarLi
 
         JPanel orderByPnl = new JPanel();
         gbc = new GuiUtils.GridBagHelper(orderByPnl);
-        gbc.addLine("Order by", imageResource.readIcon("Distributors.Menu"), orderByTf);
+        gbc.addLine("ItemOrder by", imageResource.readIcon("Distributors.Menu"), orderByTf);
 
         JPanel infoPnl = new JPanel();
         infoPnl.add(totalItemsPnl);
@@ -238,12 +238,12 @@ public class OrderPreviewPanel extends IPanel implements IdBToolBar.IdbToolBarLi
     @Override
     public void updateComponents(Object... args) {
         if (args.length == 0 || args[0] == null) {
-            selectedOrder = null;
+            selectedItemOrder = null;
         } else {
-            if (args[0] instanceof Order) {
-                selectedOrder = (Order) args[0];
+            if (args[0] instanceof ItemOrder) {
+                selectedItemOrder = (ItemOrder) args[0];
             }
-            setDetails(selectedOrder);
+            setDetails(selectedItemOrder);
             updateEnabledComponents();
         }
     }
