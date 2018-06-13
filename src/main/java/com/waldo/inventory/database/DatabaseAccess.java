@@ -35,18 +35,19 @@ public class DatabaseAccess {
     private static final String QUEUE_WORKER = "Queue worker";
     private static final String ERROR_WORKER = "Error worker";
 
-    // Db
+    // Singleton
     private static final DatabaseAccess INSTANCE = new DatabaseAccess();
-
     public static DatabaseAccess db() {
         return INSTANCE;
     }
 
-    private BasicDataSource dataSource;//MysqlDataSource dataSource;//BasicDataSource dataSource;
+    private BasicDataSource mainDataSource;
+
     private boolean initialized = false;
     private String loggedUser = "";
     private long cacheOnlyFakedId = 2;
 
+    // Main objects
     private DbQueue<DbQueueObject> workList;
     private DbQueue<DbErrorObject> nonoList;
     private DbQueueWorker dbQueueWorker;
@@ -76,10 +77,10 @@ public class DatabaseAccess {
                 }
 
                 // Test
-                initialized = testConnection(dataSource);
+                initialized = testConnection(mainDataSource);
                 switch (s.getDbType()) {
                     case Online:
-                        TableManager.dbTm().init(dataSource, s);
+                        TableManager.dbTm().init(mainDataSource, s);
                         Status().setDbConnectionText(initialized, s.getDbIp(), s.getDbName(), s.getDbUserName());
                         break;
                     case Local:
@@ -92,26 +93,27 @@ public class DatabaseAccess {
         }
     }
 
+
     private void initMySql(DbSettings settings) {
-        dataSource = new BasicDataSource(); // new MySqlDataSource
-        dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-        dataSource.setUrl(settings.createMySqlUrl() + "?zeroDateTimeBehavior=convertToNull&connectTimeout=5000&socketTimeout=30000");
-        dataSource.setUsername(settings.getDbUserName());
-        dataSource.setPassword(settings.getDbUserPw());
+        mainDataSource = new BasicDataSource(); // new MySqlDataSource
+        mainDataSource.setDriverClassName("com.mysql.jdbc.Driver");
+        mainDataSource.setUrl(settings.createMySqlUrl() + "?zeroDateTimeBehavior=convertToNull&connectTimeout=5000&socketTimeout=30000");
+        mainDataSource.setUsername(settings.getDbUserName());
+        mainDataSource.setPassword(settings.getDbUserPw());
         LOG.info("Database initialized with connection: " + settings.createMySqlUrl());
     }
 
     private void initSqLite(DbSettings settings) {
-        dataSource = new BasicDataSource();
-        dataSource.setDriverClassName("net.sf.log4jdbc.DriverSpy");
-        dataSource.setUrl("jdbc:log4jdbc:sqlite:" + settings.getDbName());
-        dataSource.setUsername(settings.getDbUserName());
-        dataSource.setPassword("");
-        dataSource.setMaxIdle(10);
-        dataSource.setPoolPreparedStatements(true);
-        dataSource.setLogAbandoned(false);
-        dataSource.setInitialSize(5);
-        dataSource.setRemoveAbandonedTimeout(60);
+        mainDataSource = new BasicDataSource();
+        mainDataSource.setDriverClassName("net.sf.log4jdbc.DriverSpy");
+        mainDataSource.setUrl("jdbc:log4jdbc:sqlite:" + settings.getDbName());
+        mainDataSource.setUsername(settings.getDbUserName());
+        mainDataSource.setPassword("");
+        mainDataSource.setMaxIdle(10);
+        mainDataSource.setPoolPreparedStatements(true);
+        mainDataSource.setLogAbandoned(false);
+        mainDataSource.setInitialSize(5);
+        mainDataSource.setRemoveAbandonedTimeout(60);
 
         String sql = "PRAGMA foreign_keys=ON;";
         try (Connection connection = getConnection()) {
@@ -129,7 +131,7 @@ public class DatabaseAccess {
         if (s != null) {
             if (!Main.CACHE_ONLY) {
                 // Test
-                initialized = testConnection(dataSource);
+                initialized = testConnection(mainDataSource);
                 Status().setDbConnectionText(initialized, s.getDbIp(), s.getDbName(), s.getDbUserName());
                 if (initialized) {
                     cache().clearCache();
@@ -156,7 +158,7 @@ public class DatabaseAccess {
         try (Connection connection = dataSource.getConnection()) {
             for (int i = 0; i < numberOfTables; i++) {
                 try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                    //String schemaName = dataSource.get();
+                    //String schemaName = mainDataSource.get();
 //                    stmt.setString(1, schemaName);
 //                    String tableName = scriptResource.readString("test.tableNames." + i);
 //                    stmt.setString(2, tableName);
@@ -216,7 +218,7 @@ public class DatabaseAccess {
 
 
     public void close() {
-        if (dataSource != null) {
+        if (mainDataSource != null) {
             Status().setMessage("Closing down");
             if (dbQueueWorker != null) {
                 dbQueueWorker.keepRunning = false;
@@ -239,8 +241,8 @@ public class DatabaseAccess {
     private void workerDone(String workerName) {
         System.out.println(workerName + " :thread done");
 //        try {
-//            if (dataSource != null) {
-//                dataSource.close();
+//            if (mainDataSource != null) {
+//                mainDataSource.close();
 //            }
 //        } catch (SQLException e) {
 //            e.printStackTrace();
@@ -423,12 +425,12 @@ public class DatabaseAccess {
      *                  GETTERS - SETTERS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-    private BasicDataSource getDataSource() {
-        return dataSource;
+    private BasicDataSource getMainDataSource() {
+        return mainDataSource;
     }
 
     public static Connection getConnection() throws SQLException {
-        return db().getDataSource().getConnection();
+        return db().getMainDataSource().getConnection();
     }
 
     public boolean isInitialized() {
@@ -436,6 +438,9 @@ public class DatabaseAccess {
     }
 
 
+    /*
+     *                  METHODS
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     public void insert(final DbObject object) {
         object.getAud().setInserted(loggedUser);
         if (!Main.CACHE_ONLY) {
@@ -502,6 +507,9 @@ public class DatabaseAccess {
     }
 
 
+    /*
+     *                  FETCH DATA
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     public List<Item> fetchItems() {
         List<Item> items = new ArrayList<>();
         if (Main.CACHE_ONLY) {
