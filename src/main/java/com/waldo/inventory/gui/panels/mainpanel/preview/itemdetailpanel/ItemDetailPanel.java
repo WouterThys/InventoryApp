@@ -30,8 +30,8 @@ public class ItemDetailPanel extends ItemDetailPanelLayout {
                 selectedItem = (Item) object[0];
                 selectedItemOrderLine = null;
             } else {
-                selectedItemOrderLine = (ItemOrderLine) object[0];
-                selectedItem = selectedItemOrderLine.getItem();
+//                selectedItemOrderLine = (ItemOrderLine) object[0];
+//                selectedItem = selectedItemOrderLine.getItem();
             }
             updateHeader(selectedItem);
             updateData(selectedItem, selectedItemOrderLine);

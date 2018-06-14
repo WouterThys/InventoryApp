@@ -37,11 +37,11 @@ public class OrderDetailsCacheDialog extends OrderDetailsCacheDialogLayout imple
         if (itemOrder.isReceived() && itemOrder.getDistributorType() == Statics.DistributorType.Items) {
             // Find items without location
             List<Item> itemsWithoutLocation = new ArrayList<>();
-            for (ItemOrderLine oi : itemOrder.getItemOrderLines()) {
-                if ((oi.getItem().getLocationId() <= DbObject.UNKNOWN_ID)) {
-                    itemsWithoutLocation.add(oi.getItem());
-                }
-            }
+//            for (ItemOrderLine oi : itemOrder.getItemOrderLines()) {
+//                if ((oi.getItem().getLocationId() <= DbObject.UNKNOWN_ID)) {
+//                    itemsWithoutLocation.add(oi.getItem());
+//                }
+//            }
 
             // There are items without location -> ask to set them
             if (itemsWithoutLocation.size() > 0) {
@@ -112,12 +112,12 @@ public class OrderDetailsCacheDialog extends OrderDetailsCacheDialogLayout imple
 
     private String createOrderText(ItemOrder itemOrder) {
         StringBuilder builder = new StringBuilder();
-        for (ItemOrderLine orderItem : itemOrder.getItemOrderLines()) {
-            builder.append(orderItem.getDistributorPartLink().getReference());
-            builder.append(itemOrder.getDistributor().getOrderFileFormat().getSeparator());
-            builder.append(orderItem.getAmount());
-            builder.append("\n");
-        }
+//        for (ItemOrderLine orderItem : itemOrder.getItemOrderLines()) {
+//            builder.append(orderItem.getDistributorPartLink().getReference());
+//            builder.append(itemOrder.getDistributor().getOrderFileFormat().getSeparator());
+//            builder.append(orderItem.getAmount());
+//            builder.append("\n");
+//        }
         return builder.toString();
     }
 

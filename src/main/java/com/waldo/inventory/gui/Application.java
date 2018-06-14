@@ -6,7 +6,6 @@ import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.Utils.resource.ImageResource;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
-import com.waldo.inventory.classes.dbclasses.ItemOrder;
 import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.database.interfaces.DbErrorListener;
 import com.waldo.inventory.gui.dialogs.SelectDataSheetDialog;
@@ -14,7 +13,7 @@ import com.waldo.inventory.gui.dialogs.addtoorderdialog.AddToOrderDialog;
 import com.waldo.inventory.gui.dialogs.historydialog.HistoryDialog;
 import com.waldo.inventory.gui.dialogs.settingsdialog.SettingsCacheDialog;
 import com.waldo.inventory.gui.panels.mainpanel.MainPanel;
-import com.waldo.inventory.gui.panels.orderpanel.OrderPanel;
+import com.waldo.inventory.gui.panels.orderpanel.ItemOrderPanel;
 import com.waldo.inventory.gui.panels.projectspanel.ProjectsPanel;
 import com.waldo.inventory.managers.ErrorManager;
 import com.waldo.inventory.managers.LogManager;
@@ -30,7 +29,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
@@ -49,7 +47,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
     public static ResourceManager colorResource;
 
     private JTabbedPane tabbedPane;
-    private OrderPanel orderPanel;
+    private ItemOrderPanel itemOrderPanel;
 
     public Application(String startUpPath) {
         Application.startUpPath = startUpPath;
@@ -145,50 +143,20 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
         // Main view
         // - Create components
         MainPanel mainPanel = new MainPanel(this);
-        orderPanel = new OrderPanel(this);
+        itemOrderPanel = new ItemOrderPanel(this);
         ProjectsPanel projectPanel = new ProjectsPanel(this);
 
         tabbedPane = new JTabbedPane();
         tabbedPane.addChangeListener(this);
         //  - Add tabs
         tabbedPane.addTab("Components ", imageResource.readIcon("MainTab.Components"), mainPanel, "Components");
-        tabbedPane.addTab("Orders ", imageResource.readIcon("MainTab.Orders"), orderPanel, "Orders");
+        tabbedPane.addTab("Orders ", imageResource.readIcon("MainTab.Orders"), itemOrderPanel, "Orders");
         tabbedPane.addTab("Projects ", imageResource.readIcon("MainTab.Projects"), projectPanel, "Projects");
         // - Add to main view
         add(tabbedPane, BorderLayout.CENTER);
 
         Status().setMessage("Ready");
         Status().updateConnectionStatus();
-    }
-
-    public void addItemsToOrder(List<Item> itemsToOrder, ItemOrder itemOrder) {
-        Application.beginWait(Application.this);
-        try {
-            // Switch tab
-            setSelectedTab(TAB_ORDERS);
-            // Update items
-            for (Item item : itemsToOrder) {
-                item.updateOrderState();
-                //item.save();
-            }
-        } finally {
-            endWait(this);
-        }
-        // Add
-        Map<String, Item> failedItems = itemOrder.addItemsToOrder(itemsToOrder);//orderPanel.addItemsToOrder(itemsToOrder, itemOrder);
-        if (failedItems != null && failedItems.size() > 0) {
-            StringBuilder builder = new StringBuilder();
-            for (String er : failedItems.keySet()) {
-                builder.append(er).append("\n");
-            }
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Failed to itemOrder: \n " + builder.toString(),
-                    "ItemOrder error",
-                    JOptionPane.ERROR_MESSAGE
-            );
-        }
     }
 
     public static boolean isUpdating(Component component) {

@@ -121,7 +121,7 @@ abstract class PcbItemDetailsDialogLayout extends ICacheDialog implements IEdite
                 updateMatchedItemPanel(itemLink.getLinkedItemName(), itemLink.getLinkedItemAmount());
             }
             if (pcbItem.getOrderItem() != null) {
-                orderTf.setText(pcbItem.getOrderItem().getItemOrder().toString());
+               // orderTf.setText(pcbItem.getOrderItem().getItemOrder().toString());
             }
         }
     }

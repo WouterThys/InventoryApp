@@ -9,6 +9,7 @@ import com.waldo.inventory.gui.components.wrappers.SelectableTableItem;
 import com.waldo.inventory.gui.dialogs.advancedsearchdialog.AdvancedSearchDialog;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 import com.waldo.inventory.gui.dialogs.ordersearchitemdialog.orderitemwizarddialog.OrderItemWizardDialog;
+import com.waldo.inventory.managers.OrderManager;
 import com.waldo.utils.icomponents.IDialog;
 
 import javax.swing.*;
@@ -55,7 +56,7 @@ public class OrderSearchItemsDialog extends OrderSearchItemsDialogLayout {
         }
 
 
-        ((Application) parent).addItemsToOrder(getSelectedItems(), selectedItemOrder);
+        OrderManager.addItemsToOrder(getSelectedItems(), selectedItemOrder);
         super.onOK();
     }
 

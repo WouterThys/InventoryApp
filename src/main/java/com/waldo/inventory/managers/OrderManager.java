@@ -30,20 +30,65 @@ public class OrderManager {
     // ...
     // ...
 
+    // Creating orders
+    public static ItemOrder createNewItemOrder(String name) {
+        ItemOrder order = null;
+        if (SearchManager.sm().findItemOrderByName(name) == null) {
+            order = new ItemOrder(name);
+            order.save();
+        }
+        return order;
+    }
 
-    //
-    // STATIC METHODS
-    //
+    public static PcbOrder createNewPcbOrder(String name) {
+        PcbOrder order = null;
+        if (SearchManager.sm().findPcbOrderByName(name) == null) {
+            order = new PcbOrder(name);
+            order.save();
+        }
+        return order;
+    }
 
-    static int autoOrderItemCnt = 0;
+
+    public static <T extends Orderable> void addLineToOrder(T line, AbstractOrder<T> order) {
+        if (line != null && order != null) {
+            ArrayList<T> list = new ArrayList<>();
+            list.add(line);
+            addItemsToOrder(list, order);
+        }
+    }
+
+
+    public static <T extends Orderable> void addItemsToOrder(List<T> linesToOrder, AbstractOrder<T> order) {
+        if (linesToOrder != null && order != null) {
+            List<T> list = new ArrayList<>();
+            // Update items
+            for (T line : linesToOrder) {
+                if (!order.containsOrderLineFor(line)) {
+                    list.add(line);
+                }
+            }
+
+            LOG.info("Auto ordering " + list.size() + " items for " + order);
+
+            // Add
+            for (T line : list) {
+                AbstractOrderLine orderLine = line.createOrderLine(order);
+                orderLine.save();
+            }
+        }
+    }
+
+
+
+
+
+    // Auto orders
     public static synchronized void autoOrderItem(final Item item) {
         if (item != null && settings().getGeneralSettings().isAutoOrderEnabled() && item.isAutoOrder()) {
             if ((!item.getOrderState().equals(Statics.OrderStates.Planned)) && (item.getAutoOrderById() > DbObject.UNKNOWN_ID)) {
 
                 item.setOrderState(Statics.OrderStates.Planned);
-
-                autoOrderItemCnt++;
-                System.out.println("autoOrderItem() " + autoOrderItemCnt);
 
                 Distributor autoOrderBy = item.getAutoOrderBy();
                 ItemOrder autoItemOrder = null;
@@ -72,15 +117,12 @@ public class OrderManager {
         }
     }
 
-    static int doAutoOrderCnt;
     public static synchronized void doAutoOrder(ItemOrder autoItemOrder) {
         if (autoItemOrder != null) {
 
             List<Item> itemList = autoItemOrder.takeAutoOrderItems();
 
             if (itemList.size() > 0) {
-                doAutoOrderCnt++;
-                System.out.println("doAutoOrderCnt() " + doAutoOrderCnt);
 
                 // Replaced?
                 for (int i = 0; i < itemList.size(); i++) {
@@ -101,14 +143,14 @@ public class OrderManager {
         boolean result = false;
         if (itemOrder != null && itemOrder.canBeSaved() && !itemOrder.isOrdered()) {
             // Check
-            if (validateOrderLines(itemOrder)) {
+            //if (validateOrderLines(itemOrder)) {
                 // Do itemOrder
                 itemOrder.setDateOrdered(DateUtils.now());
                 itemOrder.setLocked(true);
                 itemOrder.updateLineStates();
                 itemOrder.save();
                 result = true;
-            }
+            //}
         }
         return result;
     }
@@ -147,66 +189,5 @@ public class OrderManager {
         }
     }
 
-    private static boolean validateOrderLines(ItemOrder itemOrder) {
-        List<String> errors = checkOrder(itemOrder);
-        if (errors.size() > 0) {
-            return false;
-        }
-        return true;
-    }
 
-    private static List<String> checkOrder(ItemOrder itemOrder) {
-        List<String> errorList = new ArrayList<>();
-
-        if (itemOrder == null) {
-            errorList.add(" - No itemOrder selected..");
-        } else {
-            if (itemOrder.getDistributor() == null) {
-                errorList.add(" - ItemOrder had no distributor..");
-            } else {
-                if (itemOrder.getDistributor().getOrderFileFormat() != null && !itemOrder.getDistributor().getOrderFileFormat().isUnknown()) {
-
-                    if (itemOrder.getItemOrderLines().size() < 1) {
-                        errorList.add(" - ItemOrder has no items..");
-                    } else {
-                        List<ItemOrderLine> errorItems = itemOrder.missingOrderReferences();
-                        if (errorItems.size() > 0) {
-                            errorList.add(" - Next itemOrder items have no reference: ");
-                            for (ItemOrderLine oi : errorItems) {
-                                errorList.add(" \t * " + oi.getName());
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return errorList;
-    }
-
-
-
-    public static void addItemToOrder(Item item, ItemOrder itemOrder) {
-        ArrayList<Item> items = new ArrayList<>();
-        items.add(item);
-        addItemsToOrder(items, itemOrder);
-    }
-
-    static int addItemsToOrderCnt;
-    public static void addItemsToOrder(List<Item> itemsToOrder, ItemOrder itemOrder) {
-        List<Item> list = new ArrayList<>();
-        // Update items
-        for (Item item : itemsToOrder) {
-            if (itemOrder.findOrderLineFor(item) == null) {
-                list.add(item);
-            }
-        }
-
-        LOG.info("Auto ordering " + list.size() + " items for " + itemOrder);
-
-        addItemsToOrderCnt++;
-        System.out.println("addItemsToOrderCnt() " + addItemsToOrderCnt);
-
-        // Add
-        itemOrder.addItemsToOrder(list);
-    }
 }

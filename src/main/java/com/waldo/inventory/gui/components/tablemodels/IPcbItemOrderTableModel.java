@@ -17,14 +17,14 @@ public class IPcbItemOrderTableModel extends IAbstractTableModel<ItemOrderLine> 
         ItemOrderLine orderItem = getItemAt(rowIndex);
         if (orderItem != null) {
             switch (columnIndex) {
-                case -1: // Reference to object itself
-                    return orderItem;
-                case 0: // ItemOrder name
-                    return orderItem.getItemOrder().getName();
-                case 1: // Item name
-                    return orderItem.getItem().toString();
-                case 2: // Amount
-                    return orderItem.getAmount();
+//                case -1: // Reference to object itself
+//                    return orderItem;
+//                case 0: // ItemOrder name
+//                    return orderItem.getItemOrder().getName();
+//                case 1: // Item name
+//                    return orderItem.getItem().toString();
+//                case 2: // Amount
+//                    return orderItem.getAmount();
             }
         }
         return null;

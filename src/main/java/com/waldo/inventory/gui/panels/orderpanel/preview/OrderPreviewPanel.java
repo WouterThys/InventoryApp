@@ -1,9 +1,7 @@
 package com.waldo.inventory.gui.panels.orderpanel.preview;
 
-import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Distributor;
 import com.waldo.inventory.classes.dbclasses.ItemOrder;
-import com.waldo.inventory.classes.dbclasses.ItemOrderLine;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.actions.IActions;
@@ -18,7 +16,6 @@ import com.waldo.utils.icomponents.ITextField;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
@@ -67,13 +64,13 @@ public class OrderPreviewPanel extends IPanel implements IdBToolBar.IdbToolBarLi
 
     private void setDetails(ItemOrder itemOrder) {
         if (itemOrder != null) {
-            totalItemsTf.setText(String.valueOf(itemOrder.getItemOrderLines().size()));
-            totalPriceTf.setText(String.valueOf(itemOrder.getTotalPrice()));
-            if (itemOrder.getDistributorId() > DbObject.UNKNOWN_ID) {
-                orderByTf.setText(itemOrder.getDistributor().toString());
-            } else {
-                orderByTf.setText("");
-            }
+//            totalItemsTf.setText(String.valueOf(itemOrder.getItemOrderLines().size()));
+//            totalPriceTf.setText(String.valueOf(itemOrder.getTotalPrice()));
+//            if (itemOrder.getDistributorId() > DbObject.UNKNOWN_ID) {
+//                orderByTf.setText(itemOrder.getDistributor().toString());
+//            } else {
+//                orderByTf.setText("");
+//            }
         }
     }
 
@@ -102,13 +99,13 @@ public class OrderPreviewPanel extends IPanel implements IdBToolBar.IdbToolBarLi
                     "Are you sure you want to delete \"" + itemOrder.getName() + "\"?");
             if (res == JOptionPane.OK_OPTION) {
                 SwingUtilities.invokeLater(() -> {
-                    List<ItemOrderLine> orderItems = selectedItemOrder.getItemOrderLines();
-                    itemOrder.delete(); // Cascaded delete will delete itemOrder items too
-
-                    // Do this after delete: items will not be updated in change listener for orders
-                    for (ItemOrderLine orderItem : orderItems) {
-                        orderItem.updateOrderState();
-                    }
+//                    List<ItemOrderLine> orderItems = selectedItemOrder.getItemOrderLines();
+//                    itemOrder.delete(); // Cascaded delete will delete itemOrder items too
+//
+//                    // Do this after delete: items will not be updated in change listener for orders
+//                    for (ItemOrderLine orderItem : orderItems) {
+//                        orderItem.updateOrderState();
+//                    }
                 });
             }
         }

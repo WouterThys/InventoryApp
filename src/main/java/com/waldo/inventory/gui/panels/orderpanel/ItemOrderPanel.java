@@ -5,16 +5,11 @@ import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IdBToolBar;
-import com.waldo.inventory.gui.components.popups.OrderLinePopup;
-import com.waldo.inventory.gui.components.popups.OrderPopup;
 import com.waldo.inventory.gui.components.tablemodels.IOrderLineTableModel;
-import com.waldo.inventory.gui.dialogs.editdistributorpartlinkdialog.EditDistributorPartLinkDialog;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 import com.waldo.inventory.gui.dialogs.editreceiveditemlocationdialog.EditReceivedItemsLocationDialog;
-import com.waldo.inventory.gui.dialogs.ordersearchitemdialog.OrderSearchItemsDialog;
 import com.waldo.inventory.managers.OrderManager;
 import com.waldo.inventory.managers.SearchManager;
-import com.waldo.utils.icomponents.IDialog;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -29,14 +24,30 @@ import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.managers.CacheManager.cache;
 import static com.waldo.inventory.managers.SearchManager.sm;
 
-public class OrderPanel extends OrderPanelLayout {
+public class ItemOrderPanel extends ItemOrderPanelLayout {
+
+
+    @Override
+    public void onSetOrderItemAmount(AbstractOrderLine line, int amount) {
+
+    }
+
+    @Override
+    public void onEditReference(AbstractOrderLine line) {
+
+    }
+
+    @Override
+    public void onEditPrice(AbstractOrderLine line) {
+
+    }
 
     private CacheChangedListener<Item> itemsChanged;
-    private CacheChangedListener<ItemOrder> ordersChanged;
-    private CacheChangedListener<ItemOrderLine> orderLinesChanged;
+    private CacheChangedListener<ItemOrder> itemOrdersChanged;
+    private CacheChangedListener<ItemOrderLine> itemOrderLinesChanged;
     private CacheChangedListener<DistributorPartLink> partNumbersChanged;
 
-    public OrderPanel(Application application) {
+    public ItemOrderPanel(Application application) {
         super(application);
 
         initializeComponents();
@@ -44,15 +55,15 @@ public class OrderPanel extends OrderPanelLayout {
         initializeListeners();
 
         cache().addListener(Item.class, itemsChanged);
-        cache().addListener(ItemOrder.class, ordersChanged);
-        cache().addListener(ItemOrderLine.class, orderLinesChanged);
+        cache().addListener(ItemOrder.class, itemOrdersChanged);
+        cache().addListener(ItemOrderLine.class, itemOrderLinesChanged);
         cache().addListener(DistributorPartLink.class, partNumbersChanged);
 
         updateComponents();
     }
 
-    private ItemOrderLine getSelectedOrderLine() {
-        return selectedItemOrderLine;
+    private AbstractOrderLine getSelectedOrderLine() {
+        return selectedOrderLine;
     }
 
     public IOrderLineTableModel getTableModel() {
@@ -61,30 +72,30 @@ public class OrderPanel extends OrderPanelLayout {
 
 
     private void deleteSelectedOrderItems(final List<ItemOrderLine> itemsToDelete) {
-        if (selectedItemOrder == null) {
+        if (selectedOrder == null) {
             return;
         }
 
         int result = JOptionPane.CANCEL_OPTION;
         if (itemsToDelete.size() == 1) {
             result = JOptionPane.showConfirmDialog(
-                    OrderPanel.this,
+                    ItemOrderPanel.this,
                     "Are you sure you want to delete " + itemsToDelete.get(0).getName() + "?",
                     "Confirm delete",
                     JOptionPane.YES_NO_OPTION);
         } else if (itemsToDelete.size() > 1) {
             result = JOptionPane.showConfirmDialog(
-                    OrderPanel.this,
+                    ItemOrderPanel.this,
                     "Are you sure you want to delete " + itemsToDelete.size() + " items?",
                     "Confirm delete",
                     JOptionPane.YES_NO_OPTION);
         }
         if (result == JOptionPane.OK_OPTION) {
             for (ItemOrderLine item : itemsToDelete) {
-                selectedItemOrder.removeOrderLine(item);
+                selectedOrder.removeOrderLine(item);
             }
-            selectedItemOrderLine = null;
-            selectedItemOrder.save(); // This will fire the onOrderItemsChanged -> order updated
+            selectedOrderLine = null;
+            selectedOrder.save(); // This will fire the onOrderItemsChanged -> order updated
         }
 
     }
@@ -105,12 +116,12 @@ public class OrderPanel extends OrderPanelLayout {
 
             @Override
             public void onUpdated(Item newItem) {
-                if (selectedItemOrder != null) {
-                    if (selectedItemOrder.containsOrderLineFor(newItem)) { // when new items are added, this should be false
+                if (selectedOrder != null) {
+                    if (selectedOrder.containsOrderLineFor(newItem)) { // when new items are added, this should be false
                         tableUpdate();
                     }
-                    if (selectedItemOrderLine != null) {
-                        detailPanel.updateComponents(selectedItemOrderLine);
+                    if (selectedOrderLine != null) {
+                        detailPanel.updateComponents(selectedOrderLine);
                     }
                 }
             }
@@ -127,21 +138,21 @@ public class OrderPanel extends OrderPanelLayout {
     }
 
     private void setOrdersChangedListener() {
-        ordersChanged = new CacheChangedListener<ItemOrder>() {
+        itemOrdersChanged = new CacheChangedListener<ItemOrder>() {
             @Override
             public void onInserted(ItemOrder itemOrder) {
-                selectedItemOrder = itemOrder;
-                selectedItemOrderLine = null;
+                selectedOrder = itemOrder;
+                selectedOrderLine = null;
 
                 tableInitialize(itemOrder);
-                tableSelectOrderItem(selectedItemOrderLine);
+                tableSelectOrderItem(selectedOrderLine);
                 ordersTree.addItem(itemOrder);
 
                 final long orderId = treeUpdate();
 
                 SwingUtilities.invokeLater(() -> {
-                    selectedItemOrder = SearchManager.sm().findItemOrderById(orderId);
-                    treeSelectOrder(selectedItemOrder);
+                    selectedOrder = SearchManager.sm().findItemOrderById(orderId);
+                    //treeSelectOrder(selectedOrder);
 
                     updateVisibleComponents();
                     updateEnabledComponents();
@@ -151,36 +162,29 @@ public class OrderPanel extends OrderPanelLayout {
 
             @Override
             public void onUpdated(ItemOrder newItemOrder) {
-                selectedItemOrder = newItemOrder;
+                selectedOrder = newItemOrder;
 
-                tableSelectOrderItem(selectedItemOrderLine); // When deleted, this should be null
+                tableSelectOrderItem(selectedOrderLine); // When deleted, this should be null
                 final long orderId = newItemOrder.getId();
                 treeReload();
 
                 SwingUtilities.invokeLater(() -> {
-                    selectedItemOrder = SearchManager.sm().findItemOrderById(orderId);
-                    treeSelectOrder(selectedItemOrder);
+                    selectedOrder = SearchManager.sm().findItemOrderById(orderId);
+                    //treeSelectOrder(selectedOrder);
 
                     updateVisibleComponents();
                     updateEnabledComponents();
 
-                    if (selectedItemOrder.isReceived()) {
-                        switch (selectedItemOrder.getDistributorType()) {
-                            case Items:
-                                checkOrderedItemsLocations(selectedItemOrder);
-                                break;
-                            case Pcbs:
-                                checkOrderedPcbs(selectedItemOrder);
-                                break;
-                        }
+                    if (selectedOrder.isReceived()) {
+                        //checkOrderedItemsLocations(selectedOrder);
                     }
                 });
             }
 
             @Override
             public void onDeleted(ItemOrder itemOrder) {
-                selectedItemOrder = null;
-                selectedItemOrderLine = null;
+                selectedOrder = null;
+                selectedOrderLine = null;
 
                 tableClear();
                 tableSelectOrderItem(null);
@@ -192,12 +196,12 @@ public class OrderPanel extends OrderPanelLayout {
 
             @Override
             public void onCacheCleared() {
-                tableSelectOrderItem(selectedItemOrderLine); // When deleted, this should be null
+                tableSelectOrderItem(selectedOrderLine); // When deleted, this should be null
                 final long orderId = treeUpdate();
 
                 SwingUtilities.invokeLater(() -> {
-                    selectedItemOrder = SearchManager.sm().findItemOrderById(orderId);
-                    treeSelectOrder(selectedItemOrder);
+                    selectedOrder = SearchManager.sm().findItemOrderById(orderId);
+                    //treeSelectOrder(selectedOrder);
 
                     updateVisibleComponents();
                     updateEnabledComponents();
@@ -207,20 +211,20 @@ public class OrderPanel extends OrderPanelLayout {
     }
 
     private void setOrderItemsChangedListener() {
-        orderLinesChanged = new CacheChangedListener<ItemOrderLine>() {
+        itemOrderLinesChanged = new CacheChangedListener<ItemOrderLine>() {
             @Override
             public void onInserted(ItemOrderLine itemOrderLine) {
                 ItemOrder itemOrder = sm().findItemOrderById(itemOrderLine.getOrderId());
                 itemOrder.addOrderLine(itemOrderLine);
                 // Update table
-                selectedItemOrder = itemOrder;
-                tableInitialize(selectedItemOrder);
-                treeSelectOrder(selectedItemOrder);
+                selectedOrder = itemOrder;
+                tableInitialize(selectedOrder);
+                //treeSelectOrder(selectedOrder);
 
                 // Select and highlight in table
                 SwingUtilities.invokeLater(() -> {
-                    selectedItemOrderLine = itemOrderLine;
-                    tableAddOrderItem(selectedItemOrderLine);
+                    selectedOrderLine = itemOrderLine;
+                    tableAddOrderItem(selectedOrderLine);
                     tableSelectOrderItem(itemOrderLine);
 
                     // Update stuff
@@ -231,15 +235,15 @@ public class OrderPanel extends OrderPanelLayout {
 
             @Override
             public void onUpdated(ItemOrderLine itemOrderLine) {
-                selectedItemOrder = sm().findItemOrderById(itemOrderLine.getOrderId());
-                selectedItemOrderLine = itemOrderLine;
+                selectedOrder = sm().findItemOrderById(itemOrderLine.getOrderId());
+                selectedOrderLine = itemOrderLine;
 
                 final long orderItemId = tableUpdate();
 
                 SwingUtilities.invokeLater(() -> {
-                    selectedItemOrderLine = SearchManager.sm().findItemOrderLineById(orderItemId);
-                    tableSelectOrderItem(selectedItemOrderLine);
-                    treeSelectOrder(selectedItemOrder);
+                    selectedOrderLine = SearchManager.sm().findItemOrderLineById(orderItemId);
+                    tableSelectOrderItem(selectedOrderLine);
+                    //treeSelectOrder(selectedOrder);
 
                     updateVisibleComponents();
                     updateEnabledComponents();
@@ -261,14 +265,14 @@ public class OrderPanel extends OrderPanelLayout {
         partNumbersChanged = new CacheChangedListener<DistributorPartLink>() {
             @Override
             public void onInserted(DistributorPartLink distributorPartLink) {
-                if (selectedItemOrder != null) {
+                if (selectedOrder != null) {
                     tableUpdate();
                 }
             }
 
             @Override
             public void onUpdated(DistributorPartLink newDistributorPartLink) {
-                if (selectedItemOrder != null) {
+                if (selectedOrder != null) {
                     tableUpdate();
                 }
             }
@@ -288,11 +292,11 @@ public class OrderPanel extends OrderPanelLayout {
         if (itemOrder.isReceived() && itemOrder.getDistributorType() == DistributorType.Items) {
             // Find items without location
             List<Item> itemsWithoutLocation = new ArrayList<>();
-            for (ItemOrderLine oi : itemOrder.getItemOrderLines()) {
-                if ((oi.getItem().getLocationId() <= DbObject.UNKNOWN_ID)) {
-                    itemsWithoutLocation.add(oi.getItem());
-                }
-            }
+//            for (ItemOrderLine oi : itemOrder.getItemOrderLines()) {
+//                if ((oi.getItem().getLocationId() <= DbObject.UNKNOWN_ID)) {
+//                    itemsWithoutLocation.add(oi.getItem());
+//                }
+//            }
 
             // There are items without location -> ask to set them
             if (itemsWithoutLocation.size() > 0) {
@@ -312,49 +316,24 @@ public class OrderPanel extends OrderPanelLayout {
         }
     }
 
-    private void checkOrderedPcbs(ItemOrder itemOrder) {
-        if (itemOrder.isReceived() && itemOrder.getDistributorType() == DistributorType.Pcbs) {
-            for (ItemOrderLine itemOrderLine : itemOrder.getItemOrderLines()) {
-                ProjectPcb pcb = itemOrderLine.getPcb();
-                if (pcb != null) {
-                    List<CreatedPcb> createdPcbs = SearchManager.sm().findCreatedPcbsByPcbAndOrder(pcb.getId(), itemOrder.getId());
-                    if (createdPcbs.size() == 0) {
-                        for (int i = 0; i < itemOrderLine.getAmount(); i++) {
-                            CreatedPcb createdPcb = new CreatedPcb(itemOrderLine.getName() + i, pcb, itemOrder);
-                            createdPcb.setDateCreated(itemOrder.getDateReceived());
-                            createdPcb.save();
-                        }
-
-                        JOptionPane.showMessageDialog(
-                                OrderPanel.this,
-                                "Created " + itemOrderLine.getAmount() + " pcbs!",
-                                "Pcb's created",
-                                JOptionPane.INFORMATION_MESSAGE
-                        );
-                    }
-                }
-            }
-        }
-    }
-
 
     //
     // Actions
     //
-    @Override
-    public void onSetOrderItemAmount(ItemOrderLine line, int amount) {
-        ItemOrder itemOrder = getSelectedItemOrder();
-        if (itemOrder != null && itemOrder.canBeSaved() && (itemOrder.isPlanned() || !itemOrder.isLocked())) {
-            if (line != null) {
-                line.setAmount(amount);
-                line.save();
-            }
-        }
-    }
+//    @Override
+//    public void onSetOrderItemAmount(ItemOrderLine line, int amount) {
+//        ItemOrder itemOrder = getSelectedOrder();
+//        if (itemOrder != null && itemOrder.canBeSaved() && (itemOrder.isPlanned() || !itemOrder.isLocked())) {
+//            if (line != null) {
+//                line.setAmount(amount);
+//                line.save();
+//            }
+//        }
+//    }
 
     @Override
     void onMoveToOrdered(ItemOrder itemOrder) {
-        Application.beginWait(OrderPanel.this);
+        Application.beginWait(ItemOrderPanel.this);
         try {
             if (OrderManager.moveToOrdered(itemOrder)) {
                 int res = JOptionPane.showConfirmDialog(
@@ -378,17 +357,17 @@ public class OrderPanel extends OrderPanelLayout {
                 }
             }
         } finally {
-            Application.endWait(OrderPanel.this);
+            Application.endWait(ItemOrderPanel.this);
         }
     }
 
     @Override
     void onMoveToReceived(ItemOrder itemOrder) {
-        Application.beginWait(OrderPanel.this);
+        Application.beginWait(ItemOrderPanel.this);
         try {
             OrderManager.moveToReceived(itemOrder);
         } finally {
-            Application.endWait(OrderPanel.this);
+            Application.endWait(ItemOrderPanel.this);
         }
     }
 
@@ -396,18 +375,18 @@ public class OrderPanel extends OrderPanelLayout {
     void onBackToOrdered(ItemOrder itemOrder) {
         if (itemOrder != null && itemOrder.canBeSaved() && itemOrder.isReceived()) {
             int res = JOptionPane.showConfirmDialog(
-                    OrderPanel.this,
+                    ItemOrderPanel.this,
                     "Are you sure you want to move the itemOrder back to the \"Ordered\" tab?",
                     "Back to ordered",
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.QUESTION_MESSAGE
             );
             if (res == JOptionPane.YES_OPTION) {
-                Application.beginWait(OrderPanel.this);
+                Application.beginWait(ItemOrderPanel.this);
                 try {
                     OrderManager.backToOrdered(itemOrder);
                 } finally {
-                    Application.endWait(OrderPanel.this);
+                    Application.endWait(ItemOrderPanel.this);
                 }
             }
         }
@@ -417,18 +396,18 @@ public class OrderPanel extends OrderPanelLayout {
     void onBackToPlanned(ItemOrder itemOrder) {
         if (itemOrder != null && itemOrder.canBeSaved() && itemOrder.isOrdered()) {
             int res = JOptionPane.showConfirmDialog(
-                    OrderPanel.this,
+                    ItemOrderPanel.this,
                     "Are you sure you want to move the itemOrder back to the \"Planned\" tab?",
                     "Back to planned",
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.QUESTION_MESSAGE
             );
             if (res == JOptionPane.YES_OPTION) {
-                Application.beginWait(OrderPanel.this);
+                Application.beginWait(ItemOrderPanel.this);
                 try {
                     OrderManager.backToPlanned(itemOrder);
                 } finally {
-                    Application.endWait(OrderPanel.this);
+                    Application.endWait(ItemOrderPanel.this);
                 }
             }
         }
@@ -444,17 +423,17 @@ public class OrderPanel extends OrderPanelLayout {
 
     @Override
     void onDeleteOrderItem(ItemOrderLine orderItem) {
-        if (orderItem != null && selectedItemOrder != null) {
+        if (orderItem != null && selectedOrder != null) {
 
             int res = JOptionPane.showConfirmDialog(
-                    OrderPanel.this,
+                    ItemOrderPanel.this,
                     "Are you sure you want to delete " + orderItem.getName() + "?",
                     "Confirm delete",
                     JOptionPane.YES_NO_OPTION);
             if (res == JOptionPane.YES_OPTION) {
-                selectedItemOrder.removeOrderLine(orderItem);
-                selectedItemOrderLine = null;
-                selectedItemOrder.save(); // This will fire the onOrderItemsChanged -> order updated
+                selectedOrder.removeOrderLine(orderItem);
+                selectedOrderLine = null;
+                selectedOrder.save(); // This will fire the onOrderItemsChanged -> order updated
             }
         }
     }
@@ -467,29 +446,21 @@ public class OrderPanel extends OrderPanelLayout {
         }
     }
 
-    @Override
-    public void onEditReference(ItemOrderLine line) {
-        if (line != null && selectedItemOrder != null) {
-            DistributorPartLink link = line.getDistributorPartLink();
-            if (link == null) {
-                long id = 0;
-                switch (selectedItemOrder.getDistributorType()) {
-                    case Items:
-                        id = line.getItemId();
-                        break;
-                    case Pcbs:
-                        id = line.getPcbId();
-                        break;
-                }
-                link = new DistributorPartLink(selectedItemOrder.getDistributor(), id);
-            }
-            EditDistributorPartLinkDialog dialog = new EditDistributorPartLinkDialog(application, link);
-            dialog.enableDistributor(false);
-            if (dialog.showDialog() == IDialog.OK) {
-                tableUpdate();
-            }
-        }
-    }
+//    @Override
+//    public void onEditReference(ItemOrderLine line) {
+//        if (line != null && selectedOrder != null) {
+//            DistributorPartLink link = line.getDistributorPartLink();
+//            if (link == null) {
+//                long id = line.getItemId();
+//                link = new DistributorPartLink(selectedOrder.getDistributor(), id);
+//            }
+//            EditDistributorPartLinkDialog dialog = new EditDistributorPartLinkDialog(application, link);
+//            dialog.enableDistributor(false);
+//            if (dialog.showDialog() == IDialog.OK) {
+//                tableUpdate();
+//            }
+//        }
+//    }
 
     //
     // Table and tree click
@@ -503,47 +474,47 @@ public class OrderPanel extends OrderPanelLayout {
             if (itemOrder != null && itemOrder.canBeSaved()) {
                 treeSelectNewOrder(itemOrder);
 
-                popupMenu = new OrderPopup(selectedItemOrder) {
-                    @Override
-                    public void onEditOrder(ItemOrder itemOrder) {
-                        previewPanel.editOrder(itemOrder);
-                    }
-
-                    @Override
-                    public void onDeleteOrder(ItemOrder itemOrder) {
-                        previewPanel.deleteOrder(itemOrder);
-                    }
-
-                    @Override
-                    public void onOrderDetails(ItemOrder itemOrder) {
-                        previewPanel.viewOrderDetails(itemOrder);
-                    }
-
-                    @Override
-                    public void onMoveToOrdered(ItemOrder itemOrder) {
-                        OrderPanel.this.onMoveToOrdered(itemOrder);
-                    }
-
-                    @Override
-                    public void onMoveToReceived(ItemOrder itemOrder) {
-                        OrderPanel.this.onMoveToReceived(itemOrder);
-                    }
-
-                    @Override
-                    public void onBackToOrdered(ItemOrder itemOrder) {
-                        OrderPanel.this.onBackToOrdered(itemOrder);
-                    }
-
-                    @Override
-                    public void onBackToPlanned(ItemOrder itemOrder) {
-                        OrderPanel.this.onBackToPlanned(itemOrder);
-                    }
-
-                    @Override
-                    public void onLocked(ItemOrder itemOrder, boolean locked) {
-                        OrderPanel.this.onSetOrderLocked(itemOrder, locked);
-                    }
-                };
+//                popupMenu = new OrderPopup(selectedOrder) {
+//                    @Override
+//                    public void onEditOrder(ItemOrder itemOrder) {
+//                        previewPanel.editOrder(itemOrder);
+//                    }
+//
+//                    @Override
+//                    public void onDeleteOrder(ItemOrder itemOrder) {
+//                        previewPanel.deleteOrder(itemOrder);
+//                    }
+//
+//                    @Override
+//                    public void onOrderDetails(ItemOrder itemOrder) {
+//                        previewPanel.viewOrderDetails(itemOrder);
+//                    }
+//
+//                    @Override
+//                    public void onMoveToOrdered(ItemOrder itemOrder) {
+//                        ItemOrderPanel.this.onMoveToOrdered(itemOrder);
+//                    }
+//
+//                    @Override
+//                    public void onMoveToReceived(ItemOrder itemOrder) {
+//                        ItemOrderPanel.this.onMoveToReceived(itemOrder);
+//                    }
+//
+//                    @Override
+//                    public void onBackToOrdered(ItemOrder itemOrder) {
+//                        ItemOrderPanel.this.onBackToOrdered(itemOrder);
+//                    }
+//
+//                    @Override
+//                    public void onBackToPlanned(ItemOrder itemOrder) {
+//                        ItemOrderPanel.this.onBackToPlanned(itemOrder);
+//                    }
+//
+//                    @Override
+//                    public void onLocked(ItemOrder itemOrder, boolean locked) {
+//                        ItemOrderPanel.this.onSetOrderLocked(itemOrder, locked);
+//                    }
+//                };
             }
 
             if (popupMenu != null) {
@@ -556,49 +527,49 @@ public class OrderPanel extends OrderPanelLayout {
     void onTableRowClicked(MouseEvent e) {
         if (e.getClickCount() == 1) {
             if (SwingUtilities.isRightMouseButton(e)) {
-                JPopupMenu popupMenu = new OrderLinePopup(getSelectedOrderLine()) {
-                    @Override
-                    public void onDeleteOrderItem(ItemOrderLine orderItem) {
-                        OrderPanel.this.onDeleteOrderItem(orderItem);
-                    }
-
-                    @Override
-                    public void onEditReference(ItemOrderLine orderItem) {
-                        OrderPanel.this.onEditReference(orderItem);
-                    }
-
-                    @Override
-                    public void onEditItem(Item item) {
-                        OrderPanel.this.onEditItem(item);
-                    }
-
-                    @Override
-                    public void onOpenLocalDataSheet(Item item) {
-                        application.openDataSheet(item, false);
-                    }
-
-                    @Override
-                    public void onOpenOnlineDataSheet(Item item) {
-                        application.openDataSheet(item, true);
-                    }
-
-                    @Override
-                    public void onOrderItem(Item item) {
-                        application.orderItem(item);
-                    }
-
-                    @Override
-                    public void onShowHistory(Item item) {
-                        application.showHistory(item);
-                    }
-                };
-                popupMenu.show(e.getComponent(), e.getX(), e.getY());
+//                JPopupMenu popupMenu = new OrderLinePopup(getSelectedOrderLine()) {
+//                    @Override
+//                    public void onDeleteOrderItem(ItemOrderLine orderItem) {
+//                        ItemOrderPanel.this.onDeleteOrderItem(orderItem);
+//                    }
+//
+//                    @Override
+//                    public void onEditReference(ItemOrderLine orderItem) {
+//                        ItemOrderPanel.this.onEditReference(orderItem);
+//                    }
+//
+//                    @Override
+//                    public void onEditItem(Item item) {
+//                        ItemOrderPanel.this.onEditItem(item);
+//                    }
+//
+//                    @Override
+//                    public void onOpenLocalDataSheet(Item item) {
+//                        application.openDataSheet(item, false);
+//                    }
+//
+//                    @Override
+//                    public void onOpenOnlineDataSheet(Item item) {
+//                        application.openDataSheet(item, true);
+//                    }
+//
+//                    @Override
+//                    public void onOrderItem(Item item) {
+//                        application.orderItem(item);
+//                    }
+//
+//                    @Override
+//                    public void onShowHistory(Item item) {
+//                        application.showHistory(item);
+//                    }
+//                };
+//                popupMenu.show(e.getComponent(), e.getX(), e.getY());
             }
         }
         if (e.getClickCount() == 2) {
-            if (selectedItemOrder.getDistributorType() == DistributorType.Items) {
-                EditItemDialog<Item> dialog = new EditItemDialog<>(application, "Item", selectedItemOrderLine.getItem());
-                dialog.showDialog();
+            if (selectedOrder.getDistributorType() == DistributorType.Items) {
+//                EditItemDialog<Item> dialog = new EditItemDialog<>(application, "Item", selectedOrderLine.getItem());
+//                dialog.showDialog();
             }
         }
     }
@@ -608,16 +579,16 @@ public class OrderPanel extends OrderPanelLayout {
     //
     @Override
     public void valueChanged(TreeSelectionEvent e) {
-        if (!Application.isUpdating(OrderPanel.this)) {
+        if (!Application.isUpdating(ItemOrderPanel.this)) {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) ordersTree.getLastSelectedPathComponent();
 
             if (node == null || ((ItemOrder) node.getUserObject()).isUnknown() || !((ItemOrder) node.getUserObject()).canBeSaved()) {
-                selectedItemOrder = null;
+                selectedOrder = null;
                 return; // Nothing selected
             }
 
-            if (selectedItemOrder != null) {
-                selectedItemOrder.setLocked(!selectedItemOrder.isPlanned());
+            if (selectedOrder != null) {
+                selectedOrder.setLocked(!selectedOrder.isPlanned());
             }
 
             treeSelectNewOrder((ItemOrder) node.getUserObject());
@@ -625,11 +596,11 @@ public class OrderPanel extends OrderPanelLayout {
     }
 
     private void treeSelectNewOrder(ItemOrder newItemOrder) {
-        selectedItemOrder = newItemOrder;
-        selectedItemOrderLine = null;
+        selectedOrder = newItemOrder;
+        selectedOrderLine = null;
 
-        tableInitialize(selectedItemOrder);
-        updateToolBar(selectedItemOrder);
+        tableInitialize(selectedOrder);
+        updateToolBar(selectedOrder);
 
         updateVisibleComponents();
         updateEnabledComponents();
@@ -642,13 +613,13 @@ public class OrderPanel extends OrderPanelLayout {
     public void valueChanged(ListSelectionEvent e) {
         if (!e.getValueIsAdjusting()) {
             SwingUtilities.invokeLater(() -> {
-                selectedItemOrderLine = tableGetSelectedItem();
-                if (selectedItemOrderLine != null) {
-                    detailPanel.updateComponents(selectedItemOrderLine);
+                selectedOrderLine = tableGetSelectedItem();
+                if (selectedOrderLine != null) {
+                    detailPanel.updateComponents(selectedOrderLine);
                 } else {
                     detailPanel.updateComponents();
                 }
-                updateToolBar(selectedItemOrder);
+                updateToolBar(selectedOrder);
                 updateVisibleComponents();
                 updateEnabledComponents();
             });
@@ -661,30 +632,30 @@ public class OrderPanel extends OrderPanelLayout {
     //
     @Override
     public void onToolBarRefresh(IdBToolBar source) {
-        Application.beginWait(OrderPanel.this);
+        Application.beginWait(ItemOrderPanel.this);
         try {
             treeReload();
-            tableInitialize(selectedItemOrder);
+            tableInitialize(selectedOrder);
             final long orderId = treeUpdate();
 
             SwingUtilities.invokeLater(() -> {
-                selectedItemOrder = SearchManager.sm().findItemOrderById(orderId);
-                treeSelectOrder(selectedItemOrder);
-
-                updateVisibleComponents();
-                updateEnabledComponents();
+//                selectedOrder = SearchManager.sm().findItemOrderById(orderId);
+//                treeSelectOrder(selectedOrder);
+//
+//                updateVisibleComponents();
+//                updateEnabledComponents();
             });
         } finally {
-            Application.endWait(OrderPanel.this);
+            Application.endWait(ItemOrderPanel.this);
         }
 
     }
 
     @Override
     public void onToolBarAdd(IdBToolBar source) {
-        if (selectedItemOrder != null && !selectedItemOrder.isUnknown() && selectedItemOrder.canBeSaved()) {
-            OrderSearchItemsDialog dialog = new OrderSearchItemsDialog(application, selectedItemOrder);
-            dialog.showDialog();
+        if (selectedOrder != null && !selectedOrder.isUnknown() && selectedOrder.canBeSaved()) {
+//            OrderSearchItemsDialog dialog = new OrderSearchItemsDialog(application, selectedOrder);
+//            dialog.showDialog();
 //                if (dialog.showDialog() == ICacheDialog.OK) {
 //                    List<Item> itemsToOrder = dialog.getItemsToOrder();
 //                    if (itemsToOrder != null) {
@@ -694,7 +665,7 @@ public class OrderPanel extends OrderPanelLayout {
 //                            //item.save();
 //                        }
 //
-//                        addItemsToOrder(itemsToOrder, selectedItemOrder);
+//                        addItemsToOrder(itemsToOrder, selectedOrder);
 //                    }
 //                }
             // TODO #1 Advanced search dialog
@@ -704,15 +675,15 @@ public class OrderPanel extends OrderPanelLayout {
 
     @Override
     public void onToolBarDelete(IdBToolBar source) {
-        deleteSelectedOrderItems(tableGetAllSelectedOrderItems());
+//        deleteSelectedOrderItems(tableGetAllSelectedOrderItems());
     }
 
     @Override
     public void onToolBarEdit(IdBToolBar source) {
-        if (selectedItemOrder != null) {
-            switch (selectedItemOrder.getDistributorType()) {
+        if (selectedOrder != null) {
+            switch (selectedOrder.getDistributorType()) {
                 case Items:
-                    onEditItem(selectedItemOrderLine.getItem());
+//                    onEditItem(selectedOrderLine.getItem());
                     break;
                 case Pcbs:
                     // TODO
@@ -745,10 +716,10 @@ public class OrderPanel extends OrderPanelLayout {
         }
     }
 
-    @Override
-    public void onEditPrice(ItemOrderLine orderItem) {
-        if (orderItem != null) {
-            onEditReference(orderItem);
-        }
-    }
+//    @Override
+//    public void onEditPrice(ItemOrderLine orderItem) {
+//        if (orderItem != null) {
+//            onEditReference(orderItem);
+//        }
+//    }
 }

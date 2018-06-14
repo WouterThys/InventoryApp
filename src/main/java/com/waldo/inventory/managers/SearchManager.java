@@ -200,9 +200,20 @@ public class SearchManager {
         return null;
     }
 
-    public ItemOrder findOrderByName(String name) {
+    public ItemOrder findItemOrderByName(String name) {
         if (name != null && !name.isEmpty()) {
             for (ItemOrder o : cache().getItemOrders()) {
+                if (o.getName().equals(name)) {
+                    return o;
+                }
+            }
+        }
+        return null;
+    }
+
+    public PcbOrder findPcbOrderByName(String name) {
+        if (name != null && !name.isEmpty()) {
+            for (PcbOrder o : cache().getPcbOrders()) {
                 if (o.getName().equals(name)) {
                     return o;
                 }
@@ -253,7 +264,7 @@ public class SearchManager {
         List<PcbOrderLine> lines = new ArrayList<>();
         if (pcbId > DbObject.UNKNOWN_ID) {
             for (PcbOrderLine ol : cache().getPcbOrderLines()) {
-                if (ol.getPcbId() == pcbId) {
+                if (ol.getLineId() == pcbId) {
                     lines.add(ol);
                 }
             }
@@ -265,7 +276,7 @@ public class SearchManager {
         List<ItemOrderLine> lines = new ArrayList<>();
         if (itemId > DbObject.UNKNOWN_ID) {
             for (ItemOrderLine ol : cache().getItemOrderLines()) {
-                if (ol.getItemId() == itemId) {
+                if (ol.getLineId() == itemId) {
                     lines.add(ol);
                 }
             }
@@ -375,14 +386,13 @@ public class SearchManager {
         List<ItemOrder> itemOrders = new ArrayList<>();
         if (itemId > DbObject.UNKNOWN_ID) {
             for (ItemOrder o : cache().getItemOrders()) {
-                if (o.getDistributorType() == DistributorType.Items) {
-                    for (ItemOrderLine oi : o.getItemOrderLines()) {
-                        if (oi.getItemId() == itemId) {
+                    for (AbstractOrderLine oi : o.getOrderLines()) {
+                        if (oi.getLineId() == itemId) {
                             itemOrders.add(o);
                             break;
                         }
                     }
-                }
+
             }
         }
         return itemOrders;

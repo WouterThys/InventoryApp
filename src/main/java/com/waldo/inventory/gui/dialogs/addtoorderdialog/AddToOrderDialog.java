@@ -10,6 +10,7 @@ import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.dialogs.editordersdialog.EditOrdersDialog;
 import com.waldo.inventory.gui.dialogs.pendingordersdialog.PendingOrdersCacheDialog;
+import com.waldo.inventory.managers.OrderManager;
 import com.waldo.utils.icomponents.IDialog;
 
 import javax.swing.*;
@@ -65,11 +66,11 @@ public class AddToOrderDialog extends AddToOrderCacheDialogLayout implements Cac
         if (createOnConfirm) {
             // Add item(s) to list
             if (orderList) {
-                application.addItemsToOrder(itemsToOrderList, (ItemOrder) orderCb.getSelectedItem());
+                OrderManager.addItemsToOrder(itemsToOrderList, (ItemOrder) orderCb.getSelectedItem());
             } else {
                 itemsToOrderList = new ArrayList<>(1);
                 itemsToOrderList.add(itemToOrder);
-                application.addItemsToOrder(itemsToOrderList, (ItemOrder) orderCb.getSelectedItem());
+                OrderManager.addItemsToOrder(itemsToOrderList, (ItemOrder) orderCb.getSelectedItem());
             }
         }
         super.onOK();

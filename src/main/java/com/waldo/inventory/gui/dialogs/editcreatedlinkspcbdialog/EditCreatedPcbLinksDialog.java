@@ -615,9 +615,9 @@ public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout i
 
                 // Price for itemOrder
                 ItemOrder itemOrder = createdPcb.getItemOrder();
-                if (itemOrder != null && itemOrder.getItemOrderLines().size() > 0) {
-                    orderPrice = itemOrder.getItemOrderLines().get(0).getPrice();
-                }
+//                if (itemOrder != null && itemOrder.getItemOrderLines().size() > 0) {
+//                    orderPrice = itemOrder.getItemOrderLines().get(0).getPrice();
+//                }
 
 //                for (CreatedPcbLink link : createdPcb.getCreatedPcbLinks()) {
 //                    int amount = link.getUsedAmount();

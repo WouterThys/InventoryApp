@@ -62,7 +62,7 @@ public class EditOrdersDialog extends IObjectDialog<ItemOrder> implements Action
             nameField.setError("Name can't be empty..");
             ok = VerifyState.Error;
         } else if (getOrder().getId() <= DbObject.UNKNOWN_ID) {
-            ItemOrder foundItemOrder = SearchManager.sm().findOrderByName(name);
+            ItemOrder foundItemOrder = SearchManager.sm().findItemOrderByName(name);
             if (foundItemOrder != null) {
                 nameField.setError("Name already exists..");
                 ok = VerifyState.Error;

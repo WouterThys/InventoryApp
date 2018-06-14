@@ -2,7 +2,6 @@ package com.waldo.inventory.gui.dialogs.orderdetailsdialog;
 
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.ItemOrder;
-import com.waldo.inventory.classes.dbclasses.ItemOrderLine;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.ICacheDialog;
 import com.waldo.utils.DateUtils;
@@ -20,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
-import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
 abstract class OrderDetailsCacheDialogLayout extends ICacheDialog implements ListSelectionListener, ActionListener, IEditedListener {
 
@@ -90,17 +88,17 @@ abstract class OrderDetailsCacheDialogLayout extends ICacheDialog implements Lis
                 if (itemOrder.getDistributor().getOrderFileFormat() == null || itemOrder.getDistributor().getOrderFileFormat().isUnknown()) {
                     errorList.add(" - ItemOrder's distributor had no selected file format");
                 } else {
-                    if (itemOrder.getItemOrderLines().size() < 1) {
-                        errorList.add(" - ItemOrder has no items..");
-                    } else {
-                        List<ItemOrderLine> errorItems = itemOrder.missingOrderReferences();
-                        if (errorItems.size() > 0) {
-                            errorList.add(" - Next itemOrder items have no reference: ");
-                            for (ItemOrderLine oi : errorItems) {
-                                errorList.add(" \t * " + oi.getName());
-                            }
-                        }
-                    }
+//                    if (itemOrder.getItemOrderLines().size() < 1) {
+//                        errorList.add(" - ItemOrder has no items..");
+//                    } else {
+//                        List<ItemOrderLine> errorItems = itemOrder.missingOrderReferences();
+//                        if (errorItems.size() > 0) {
+//                            errorList.add(" - Next itemOrder items have no reference: ");
+//                            for (ItemOrderLine oi : errorItems) {
+//                                errorList.add(" \t * " + oi.getName());
+//                            }
+//                        }
+//                    }
                 }
             }
         }
@@ -110,23 +108,23 @@ abstract class OrderDetailsCacheDialogLayout extends ICacheDialog implements Lis
     }
 
     void fillTableData() {
-        List<ItemOrderLine> orderItemList = itemOrder.getItemOrderLines();
-        try {
-            String[] references = new String[orderItemList.size()];
-            String[] amounts = new String[orderItemList.size()];
-            for (int i = 0; i < references.length; i++) {
-                ItemOrderLine orderItem = orderItemList.get(i);
-                references[i] = orderItem.getDistributorPartLink().getReference();
-                amounts[i] = String.valueOf(orderItem.getAmount());
-            }
-            orderFileTableModel = new DefaultTableModel();
-            orderFileTable.setModel(orderFileTableModel);
-            orderFileTableModel.addColumn("Reference", references);
-            orderFileTableModel.addColumn("Amount", amounts);
-            orderFileTableModel.fireTableDataChanged();
-        } catch (Exception e) {
-            Status().setError("Error filling table data.", e);
-        }
+//        List<ItemOrderLine> orderItemList = itemOrder.getItemOrderLines();
+//        try {
+//            String[] references = new String[orderItemList.size()];
+//            String[] amounts = new String[orderItemList.size()];
+//            for (int i = 0; i < references.length; i++) {
+//                ItemOrderLine orderItem = orderItemList.get(i);
+//                references[i] = orderItem.getDistributorPartLink().getReference();
+//                amounts[i] = String.valueOf(orderItem.getAmount());
+//            }
+//            orderFileTableModel = new DefaultTableModel();
+//            orderFileTable.setModel(orderFileTableModel);
+//            orderFileTableModel.addColumn("Reference", references);
+//            orderFileTableModel.addColumn("Amount", amounts);
+//            orderFileTableModel.fireTableDataChanged();
+//        } catch (Exception e) {
+//            Status().setError("Error filling table data.", e);
+//        }
     }
 
     void updateEnabledComponents() {
@@ -405,8 +403,8 @@ abstract class OrderDetailsCacheDialogLayout extends ICacheDialog implements Lis
             } else {
                 dateReceivedTf.setText("Not received");
             }
-            itemsTf.setText(String.valueOf(itemOrder.getItemOrderLines().size()));
-            totalPriceTf.setText(String.valueOf(itemOrder.getTotalPrice()));
+//            itemsTf.setText(String.valueOf(itemOrder.getItemOrderLines().size()));
+//            totalPriceTf.setText(String.valueOf(itemOrder.getTotalPrice()));
 
         }
     }

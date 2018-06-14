@@ -781,7 +781,7 @@ public class DatabaseAccess {
                     o.setId(rs.getLong("id"));
                     o.setOrderId(rs.getLong("orderId"));
                     o.setAmount(rs.getInt("amount"));
-                    o.setItemId(rs.getLong("itemId"));
+                    o.setLineId(rs.getLong("itemId"));
 
                     o.setInserted(true);
                     if (o.getId() != DbObject.UNKNOWN_ID) {
@@ -866,9 +866,9 @@ public class DatabaseAccess {
                 while (rs.next()) {
                     o = new PcbOrderLine();
                     o.setId(rs.getLong("id"));
-                    o.setPcbOrderId(rs.getLong("orderId"));
+                    o.setOrderId(rs.getLong("orderId"));
                     o.setAmount(rs.getInt("amount"));
-                    o.setPcbId(rs.getLong("itemId"));
+                    o.setLineId(rs.getLong("itemId"));
 
                     o.setInserted(true);
                     if (o.getId() != DbObject.UNKNOWN_ID) {

@@ -1,12 +1,13 @@
 package com.waldo.inventory.gui.panels.projectspanel.panels.pcbs;
 
-import com.waldo.inventory.Utils.Statics;
-import com.waldo.inventory.classes.dbclasses.*;
+import com.waldo.inventory.classes.dbclasses.CreatedPcb;
+import com.waldo.inventory.classes.dbclasses.PcbOrder;
+import com.waldo.inventory.classes.dbclasses.Project;
+import com.waldo.inventory.classes.dbclasses.ProjectPcb;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.dialogs.createpcbdialog.SelectPcbCacheDialog;
 import com.waldo.inventory.gui.dialogs.editcreatedlinkspcbdialog.EditCreatedPcbLinksDialog;
-import com.waldo.inventory.gui.dialogs.editordersdialog.EditOrdersDialog;
 import com.waldo.inventory.gui.dialogs.editprojectpcbdialog.EditProjectPcbDialog;
 import com.waldo.inventory.gui.dialogs.ordersearchitemdialog.OrderSearchItemsDialog;
 import com.waldo.inventory.gui.panels.projectspanel.panels.ProjectObjectPanel;
@@ -97,12 +98,8 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
 
     private void onOrderPcb() {
         if (selectedProjectObject != null) {
-            ItemOrder itemOrder = new ItemOrder(selectedProjectObject.getName());
-            EditOrdersDialog dialog = new EditOrdersDialog(application, itemOrder, Statics.DistributorType.Pcbs, false);
-            if (dialog.showDialog() == IDialog.OK) {
-                ItemOrderLine pcbItemOrderLine = new ItemOrderLine(itemOrder, selectedProjectObject, 1);
-                pcbItemOrderLine.save();
-            }
+            PcbOrder pcbOrder = new PcbOrder(selectedProjectObject.getName());
+            // TODO
         }
     }
 

@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.components.trees;
 
 import com.waldo.inventory.Utils.ComparatorUtils;
+import com.waldo.inventory.classes.dbclasses.AbstractOrder;
 import com.waldo.inventory.classes.dbclasses.ItemOrder;
 import com.waldo.inventory.gui.components.ITree;
 import com.waldo.utils.DateUtils;
@@ -17,7 +18,7 @@ import java.util.List;
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.managers.CacheManager.cache;
 
-public class IOrderTree extends ITree<ItemOrder> {
+public class IOrderTree extends ITree<AbstractOrder> {
 
     private final ImageIcon receivedIcon = imageResource.readIcon("Orders.Tree.Received");
     private final ImageIcon orderedIcon = imageResource.readIcon("Orders.Tree.Ordered");
@@ -30,14 +31,14 @@ public class IOrderTree extends ITree<ItemOrder> {
     private DefaultMutableTreeNode plannedNode;
     private DefaultMutableTreeNode receivedNode;
 
-    public IOrderTree(ItemOrder root, boolean showRoot, boolean allowMultiSelect) {
+    public IOrderTree(AbstractOrder root, boolean showRoot, boolean allowMultiSelect) {
         super(root, showRoot, allowMultiSelect);
 
         setRenderer();
     }
 
     @Override
-    protected DefaultTreeModel createModel(ItemOrder root) {
+    protected DefaultTreeModel createModel(AbstractOrder root) {
         rootNode = new DefaultMutableTreeNode(root);
 
         ItemOrder ordered = ItemOrder.createDummyOrder("Ordered");
@@ -131,10 +132,10 @@ public class IOrderTree extends ITree<ItemOrder> {
     }
 
     @Override
-    public void addItem(ItemOrder itemOrder) {
-        if (itemOrder != null) {
+    public void addItem(AbstractOrder order) {
+        if (order != null) {
             DefaultMutableTreeNode parentNode = null;
-            switch (itemOrder.getOrderState()) {
+            switch (order.getOrderState()) {
                 case Planned:
                     parentNode = plannedNode;
                     break;
@@ -142,8 +143,8 @@ public class IOrderTree extends ITree<ItemOrder> {
                     parentNode = orderedNode;
                     break;
                 case Received:
-                    String year = String.valueOf(DateUtils.getYear(itemOrder.getDateReceived()));
-                    // Find node of year to add new itemOrder to
+                    String year = String.valueOf(DateUtils.getYear(order.getDateReceived()));
+                    // Find node of year to add new order to
                     Enumeration e = receivedNode.depthFirstEnumeration();
                     while (e.hasMoreElements()) {
                         DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.nextElement();
@@ -162,7 +163,7 @@ public class IOrderTree extends ITree<ItemOrder> {
                     default:
                         return;
             }
-            DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(itemOrder);
+            DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(order);
 
             treeModel.insertNodeInto(childNode, parentNode, parentNode.getChildCount());
             scrollPathToVisible(new TreePath(childNode.getPath()));

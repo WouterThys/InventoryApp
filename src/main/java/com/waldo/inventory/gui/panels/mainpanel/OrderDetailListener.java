@@ -1,9 +1,9 @@
 package com.waldo.inventory.gui.panels.mainpanel;
 
-import com.waldo.inventory.classes.dbclasses.ItemOrderLine;
+import com.waldo.inventory.classes.dbclasses.AbstractOrderLine;
 
 public interface OrderDetailListener {
-    void onSetOrderItemAmount(ItemOrderLine line, int amount);
-    void onEditReference(ItemOrderLine line);
-    void onEditPrice(ItemOrderLine line);
+    void onSetOrderItemAmount(AbstractOrderLine line, int amount);
+    void onEditReference(AbstractOrderLine line);
+    void onEditPrice(AbstractOrderLine line);
 }

@@ -13,7 +13,7 @@ import java.util.List;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public class IOrderLineTableModel extends IAbstractTableModel<ItemOrderLine> {
+public class IOrderLineTableModel extends IAbstractTableModel<AbstractOrderLine> {
 
     private static final String[] COLUMN_NAMES = {"", "#", "Name", "Manufacturer", "Reference", "Price", "Total"};
     private static final Class[] COLUMN_CLASSES = {ILabel.class, Integer.class, String.class, String.class, String.class, String.class, String.class};
@@ -25,12 +25,12 @@ public class IOrderLineTableModel extends IAbstractTableModel<ItemOrderLine> {
     }
 
     @Override
-    public void setItemList(List<ItemOrderLine> itemList) {
+    public void setItemList(List<AbstractOrderLine> itemList) {
         super.setItemList(itemList);
 
         if (itemList.size() > 0) {
-            ItemOrder itemOrder = itemList.get(0).getItemOrder();
-            isEditable = itemOrder != null && (itemOrder.isPlanned() || !itemOrder.isLocked());
+            AbstractOrder order = itemList.get(0).getOrder();
+            isEditable = order != null && (order.isPlanned() || !order.isLocked());
         }
     }
 
@@ -42,7 +42,7 @@ public class IOrderLineTableModel extends IAbstractTableModel<ItemOrderLine> {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        ItemOrderLine line = getItemAt(rowIndex);
+        AbstractOrderLine line = getItemAt(rowIndex);
         if (line != null) {
             switch (columnIndex) {
                 case 0:
@@ -53,19 +53,12 @@ public class IOrderLineTableModel extends IAbstractTableModel<ItemOrderLine> {
                 case 2: // Name
                     return line.toString();
                 case 3: // Manufacturer
-                    if (line.getItem() != null) {
-                        Manufacturer m = line.getItem().getManufacturer();
-                        if (m != null && m.getId() != DbObject.UNKNOWN_ID) {
-                            return m.toString();
-                        }
-                    } else {
-                        if (line.getPcb() != null) {
-                            Project p = line.getPcb().getProject();
-                            if (p != null && p.getId() != DbObject.UNKNOWN_ID) {
-                                return p.toString();
-                            }
-                        }
-                    }
+//                    if (line.getLine() != null) {
+//                        Manufacturer m = line.getItem().getManufacturer();
+//                        if (m != null && m.getId() != DbObject.UNKNOWN_ID) {
+//                            return m.toString();
+//                        }
+//                    }
                     return "";
                 case 4: // Reference
                     DistributorPartLink pn = line.getDistributorPartLink();
@@ -113,7 +106,7 @@ public class IOrderLineTableModel extends IAbstractTableModel<ItemOrderLine> {
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            if (value instanceof ItemOrderLine) {
+            if (value instanceof AbstractOrderLine) {
                 if (!done && row == 0) {
                     TableColumn tableColumn = table.getColumnModel().getColumn(column);
                     tableColumn.setMaxWidth(32);
@@ -127,18 +120,19 @@ public class IOrderLineTableModel extends IAbstractTableModel<ItemOrderLine> {
 
                 c.setBackground(defaultBackground);
                 label.updateBackground(c.getBackground(), row, isSelected);
-                ItemOrderLine itemOrderLine = (ItemOrderLine) value;
+                AbstractOrderLine orderLine = (AbstractOrderLine) value;
 
-                if (itemOrderLine.getItem() != null) {
-                    Item item = itemOrderLine.getItem();
-                    if (item.isDiscourageOrder()) {
-                        label.setBackground(Color.ORANGE);
-                        c.setBackground(Color.ORANGE);
-                    }
-                }
+//                Orderable line = orderLine.getLine();
+//                if (line != null && line instanceof Item) {
+//                    Item item = orderLine.getItem();
+//                    if (item.isDiscourageOrder()) {
+//                        label.setBackground(Color.ORANGE);
+//                        c.setBackground(Color.ORANGE);
+//                    }
+//                } TODO
 
-                boolean amountOk = itemOrderLine.getAmount() > 0;
-                boolean referenceOk = itemOrderLine.getDistributorPartId() > DbObject.UNKNOWN_ID;
+                boolean amountOk = orderLine.getAmount() > 0;
+                boolean referenceOk = orderLine.getDistributorPartId() > DbObject.UNKNOWN_ID;
                 if (amountOk && referenceOk) {
                     label.setIcon(imageOk);
                     label.setToolTipText(null);

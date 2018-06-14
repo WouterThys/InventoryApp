@@ -1,10 +1,7 @@
 package com.waldo.inventory.gui.panels.orderpanel.preview;
 
 import com.waldo.inventory.Utils.GuiUtils;
-import com.waldo.inventory.classes.dbclasses.DbObject;
-import com.waldo.inventory.classes.dbclasses.Item;
-import com.waldo.inventory.classes.dbclasses.ItemOrderLine;
-import com.waldo.inventory.classes.dbclasses.ProjectPcb;
+import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.gui.components.IImagePanel;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.actions.IActions;
@@ -90,65 +87,49 @@ public abstract class OrderItemPreviewPanel extends AbstractDetailPanel implemen
         }
     }
 
-    private void updateHeader(ItemOrderLine itemOrderLine) {
-        if (itemOrderLine != null) {
+    private void updateHeader(AbstractOrderLine orderLine) {
+        if (orderLine != null) {
+                Orderable line = orderLine.getLine();
+                if (line != null && line instanceof Item) {
+                    Item item = (Item) line;
+                        if (item.getIconPath().isEmpty()) {
+                            imagePanel.setImage(imageResource.getDefaultImage(ImageType.ItemImage));
+                        } else {
+                            imagePanel.setImage(item.getIconPath());
+                        }
+                        nameTf.setText(item.toString());
+                        descriptionTa.setText(item.getDescription());
+                        starRater.setRating(item.getRating());
 
-            if (itemOrderLine.isItemOrderType()) {
-                Item item = itemOrderLine.getItem();
-                if (item != null) {
-                    if (item.getIconPath().isEmpty()) {
-                        imagePanel.setImage(imageResource.getDefaultImage(ImageType.ItemImage));
-                    } else {
-                        imagePanel.setImage(item.getIconPath());
-                    }
-                    nameTf.setText(item.toString());
-                    descriptionTa.setText(item.getDescription());
-                    starRater.setRating(item.getRating());
                 } else {
                     imagePanel.setImage(imageResource.getDefaultImage(ImageType.ItemImage));
                     nameTf.setText("");
                     descriptionTa.setText("");
                     starRater.setRating(0);
                 }
-            } else {
-                ProjectPcb pcb = itemOrderLine.getPcb();
-                if (pcb != null) {
-                    if (pcb.getProject() != null) {
-                        imagePanel.setImage(pcb.getProject().getIconPath());
-                    } else {
-                        imagePanel.setImage(imageResource.getDefaultImage(ImageType.ProjectImage));
-                    }
-                    nameTf.setText(pcb.toString());
-                    descriptionTa.setText(pcb.getDescription());
-                    starRater.setRating(0);
-                } else {
-                    imagePanel.setImage(imageResource.getDefaultImage(ImageType.ProjectImage));
-                    nameTf.setText("");
-                    descriptionTa.setText("");
-                    starRater.setRating(0);
-                }
-            }
+
         }
     }
 
-    private void updateData(ItemOrderLine itemOrderLine) {
-        if (itemOrderLine != null) {
-            amountTf.setText(String.valueOf(itemOrderLine.getAmount()));
-            if (itemOrderLine.getDistributorPartId() > DbObject.UNKNOWN_ID) {
-                priceTf.setText(itemOrderLine.getPrice().toString());
-                referenceTf.setText(itemOrderLine.getDistributorPartLink().getReference());
+    private void updateData(AbstractOrderLine orderLine) {
+        if (orderLine != null) {
+            amountTf.setText(String.valueOf(orderLine.getAmount()));
+            if (orderLine.getDistributorPartId() > DbObject.UNKNOWN_ID) {
+                priceTf.setText(orderLine.getPrice().toString());
+                referenceTf.setText(orderLine.getDistributorPartLink().getReference());
             } else {
                 priceTf.setText("");
                 referenceTf.setText("");
             }
-            boolean locked = itemOrderLine.isLocked();
+            boolean locked = orderLine.isLocked();
             editPriceAction.setEnabled(!locked);
             editReferenceAction.setEnabled(!locked);
             plusOneAction.setEnabled(!locked);
             minOneAction.setEnabled(!locked);
 
-            Item item = itemOrderLine.getItem(); // TODO: same for PCB
-            if (item != null) {
+            Orderable line = orderLine.getLine(); // TODO: same for PCB
+            if (line != null && line instanceof Item) {
+                Item item = (Item) line;
                 if (item.getManufacturerId() > DbObject.UNKNOWN_ID) {
                     manufacturerTf.setText(item.getManufacturer().toString());
                 } else {
@@ -188,23 +169,14 @@ public abstract class OrderItemPreviewPanel extends AbstractDetailPanel implemen
 
     }
 
-    private void updateRemarks(ItemOrderLine itemOrderLine) {
-        if (itemOrderLine != null) {
-            if (itemOrderLine.isItemOrderType()) {
-                Item item = itemOrderLine.getItem();
+    private void updateRemarks(AbstractOrderLine orderLine) {
+        if (orderLine != null) {
+                Orderable item = orderLine.getLine();
                 if (item != null) {
                     remarksTp.setFile(item.getRemarksFile());
                 } else {
                     remarksTp.setFile(null);
                 }
-            } else {
-                ProjectPcb pcb = itemOrderLine.getPcb();
-                if (pcb != null) {
-                    remarksTp.setFile(pcb.getRemarksFile());
-                } else {
-                    remarksTp.setFile(null);
-                }
-            }
         } else {
             remarksTp.setFile(null);
         }
@@ -342,8 +314,8 @@ public abstract class OrderItemPreviewPanel extends AbstractDetailPanel implemen
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (selectedItemOrderLine != null && itemDetailListener != null) {
-                    if (selectedItemOrderLine.getItem() != null) {
-                        itemDetailListener.onShowDataSheet(selectedItemOrderLine.getItem());
+                    if (selectedItemOrderLine.getLine() != null) {
+                        // TODO itemDetailListener.onShowDataSheet(selectedItemOrderLine.getItem());
                     }
                 }
             }
@@ -353,8 +325,8 @@ public abstract class OrderItemPreviewPanel extends AbstractDetailPanel implemen
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (selectedItemOrderLine != null && itemDetailListener != null) {
-                    if (selectedItemOrderLine.getItem() != null) {
-                        itemDetailListener.onOrderItem(selectedItemOrderLine.getItem());
+                    if (selectedItemOrderLine.getLine() != null) {
+                        // TODO itemDetailListener.onOrderItem(selectedItemOrderLine.getItem());
                     }
                 }
             }
@@ -364,8 +336,8 @@ public abstract class OrderItemPreviewPanel extends AbstractDetailPanel implemen
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (selectedItemOrderLine != null && itemDetailListener != null) {
-                    if (selectedItemOrderLine.getItem() != null) {
-                        itemDetailListener.onShowHistory(selectedItemOrderLine.getItem());
+                    if (selectedItemOrderLine.getLine() != null) {
+                        // TODO itemDetailListener.onShowHistory(selectedItemOrderLine.getItem());
                     }
                 }
             }

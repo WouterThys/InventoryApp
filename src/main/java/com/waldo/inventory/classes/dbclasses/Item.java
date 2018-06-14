@@ -23,7 +23,7 @@ import java.util.Objects;
 import static com.waldo.inventory.managers.CacheManager.cache;
 import static com.waldo.inventory.managers.SearchManager.sm;
 
-public class Item extends DbObject {
+public class Item extends DbObject implements Orderable {
 
     public static final String TABLE_NAME = "items";
 
@@ -822,5 +822,11 @@ public class Item extends DbObject {
             autoOrderBy = null;
         }
         this.autoOrderById = autoOrderById;
+    }
+
+
+    @Override
+    public ItemOrderLine createOrderLine(AbstractOrder order) {
+        return new ItemOrderLine((ItemOrder) order, this, Math.max(0, getMaximum() - getAmount()));
     }
 }
