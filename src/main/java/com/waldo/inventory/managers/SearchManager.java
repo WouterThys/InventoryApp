@@ -2,8 +2,10 @@ package com.waldo.inventory.managers;
 
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.Utils.Statics.DistributorType;
+import com.waldo.inventory.Utils.Statics.OrderStates;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.classes.dbclasses.Package;
+import com.waldo.utils.DateUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +44,7 @@ public class SearchManager {
     public List<Item> findItemsToOrder() {
         List<Item> itemsToOrder = new ArrayList<>();
         for (Item item : cache().getItems()) {
-            if (item.getOrderState().equals(Statics.OrderStates.NoOrder) &&
+            if (item.getOrderState().equals(OrderStates.NoOrder) &&
                     !item.isDiscourageOrder() &&
                     item.getAmount() < item.getMinimum()) {
                 itemsToOrder.add(item);
@@ -222,7 +224,7 @@ public class SearchManager {
         return null;
     }
 
-    public List<ItemOrder> findAutoOrdersByState(Statics.OrderStates orderState) {
+    public List<ItemOrder> findAutoOrdersByState(OrderStates orderState) {
         List<ItemOrder> autoItemOrderList = new ArrayList<>();
 
         for (ItemOrder itemOrder : cache().getItemOrders()) {
@@ -396,6 +398,62 @@ public class SearchManager {
             }
         }
         return itemOrders;
+    }
+
+    public List<AbstractOrder> findOrdersForStateAndYear(OrderStates states, int year) {
+        List<AbstractOrder> orderList = new ArrayList<>();
+
+        for (ItemOrder order : cache().getItemOrders()) {
+            OrderStates state = order.getOrderState();
+            if (state.equals(states)) {
+                if (year < 1) {
+                    orderList.add(order);
+                } else {
+                    int y;
+                    switch (state) {
+                        case Planned:
+                            y = DateUtils.getYear(order.getDateModified());
+                            if (y == year) orderList.add(order);
+                            break;
+                        case Ordered:
+                            y = DateUtils.getYear(order.getDateOrdered());
+                            if (y == year) orderList.add(order);
+                            break;
+                        case Received:
+                            y = DateUtils.getYear(order.getDateReceived());
+                            if (y == year) orderList.add(order);
+                            break;
+                    }
+                }
+            }
+        }
+
+        for (PcbOrder order : cache().getPcbOrders()) {
+            OrderStates state = order.getOrderState();
+            if (state.equals(states)) {
+                if (year < 1) {
+                    orderList.add(order);
+                } else {
+                    int y;
+                    switch (state) {
+                        case Planned:
+                            y = DateUtils.getYear(order.getDateModified());
+                            if (y == year) orderList.add(order);
+                            break;
+                        case Ordered:
+                            y = DateUtils.getYear(order.getDateOrdered());
+                            if (y == year) orderList.add(order);
+                            break;
+                        case Received:
+                            y = DateUtils.getYear(order.getDateReceived());
+                            if (y == year) orderList.add(order);
+                            break;
+                    }
+                }
+            }
+        }
+
+        return orderList;
     }
 
     public List<ItemOrder> findPlannedOrders() {

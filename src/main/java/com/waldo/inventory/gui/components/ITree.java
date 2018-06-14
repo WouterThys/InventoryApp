@@ -1,14 +1,12 @@
 package com.waldo.inventory.gui.components;
 
-import com.waldo.inventory.classes.dbclasses.DbObject;
-
 import javax.swing.*;
 import javax.swing.tree.*;
 import java.awt.*;
 import java.io.File;
 import java.util.Enumeration;
 
-public abstract class ITree<T extends DbObject> extends JTree {
+public abstract class ITree<T> extends JTree {
 
     protected T root;
     protected DefaultMutableTreeNode rootNode;

@@ -99,14 +99,14 @@ public class ComparatorUtils {
     //
     // Orders
     //
-    public static class ReceivedOrderComparator implements Comparator<ItemOrder> {
+    public static class ReceivedOrderComparator implements Comparator<AbstractOrder> {
         @Override
         public String toString() {
             return "Received orders";
         }
 
         @Override
-        public int compare(ItemOrder o1, ItemOrder o2) {
+        public int compare(AbstractOrder o1, AbstractOrder o2) {
             if (o1 == null && o2 != null) {
                 return -1;
             } else if (o1 != null && o2 == null) {

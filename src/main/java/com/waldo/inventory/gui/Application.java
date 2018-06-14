@@ -13,7 +13,7 @@ import com.waldo.inventory.gui.dialogs.addtoorderdialog.AddToOrderDialog;
 import com.waldo.inventory.gui.dialogs.historydialog.HistoryDialog;
 import com.waldo.inventory.gui.dialogs.settingsdialog.SettingsCacheDialog;
 import com.waldo.inventory.gui.panels.mainpanel.MainPanel;
-import com.waldo.inventory.gui.panels.orderpanel.ItemOrderPanel;
+import com.waldo.inventory.gui.panels.orderspanel.OrdersPanel;
 import com.waldo.inventory.gui.panels.projectspanel.ProjectsPanel;
 import com.waldo.inventory.managers.ErrorManager;
 import com.waldo.inventory.managers.LogManager;
@@ -42,12 +42,10 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
 
     public static String startUpPath;
     public static ImageResource imageResource;
-    //public static ResourceManager imageResource;
     public static ResourceManager scriptResource;
     public static ResourceManager colorResource;
 
     private JTabbedPane tabbedPane;
-    private ItemOrderPanel itemOrderPanel;
 
     public Application(String startUpPath) {
         Application.startUpPath = startUpPath;
@@ -143,14 +141,14 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
         // Main view
         // - Create components
         MainPanel mainPanel = new MainPanel(this);
-        itemOrderPanel = new ItemOrderPanel(this);
+        OrdersPanel ordersPanel = new OrdersPanel(this);
         ProjectsPanel projectPanel = new ProjectsPanel(this);
 
         tabbedPane = new JTabbedPane();
         tabbedPane.addChangeListener(this);
         //  - Add tabs
         tabbedPane.addTab("Components ", imageResource.readIcon("MainTab.Components"), mainPanel, "Components");
-        tabbedPane.addTab("Orders ", imageResource.readIcon("MainTab.Orders"), itemOrderPanel, "Orders");
+        tabbedPane.addTab("Orders ", imageResource.readIcon("MainTab.Orders"), ordersPanel, "Orders");
         tabbedPane.addTab("Projects ", imageResource.readIcon("MainTab.Projects"), projectPanel, "Projects");
         // - Add to main view
         add(tabbedPane, BorderLayout.CENTER);

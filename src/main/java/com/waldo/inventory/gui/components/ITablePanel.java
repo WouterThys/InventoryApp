@@ -239,6 +239,12 @@ public class ITablePanel<T extends DbObject> extends JPanel implements GuiUtils.
         this.detailsPanel = detailsPanel;
     }
 
+    public void setHeaderPanelVisible(boolean visible) {
+        if (headerPanel != null) {
+            headerPanel.setVisible(visible);
+        }
+    }
+
     /*
      *                  LISTENERS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */

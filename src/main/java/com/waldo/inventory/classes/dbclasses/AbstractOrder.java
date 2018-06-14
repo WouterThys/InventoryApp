@@ -219,6 +219,10 @@ public abstract class AbstractOrder<T extends Orderable> extends DbObject {
 
     public abstract List<AbstractOrderLine<T>> getOrderLines();
 
+    public void updateOrderLines() {
+        orderLines = null;
+    }
+
     public Date getDateModified() {
         return dateModified;
     }

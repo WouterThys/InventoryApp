@@ -139,53 +139,53 @@ public class OrderManager {
     }
 
     // ItemOrder status
-    public static boolean moveToOrdered(ItemOrder itemOrder) {
+    public static boolean moveToOrdered(AbstractOrder order) {
         boolean result = false;
-        if (itemOrder != null && itemOrder.canBeSaved() && !itemOrder.isOrdered()) {
+        if (order != null && order.canBeSaved() && !order.isOrdered()) {
             // Check
             //if (validateOrderLines(itemOrder)) {
                 // Do itemOrder
-                itemOrder.setDateOrdered(DateUtils.now());
-                itemOrder.setLocked(true);
-                itemOrder.updateLineStates();
-                itemOrder.save();
+                order.setDateOrdered(DateUtils.now());
+                order.setLocked(true);
+                order.updateLineStates();
+                order.save();
                 result = true;
             //}
         }
         return result;
     }
 
-    public static void moveToReceived(ItemOrder itemOrder) {
+    public static void moveToReceived(AbstractOrder order) {
         //boolean result = false;
-        if (itemOrder != null && itemOrder.canBeSaved() && !itemOrder.isReceived()) {
+        if (order != null && order.canBeSaved() && !order.isReceived()) {
             // Do receive
-            itemOrder.setDateReceived(DateUtils.now());
-            itemOrder.setLocked(true);
-            itemOrder.updateLineStates();
-            itemOrder.updateLineAmounts(true);
-            itemOrder.save();
+            order.setDateReceived(DateUtils.now());
+            order.setLocked(true);
+            order.updateLineStates();
+            order.updateLineAmounts(true);
+            order.save();
             //result = true;
         }
         //return result;
     }
 
-    public static void backToOrdered(ItemOrder itemOrder) {
-        if (itemOrder != null && itemOrder.canBeSaved() && itemOrder.isReceived()) {
-            itemOrder.setDateReceived((Date) null);
-            itemOrder.setLocked(true);
-            itemOrder.updateLineStates();
-            itemOrder.updateLineAmounts(false);
-            itemOrder.save();
+    public static void backToOrdered(AbstractOrder order) {
+        if (order != null && order.canBeSaved() && order.isReceived()) {
+            order.setDateReceived((Date) null);
+            order.setLocked(true);
+            order.updateLineStates();
+            order.updateLineAmounts(false);
+            order.save();
         }
     }
 
-    public static void backToPlanned(ItemOrder itemOrder) {
-        if (itemOrder != null && itemOrder.canBeSaved() && itemOrder.isOrdered()) {
-            itemOrder.setDateReceived((Date) null);
-            itemOrder.setDateOrdered((Date) null);
-            itemOrder.setLocked(false);
-            itemOrder.updateLineStates();
-            itemOrder.save();
+    public static void backToPlanned(AbstractOrder order) {
+        if (order != null && order.canBeSaved() && order.isOrdered()) {
+            order.setDateReceived((Date) null);
+            order.setDateOrdered((Date) null);
+            order.setLocked(false);
+            order.updateLineStates();
+            order.save();
         }
     }
 
