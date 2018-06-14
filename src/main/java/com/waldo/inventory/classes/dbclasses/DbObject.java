@@ -5,6 +5,7 @@ import com.waldo.inventory.Utils.Statics.QueryType;
 import com.waldo.inventory.classes.AddUpdateDelete;
 import com.waldo.inventory.classes.search.SearchMatch;
 import com.waldo.inventory.managers.LogManager;
+import com.waldo.test.ImageSocketServer.ImageType;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.waldo.inventory.database.DatabaseAccess.db;
+import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.gui.Application.scriptResource;
 
 public abstract class DbObject {
@@ -65,6 +67,10 @@ public abstract class DbObject {
     protected long id = -1;
     protected String name = "";
     protected String iconPath = "";
+
+    protected long imageId;
+    protected DbImage image;
+
     protected boolean canBeSaved = true;
     protected final AddUpdateDelete aud = new AddUpdateDelete();
 
@@ -252,6 +258,7 @@ public abstract class DbObject {
         newObject.setId(getId());
         newObject.setName(getName());
         newObject.setIconPath(getIconPath());
+        newObject.setImageId(getImageId());
 
         newObject.setInserted(isInserted);
         newObject.setCanBeSaved(false);
@@ -321,5 +328,27 @@ public abstract class DbObject {
 
     public AddUpdateDelete getAud() {
         return aud;
+    }
+
+
+    public long getImageId() {
+        if (imageId < UNKNOWN_ID) {
+            imageId = UNKNOWN_ID;
+        }
+        return imageId;
+    }
+
+    public DbImage getImage() {
+        if (image == null && getImageId() > UNKNOWN_ID) {
+            image = imageResource.getDbImage(ImageType.ItemImage, getImageId());
+        }
+        return image;
+    }
+
+    public void setImageId(long imageId) {
+        if (image != null && imageId != getImageId()) {
+            image = null;
+        }
+        this.imageId = imageId;
     }
 }

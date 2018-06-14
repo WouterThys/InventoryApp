@@ -11,6 +11,7 @@ public class ImageServerSettings extends DbSettingsObject {
 
     private String imageServerName;
     private String connectAsName;
+    private DbSettings imageDbSettings;
 
     public ImageServerSettings() {
         super(TABLE_NAME);
@@ -28,7 +29,8 @@ public class ImageServerSettings extends DbSettingsObject {
         if (!super.equals(o)) return false;
         ImageServerSettings that = (ImageServerSettings) o;
         return Objects.equals(getImageServerName(), that.getImageServerName()) &&
-                Objects.equals(getConnectAsName(), that.getConnectAsName());
+                Objects.equals(getConnectAsName(), that.getConnectAsName()) &&
+                getImageDbSettings().equals(this.getImageDbSettings());
     }
 
     @Override
@@ -42,6 +44,7 @@ public class ImageServerSettings extends DbSettingsObject {
         copyBaseFields(copy);
         copy.setImageServerName(getImageServerName());
         copy.setConnectAsName(getConnectAsName());
+        copy.setImageDbSettings(getImageDbSettings());
         return copy;
     }
 
@@ -75,5 +78,13 @@ public class ImageServerSettings extends DbSettingsObject {
 
     public void setConnectAsName(String connectAsName) {
         this.connectAsName = connectAsName;
+    }
+
+    public DbSettings getImageDbSettings() {
+        return imageDbSettings;
+    }
+
+    public void setImageDbSettings(DbSettings imageDbSettings) {
+        this.imageDbSettings = imageDbSettings;
     }
 }

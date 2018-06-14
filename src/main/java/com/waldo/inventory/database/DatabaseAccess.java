@@ -528,6 +528,7 @@ public class DatabaseAccess {
                     if (i.getId() > DbObject.UNKNOWN_ID) {
                         i.setName(rs.getString("name"));
                         i.setIconPath(rs.getString("iconPath"));
+                        i.setImageId(rs.getLong("imageId"));
                         i.setAlias(rs.getString("alias"));
                         i.setDescription(rs.getString("description"));
                         i.setDivisionId(rs.getLong("divisionId"));

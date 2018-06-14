@@ -1,5 +1,6 @@
 package com.waldo.inventory.database.settings;
 
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.database.interfaces.DbSettingsListener;
 import com.waldo.inventory.database.settings.settingsclasses.*;
 import com.waldo.inventory.gui.Application;
@@ -599,6 +600,14 @@ public class SettingsManager {
                     imageServerSettings.setImageServerName(rs.getString("imageServerName"));
                     imageServerSettings.setConnectAsName(rs.getString("connectAsName"));
 
+                    DbSettings imageDbSettings = new DbSettings();
+                    imageDbSettings.setDbName(rs.getString("dbname"));
+                    imageDbSettings.setDbIp(rs.getString("dbip"));
+                    imageDbSettings.setDbUserName(rs.getString("dbusername"));
+                    imageDbSettings.setDbUserPw(rs.getString("dbuserpw"));
+
+                    imageServerSettings.setImageDbSettings(imageDbSettings);
+
                     imageServerSettings.setSaved(true);
 
                     imageServerSettingsList.add(imageServerSettings);
@@ -676,6 +685,11 @@ public class SettingsManager {
                 stmt.setString(1,  set.getName());
                 stmt.setString(2, set.getImageServerName());
                 stmt.setString(3, set.getConnectAsName());
+                stmt.setString(2, set.getImageDbSettings().getDbName());
+                stmt.setString(3, set.getImageDbSettings().getDbIp());
+                stmt.setString(4, set.getImageDbSettings().getDbUserName());
+                stmt.setString(5, set.getImageDbSettings().getDbUserPw());
+                stmt.setString(6, Statics.DbTypes.Online.toString());
                 stmt.execute();
             }
         } catch (SQLException e) {
@@ -742,7 +756,11 @@ public class SettingsManager {
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                 stmt.setString(1, set.getImageServerName());
                 stmt.setString(2, set.getConnectAsName());
-
+                stmt.setString(3, set.getImageDbSettings().getDbName());
+                stmt.setString(4, set.getImageDbSettings().getDbIp());
+                stmt.setString(5, set.getImageDbSettings().getDbUserName());
+                stmt.setString(6, set.getImageDbSettings().getDbUserPw());
+                stmt.setString(7, Statics.DbTypes.Online.toString());
                 stmt.setString(8,  set.getName()); // Where name
 
                 stmt.execute();

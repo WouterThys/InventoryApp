@@ -1,21 +1,26 @@
 package com.waldo.inventory.database;
 
+import com.waldo.inventory.Main;
 import com.waldo.inventory.Utils.Statics;
+import com.waldo.inventory.classes.dbclasses.DbImage;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.database.classes.DbErrorObject;
 import com.waldo.inventory.database.classes.DbQueue;
 import com.waldo.inventory.database.classes.DbQueueObject;
-import com.waldo.inventory.database.settings.settingsclasses.DbSettings;
+import com.waldo.inventory.database.interfaces.ImageChangedListener;
+import com.waldo.inventory.database.settings.settingsclasses.ImageServerSettings;
 import com.waldo.inventory.managers.LogManager;
+import com.waldo.test.ImageSocketServer.ImageType;
 import org.apache.commons.dbcp2.BasicDataSource;
 
 import javax.swing.*;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
+import static com.waldo.inventory.Utils.Statics.QueryType.*;
 import static com.waldo.inventory.database.settings.SettingsManager.settings;
+import static com.waldo.inventory.gui.Application.scriptResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
 public class ImageDbAccess {
@@ -44,18 +49,35 @@ public class ImageDbAccess {
     private ImageQueueWorker imageQueueWorker;
     private ImageErrorWorker imageErrorWorker;
 
+    // Listener
+    private List<ImageChangedListener> imageChangedListeners = new ArrayList<>();
+
 
     public void init() throws SQLException {
         initialized = false;
-        DbSettings s = settings().getDbSettings();
+        ImageServerSettings s = settings().getImageServerSettings();
         if (s != null) {
             // TODO get from settings
             imageDataSource = new BasicDataSource();
             imageDataSource.setDriverClassName("com.mysql.jdbc.Driver");
-            imageDataSource.setUrl("jdbc:mysql:192.168.0.162/inventoryImages" + "?zeroDateTimeBehavior=convertToNull&connectTimeout=5000&socketTimeout=30000");
-            imageDataSource.setUsername(s.getDbUserName());
-            imageDataSource.setPassword(s.getDbUserPw());
-            LOG.info("Image database initialized with connection: " + s.createMySqlUrl());
+            imageDataSource.setUrl(s.getImageDbSettings().createMySqlUrl() + "?zeroDateTimeBehavior=convertToNull&connectTimeout=5000&socketTimeout=30000");
+            imageDataSource.setUsername(s.getImageDbSettings().getDbUserName());
+            imageDataSource.setPassword(s.getImageDbSettings().getDbUserPw());
+
+            initialized = testConnection(imageDataSource);
+
+            LOG.info("Image database initialized with connection: " + s.getImageDbSettings().createMySqlUrl());
+        }
+    }
+
+    public static boolean testConnection(BasicDataSource dataSource) throws SQLException {
+        String sql = "SELECT 1;";
+
+        try (Connection connection = dataSource.getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+                return rs.next();
+            }
         }
     }
 
@@ -108,7 +130,7 @@ public class ImageDbAccess {
 
                 DbQueueObject queueObject = imageWorkList.take();
                 if (queueObject != null) {
-                    try (Connection connection = DatabaseAccess.getConnection()) {
+                    try (Connection connection = getConnection()) {
                         // Open db
                         try (PreparedStatement stmt = connection.prepareStatement("BEGIN;")) {
                             stmt.execute();
@@ -117,22 +139,47 @@ public class ImageDbAccess {
                         try {
                             boolean hasMoreWork;
                             do {
-                                DbObject dbo = queueObject.getObject();
+                                DbImage dbImage = (DbImage) queueObject.getObject();
                                 Statics.QueryType type = queueObject.getQueryType();
                                 switch (type) {
                                     case Insert: {
-
+                                        String sql = dbImage.getScript(dbImage.getImageType(), DbObject.SQL_INSERT);
+                                        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                                            DatabaseHelper.insert(stmt, dbImage);
+                                        } catch (SQLException e) {
+                                            if (DbObject.getType(dbImage) != DbObject.TYPE_LOG) {
+                                                DbErrorObject object = new DbErrorObject(dbImage, e, Insert, sql);
+                                                imageNonoList.put(object);
+                                            }
+                                        }
                                     }
                                     break;
                                     case Update: {
-
+                                        String sql = dbImage.getScript(dbImage.getImageType(), DbObject.SQL_UPDATE);
+                                        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                                            DatabaseHelper.update(stmt, dbImage);
+                                        } catch (SQLException e) {
+                                            if (DbObject.getType(dbImage) != DbObject.TYPE_LOG) {
+                                                DbErrorObject object = new DbErrorObject(dbImage, e, Update, sql);
+                                                imageNonoList.put(object);
+                                            }
+                                        }
                                         break;
                                     }
                                     case Delete: {
-
+                                        String sql = dbImage.getScript(dbImage.getImageType(), DbObject.SQL_DELETE);
+                                        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                                            DatabaseHelper.delete(stmt, dbImage);
+                                        } catch (SQLException e) {
+                                            if (DbObject.getType(dbImage) != DbObject.TYPE_LOG) {
+                                                DbErrorObject object = new DbErrorObject(dbImage, e, Delete, sql);
+                                                imageNonoList.put(object);
+                                            }
+                                        }
                                         break;
                                     }
                                 }
+                                notifyListeners(type, dbImage);
 
                                 if (imageWorkList.size() > 0) {
                                     queueObject = imageWorkList.take();
@@ -183,23 +230,7 @@ public class ImageDbAccess {
         protected Integer doInBackground() throws Exception {
             Thread.currentThread().setName(name);
             while (keepRunning) {
-                DbErrorObject error = imageNonoList.take();
-                if (error != null) {
-                    switch (error.getQueryType()) {
-                        case Select:
 
-                            break;
-                        case Insert:
-
-                            break;
-                        case Update:
-
-                            break;
-                        case Delete:
-
-                            break;
-                    }
-                }
             }
             return 0;
         }
@@ -225,5 +256,106 @@ public class ImageDbAccess {
 
     public boolean isInitialized() {
         return initialized;
+    }
+
+    public void addImageChangedListener(ImageChangedListener imageChangedListener) {
+        if (!imageChangedListeners.contains(imageChangedListener)) {
+            imageChangedListeners.add(imageChangedListener);
+        }
+    }
+
+    public void removeImageChangedListener(ImageChangedListener imageChangedListener) {
+        imageChangedListeners.remove(imageChangedListener);
+    }
+
+    private void notifyListeners(Statics.QueryType queryType, DbImage dbImage) {
+        for (ImageChangedListener listener : imageChangedListeners) {
+            switch (queryType) {
+                case Insert:
+                    listener.onInserted(dbImage);
+                    break;
+                case Update:
+                    listener.onUpdated(dbImage);
+                    break;
+                case Delete:
+                    listener.onDeleted(dbImage);
+                    break;
+            }
+        }
+    }
+
+    /*
+     *                  METHODS
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    public void insert(final DbImage image) {
+        image.getAud().setInserted(loggedUser);
+        if (!Main.CACHE_ONLY) {
+            SwingUtilities.invokeLater(() -> {
+                DbQueueObject toInsert = new DbQueueObject(image, Insert);
+                try {
+                    imageWorkList.put(toInsert);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+    }
+
+    public void update(final DbImage image) {
+        image.getAud().setUpdated(loggedUser);
+        if (!Main.CACHE_ONLY) {
+            SwingUtilities.invokeLater(() -> {
+                DbQueueObject toUpdate = new DbQueueObject(image, Update);
+                try {
+                    imageWorkList.put(toUpdate);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+    }
+
+    public void delete(final DbImage image) {
+        if (!Main.CACHE_ONLY) {
+            SwingUtilities.invokeLater(() -> {
+                DbQueueObject toDelete = new DbQueueObject(image, Delete);
+                try {
+                    imageWorkList.put(toDelete);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+    }
+
+
+
+
+    // Remove with more efficient!
+    public List<DbImage> fetchItemImages() {
+        List<DbImage> images = new ArrayList<>();
+
+        DbImage d = null;
+        String sql = scriptResource.readString(ImageType.ItemImage.getFolderName() + DbObject.SQL_SELECT_ALL);
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    d = new DbImage(ImageType.ItemImage);
+                    d.setId(rs.getLong("id"));
+                    d.setName(rs.getString("name"));
+                    d.setImageType(rs.getInt("imageType"));
+                    d.setImageIcon(DbImage.blobToImage(rs.getBlob("image")));
+                    d.setInserted(true);
+
+                    images.add(d);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return images;
     }
 }

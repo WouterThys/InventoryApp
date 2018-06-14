@@ -5,6 +5,7 @@ import com.waldo.inventory.Utils.Statics;
 import com.waldo.test.ImageSocketServer.ImageType;
 
 import javax.imageio.ImageIO;
+import javax.sql.rowset.serial.SerialBlob;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -14,20 +15,27 @@ import java.io.InputStream;
 import java.sql.Blob;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
+
+import static com.waldo.inventory.database.ImageDbAccess.imDb;
+import static com.waldo.inventory.gui.Application.scriptResource;
 
 public class DbImage extends DbObject {
 
     private ImageType imageType;
-    private ImageIcon image;
+    private ImageIcon imageIcon;
+
+
+    private List<Item> dbObjects;
 
     public DbImage(@NotNull ImageType imageType) {
         this(imageType, null, "");
     }
 
-    public DbImage(@NotNull ImageType imageType, ImageIcon image, String name) {
+    public DbImage(@NotNull ImageType imageType, ImageIcon imageIcon, String name) {
         super(imageType.getFolderName());
         this.imageType = imageType;
-        this.image = image;
+        this.imageIcon = imageIcon;
         this.name = name;
     }
 
@@ -36,10 +44,9 @@ public class DbImage extends DbObject {
         int ndx = 1;
 
         statement.setString(ndx++, getName());
-        statement.setInt(ndx++, getImageType().getDimension().width);
-        statement.setInt(ndx++, getImageType().getDimension().height);
         statement.setInt(ndx++, getImageType().getId());
-        statement.setBytes(ndx++, imageToByteArray(image));
+        SerialBlob b = new SerialBlob(imageToByteArray(imageIcon));
+        statement.setBlob(ndx++, b);
 
         return ndx;
     }
@@ -68,11 +75,43 @@ public class DbImage extends DbObject {
     }
 
 
+    @Override
+    public void save() {
+        if (canBeSaved) {
+            if (id < 0 && !isInserted) {
+                imDb().insert(this);
+                isInserted = true;
+            } else {
+                imDb().update(this);
+            }
+        }
+    }
+
+    @Override
+    public void delete() {
+        if (canBeSaved) {
+            if (id >= UNKNOWN_ID) {
+                imDb().delete(this);
+            }
+        }
+    }
+
+    @Override
+    public String getScript(String scriptName) {
+        return scriptResource.readString(TABLE_NAME + "." + scriptName);
+    }
+
+    public String getScript(ImageType imageType, String scriptName) {
+        return scriptResource.readString(imageType.getFolderName() + "." + scriptName);
+    }
+
+
+
     public static ImageIcon blobToImage(Blob blob) {
         ImageIcon icon = null;
 
         if (blob != null) {
-            try (InputStream is = blob.getBinaryStream(0, blob.length())) {
+            try (InputStream is = blob.getBinaryStream(1, blob.length())) {
                 BufferedImage bi = ImageIO.read(is);
                 icon = new ImageIcon(bi);
             } catch (SQLException | IOException e) {
@@ -121,7 +160,35 @@ public class DbImage extends DbObject {
         return imageType;
     }
 
-    public ImageIcon getImage() {
-        return image;
+    public ImageIcon getImageIcon() {
+        return imageIcon;
+    }
+
+    public void setImageType(int type) {
+        this.imageType = ImageType.fromInt(type);
+    }
+
+    public void setImageIcon(ImageIcon imageIcon) {
+        this.imageIcon = imageIcon;
+    }
+
+
+
+    public void setDbObjects(List<Item> objects) {
+        this.dbObjects = objects;
+    }
+
+    @Override
+    public void setId(long id) {
+        super.setId(id);
+        if (isInserted && dbObjects != null) {
+            new Thread(() -> {
+                for (DbObject object : dbObjects) {
+                    object.setImageId(id);
+                    object.save();
+                }
+            }).start();
+
+        }
     }
 }

@@ -1,6 +1,9 @@
 package com.waldo.inventory.Utils.resource;
 
 import com.waldo.inventory.Main;
+import com.waldo.inventory.classes.dbclasses.DbImage;
+import com.waldo.inventory.classes.dbclasses.DbObject;
+import com.waldo.inventory.database.interfaces.ImageChangedListener;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.database.settings.settingsclasses.ImageServerSettings;
 import com.waldo.test.ImageSocketServer.ImageType;
@@ -16,15 +19,14 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.sql.SQLException;
+import java.util.*;
 import java.util.List;
-import java.util.Objects;
 
+import static com.waldo.inventory.database.ImageDbAccess.imDb;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
-public class ImageResource extends Resource implements Client.ImageClientListener {
+public class ImageResource extends Resource implements Client.ImageClientListener, ImageChangedListener {
 
     public interface ImageRequester {
         ImageType getImageType();
@@ -61,6 +63,10 @@ public class ImageResource extends Resource implements Client.ImageClientListene
     private final Map<String, ImageIcon> projectImageMap = new HashMap<>();
     private final Map<String, ImageIcon> otherImageMap = new HashMap<>();
 
+    // NEW CACHE FOR DB IMAGES
+    private final Map<Long, DbImage> itemDbImageMap = new HashMap<>();
+    private List<DbImage> dbImageList = null;
+
     // Requests for image
     private List<ImageRequest> imageRequests = new ArrayList<>();
 
@@ -80,7 +86,31 @@ public class ImageResource extends Resource implements Client.ImageClientListene
 
     public void initServer() {
         updateImageServerConnection();
+        try {
+            imDb().init();
+            imDb().addImageChangedListener(this);
+            imDb().startImageWorkers();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
+
+
+    public DbImage getDbImage(ImageType type, long id) {
+        if (id > DbObject.UNKNOWN_ID) {
+            if (dbImageList == null) {
+                dbImageList = imDb().fetchItemImages();
+            }
+
+            for (DbImage image : dbImageList) {
+                if (image.getId() == id) {
+                    return image;
+                }
+            }
+        }
+        return null;
+    }
+
 
     public ImageIcon getDefaultImage(ImageType imageType) {
         switch (imageType) {
@@ -231,21 +261,12 @@ public class ImageResource extends Resource implements Client.ImageClientListene
     }
 
     private ImageIcon getIcon(String key) {
-        InputStream is = null;
-        try {
-            is = this.getClass().getClassLoader().getResourceAsStream("icons/" + readString(key));
+        try (InputStream is = this.getClass().getClassLoader().getResourceAsStream("icons/" + readString(key))) {
             return new ImageIcon(ImageIO.read(is));
         } catch (Exception e) {
             //
-        } finally {
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    //
-                }
-            }
         }
+        //
         return null;
     }
 
@@ -346,6 +367,7 @@ public class ImageResource extends Resource implements Client.ImageClientListene
             e.printStackTrace();
         }
     }
+
 
     @Override
     public void onConnected(String clientName) {
@@ -493,5 +515,24 @@ public class ImageResource extends Resource implements Client.ImageClientListene
         List<ImageRequester> getImageRequesters() {
             return imageRequesters;
         }
+    }
+
+
+    //
+    // Image db listener
+    //
+    @Override
+    public void onInserted(DbImage image) {
+        itemDbImageMap.put(image.getId(), image);
+    }
+
+    @Override
+    public void onUpdated(DbImage image) {
+
+    }
+
+    @Override
+    public void onDeleted(DbImage image) {
+        itemDbImageMap.remove(image.getId());
     }
 }

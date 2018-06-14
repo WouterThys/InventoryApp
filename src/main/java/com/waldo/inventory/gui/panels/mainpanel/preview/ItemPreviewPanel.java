@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.panels.mainpanel.preview;
 
 import com.waldo.inventory.Utils.GuiUtils;
+import com.waldo.inventory.classes.dbclasses.DbImage;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Division;
 import com.waldo.inventory.classes.dbclasses.Item;
@@ -80,7 +81,11 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
             if (item.getIconPath().isEmpty()) {
                 imagePanel.setImage(imageResource.getDefaultImage(ImageType.ItemImage));
             } else {
-                imagePanel.setImage(item.getIconPath());
+                DbImage dbImage = item.getImage();
+                if (dbImage != null) {
+                    imagePanel.setImage(dbImage.getImageIcon());
+                }
+
             }
             nameTf.setText(item.toString());
             descriptionTa.setText(item.getDescription());

@@ -117,6 +117,7 @@ public class Item extends DbObject {
         statement.setString(ndx++, getLocalDataSheet());
         statement.setString(ndx++, getOnlineDataSheet());
         statement.setString(ndx++, getIconPath());
+        statement.setLong(ndx++, getImageId());
         statement.setLong(ndx++, getManufacturerId());
         statement.setLong(ndx++, getLocationId());
         statement.setInt(ndx++, getAmount());
