@@ -850,7 +850,6 @@ public class DatabaseAccess {
         return pcbOrders;
     }
 
-
     public List<PcbOrderLine> fetchPcbOrderLines() {
         List<PcbOrderLine> pcbOrderLines = new ArrayList<>();
         if (Main.CACHE_ONLY) {
@@ -868,7 +867,7 @@ public class DatabaseAccess {
                     o.setId(rs.getLong("id"));
                     o.setOrderId(rs.getLong("orderId"));
                     o.setAmount(rs.getInt("amount"));
-                    o.setLineId(rs.getLong("itemId"));
+                    o.setLineId(rs.getLong("pcbId"));
 
                     o.setInserted(true);
                     if (o.getId() != DbObject.UNKNOWN_ID) {
@@ -886,7 +885,6 @@ public class DatabaseAccess {
         }
         return pcbOrderLines;
     }
-
 
     public List<Distributor> fetchDistributors() {
         List<Distributor> distributors = new ArrayList<>();

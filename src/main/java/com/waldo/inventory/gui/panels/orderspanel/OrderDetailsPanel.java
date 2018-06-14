@@ -27,6 +27,10 @@ public class OrderDetailsPanel extends IPanel {
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    public OrderDetailsPanel() {
+        initializeComponents();
+        initializeLayouts();
+    }
 
 
     /*

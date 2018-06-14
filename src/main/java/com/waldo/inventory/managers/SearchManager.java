@@ -404,50 +404,54 @@ public class SearchManager {
         List<AbstractOrder> orderList = new ArrayList<>();
 
         for (ItemOrder order : cache().getItemOrders()) {
-            OrderStates state = order.getOrderState();
-            if (state.equals(states)) {
-                if (year < 1) {
-                    orderList.add(order);
-                } else {
-                    int y;
-                    switch (state) {
-                        case Planned:
-                            y = DateUtils.getYear(order.getDateModified());
-                            if (y == year) orderList.add(order);
-                            break;
-                        case Ordered:
-                            y = DateUtils.getYear(order.getDateOrdered());
-                            if (y == year) orderList.add(order);
-                            break;
-                        case Received:
-                            y = DateUtils.getYear(order.getDateReceived());
-                            if (y == year) orderList.add(order);
-                            break;
+            if (!order.isUnknown()) {
+                OrderStates state = order.getOrderState();
+                if (state.equals(states)) {
+                    if (year < 1) {
+                        orderList.add(order);
+                    } else {
+                        int y;
+                        switch (state) {
+                            case Planned:
+                                y = DateUtils.getYear(order.getDateModified());
+                                if (y == year) orderList.add(order);
+                                break;
+                            case Ordered:
+                                y = DateUtils.getYear(order.getDateOrdered());
+                                if (y == year) orderList.add(order);
+                                break;
+                            case Received:
+                                y = DateUtils.getYear(order.getDateReceived());
+                                if (y == year) orderList.add(order);
+                                break;
+                        }
                     }
                 }
             }
         }
 
         for (PcbOrder order : cache().getPcbOrders()) {
-            OrderStates state = order.getOrderState();
-            if (state.equals(states)) {
-                if (year < 1) {
-                    orderList.add(order);
-                } else {
-                    int y;
-                    switch (state) {
-                        case Planned:
-                            y = DateUtils.getYear(order.getDateModified());
-                            if (y == year) orderList.add(order);
-                            break;
-                        case Ordered:
-                            y = DateUtils.getYear(order.getDateOrdered());
-                            if (y == year) orderList.add(order);
-                            break;
-                        case Received:
-                            y = DateUtils.getYear(order.getDateReceived());
-                            if (y == year) orderList.add(order);
-                            break;
+            if (!order.isUnknown()) {
+                OrderStates state = order.getOrderState();
+                if (state.equals(states)) {
+                    if (year < 1) {
+                        orderList.add(order);
+                    } else {
+                        int y;
+                        switch (state) {
+                            case Planned:
+                                y = DateUtils.getYear(order.getDateModified());
+                                if (y == year) orderList.add(order);
+                                break;
+                            case Ordered:
+                                y = DateUtils.getYear(order.getDateOrdered());
+                                if (y == year) orderList.add(order);
+                                break;
+                            case Received:
+                                y = DateUtils.getYear(order.getDateReceived());
+                                if (y == year) orderList.add(order);
+                                break;
+                        }
                     }
                 }
             }
