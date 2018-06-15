@@ -2,6 +2,7 @@ package com.waldo.inventory.gui.dialogs.settingsdialog.panels;
 
 import com.waldo.inventory.Main;
 import com.waldo.inventory.Utils.GuiUtils;
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.database.settings.SettingsManager;
 import com.waldo.inventory.database.settings.settingsclasses.ImageServerSettings;
 import com.waldo.inventory.gui.Application;
@@ -11,14 +12,12 @@ import com.waldo.inventory.gui.dialogs.imagedialogs.selectimagedialog.SelectImag
 import com.waldo.inventory.gui.dialogs.imagedialogs.sendfullcontentdialog.SendFullContentDialog;
 import com.waldo.test.ImageSocketServer.ImageType;
 import com.waldo.test.client.Client;
-import com.waldo.utils.icomponents.ICheckBox;
-import com.waldo.utils.icomponents.IDialog;
-import com.waldo.utils.icomponents.ILabel;
-import com.waldo.utils.icomponents.ITextField;
+import com.waldo.utils.icomponents.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.List;
@@ -32,7 +31,9 @@ public class ImageServerPanel extends SettingsPnl<ImageServerSettings> implement
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private ICheckBox imageServerEnabledCb;
+    private IComboBox<Statics.ImageServerTypes> imageServerTypesCb;
 
+    // Server
     private ITextField imageServerNameTf;
     private ITextField connectAsNameTf;
     private ILabel connectionStateLbl;
@@ -41,6 +42,11 @@ public class ImageServerPanel extends SettingsPnl<ImageServerSettings> implement
     private IActions.DisconnectAction disconnectAction;
     private IActions.SendContentAction sendContentAction;
 
+    // Database
+    private ITextField imageServerDbNameTf;
+    private ITextField imageServerDbIpTf;
+    private ITextField imageServerDbUserTf;
+    private ITextField imageServerDbPwTf;
 
     /*
      *                  VARIABLES
@@ -116,12 +122,20 @@ public class ImageServerPanel extends SettingsPnl<ImageServerSettings> implement
         boolean enabled = super.updateEnabledComponents();
         boolean serverEnabled = imageServerEnabledCb.isSelected();
 
-        imageServerNameTf.setEnabled(serverEnabled && enabled);
-        connectAsNameTf.setEnabled(serverEnabled && enabled);
+        boolean seType = enabled && selectedSettings.getType().equals(Statics.ImageServerTypes.Server);
+        boolean dbType = enabled && selectedSettings.getType().equals(Statics.ImageServerTypes.Database);
 
-        connectAction.setEnabled(serverEnabled);
-        disconnectAction.setEnabled(serverEnabled);
-        sendContentAction.setEnabled(serverEnabled);
+        imageServerNameTf.setEnabled(seType && serverEnabled);
+        connectAsNameTf.setEnabled(seType && serverEnabled);
+        connectAction.setEnabled(seType && serverEnabled);
+        disconnectAction.setEnabled(seType && serverEnabled);
+        sendContentAction.setEnabled(seType && serverEnabled);
+
+        imageServerDbNameTf.setEnabled(dbType && serverEnabled);
+        imageServerDbIpTf.setEnabled(dbType && serverEnabled);
+        imageServerDbUserTf.setEnabled(dbType && serverEnabled);
+        imageServerDbPwTf.setEnabled(dbType && serverEnabled);
+
 
         return enabled;
     }
@@ -130,15 +144,70 @@ public class ImageServerPanel extends SettingsPnl<ImageServerSettings> implement
     protected void updateFieldValues(ImageServerSettings selectedSettings) {
         super.updateFieldValues(selectedSettings);
         if (selectedSettings != null) {
+            imageServerTypesCb.setSelectedItem(selectedSettings.getType());
+
             imageServerNameTf.setText(selectedSettings.getImageServerName());
             connectAsNameTf.setText(selectedSettings.getConnectAsName());
             connectionStateLbl.setText(imageResource.serverConnected() ? "Connected" : "Not connected");
+
+            imageServerDbNameTf.setText(selectedSettings.getImageDbSettings().getDbName());
+            imageServerDbIpTf.setText(selectedSettings.getImageDbSettings().getDbIp());
+            imageServerDbUserTf.setText(selectedSettings.getImageDbSettings().getDbUserName());
+            imageServerDbPwTf.setText("***");
         } else {
+            imageServerTypesCb.setSelectedItem(Statics.ImageServerTypes.Unknown);
+
             imageServerNameTf.setText("");
             connectAsNameTf.setText("");
             connectionStateLbl.setText("");
+
+            imageServerDbNameTf.setText("");
+            imageServerDbIpTf.setText("");
+            imageServerDbUserTf.setText("");
+            imageServerDbPwTf.setText("");
         }
     }
+
+
+    private JPanel createServerLayout() {
+        JPanel serverPanel = new JPanel(new BorderLayout());
+        JPanel settingsPanel = new JPanel();
+        JPanel toolbarPanel = new JPanel(new BorderLayout());
+        toolbarPanel.add(GuiUtils.createNewToolbar(connectAction, disconnectAction, sendContentAction), BorderLayout.EAST);
+
+        // - Add to panel
+        GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(settingsPanel, 160);
+
+        gbc.addLine("Server name: ", imageServerNameTf);
+        gbc.addLine("Connect as: ", connectAsNameTf);
+        gbc.addLine("State: ", connectionStateLbl);
+
+        serverPanel.setBorder(GuiUtils.createInlineTitleBorder("Server"));
+
+        serverPanel.add(settingsPanel, BorderLayout.CENTER);
+        serverPanel.add(toolbarPanel, BorderLayout.SOUTH);
+
+        return serverPanel;
+    }
+
+    private JPanel createDatabasePanel() {
+        JPanel dbPanel = new JPanel(new BorderLayout());
+        JPanel settingsPanel = new JPanel();
+
+        // - Add to panel
+        GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(settingsPanel, 160);
+
+        gbc.addLine("Db name: ", imageServerDbNameTf);
+        gbc.addLine("Db ip: ", imageServerDbIpTf);
+        gbc.addLine("Db user: ", imageServerDbUserTf);
+        gbc.addLine("Db pw: ", imageServerDbPwTf);
+
+        dbPanel.setBorder(GuiUtils.createInlineTitleBorder("Database"));
+        dbPanel.add(settingsPanel, BorderLayout.CENTER);
+
+        return dbPanel;
+    }
+
 
     /*
      *                  LISTENERS
@@ -182,30 +251,47 @@ public class ImageServerPanel extends SettingsPnl<ImageServerSettings> implement
                 SwingUtilities.invokeLater(() -> sendFolderContent());
             }
         };
+
+        imageServerTypesCb = new IComboBox<>(Statics.ImageServerTypes.values());
+        imageServerTypesCb.addItemListener(e -> {
+            SwingUtilities.invokeLater(() -> {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    ImageServerPanel.this.onValueChanged(imageServerTypesCb, "type", "", "");
+                    updateEnabledComponents();
+                }
+            });
+        });
+
+        imageServerDbNameTf = new ITextField(this, "dbName");
+        imageServerDbIpTf = new ITextField(this, "dbIp");
+        imageServerDbUserTf = new ITextField(this, "dbUser");
+        imageServerDbPwTf = new ITextField(this, "dbPw");
+
     }
 
     @Override
     public void initializeLayouts() {
         JPanel mainPanel = new JPanel(new BorderLayout());
-        JPanel settingsPanel = new JPanel();
-        JPanel toolbarPanel = new JPanel(new BorderLayout());
-        toolbarPanel.add(GuiUtils.createNewToolbar(connectAction, disconnectAction, sendContentAction), BorderLayout.EAST);
-
-        // - Add to panel
-        GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(settingsPanel, 160);
-
-        gbc.addLine("Server name: ", imageServerNameTf);
-        gbc.addLine("Connect as: ", connectAsNameTf);
-        gbc.addLine("State: ", connectionStateLbl);
 
         mainPanel.setBorder(BorderFactory.createCompoundBorder(
                 GuiUtils.createInlineTitleBorder("Image server options"),
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)
         ));
 
-        mainPanel.add(imageServerEnabledCb, BorderLayout.PAGE_START);
-        mainPanel.add(settingsPanel, BorderLayout.CENTER);
-        mainPanel.add(toolbarPanel, BorderLayout.SOUTH);
+
+        JPanel serverPanel = createServerLayout();
+        JPanel dbPanel = createDatabasePanel();
+
+        JPanel optionsPanel = new JPanel(new BorderLayout());
+        optionsPanel.add(imageServerEnabledCb, BorderLayout.WEST);
+        optionsPanel.add(imageServerTypesCb, BorderLayout.EAST);
+
+        Box box = Box.createVerticalBox();
+        box.add(serverPanel);
+        box.add(dbPanel);
+
+        mainPanel.add(optionsPanel, BorderLayout.PAGE_START);
+        mainPanel.add(box, BorderLayout.CENTER);
 
         contentPanel.setLayout(new BorderLayout());
         contentPanel.add(mainPanel, BorderLayout.CENTER);

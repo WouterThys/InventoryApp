@@ -252,5 +252,10 @@ public class ITileView<IT extends ProjectObject> extends JPanel implements GuiUt
         ImageIcon ideIcon = ImageResource.scaleImage(image, new Dimension(60,60));
         iconBtn.setIcon(ideIcon);
     }
+
+    @Override
+    public long getImageId() {
+        return 0;
+    }
 }
 

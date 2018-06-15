@@ -1,6 +1,5 @@
 package com.waldo.inventory.database;
 
-import com.waldo.inventory.Main;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.DbImage;
 import com.waldo.inventory.classes.dbclasses.DbObject;
@@ -13,14 +12,17 @@ import com.waldo.inventory.managers.LogManager;
 import com.waldo.test.ImageSocketServer.ImageType;
 import org.apache.commons.dbcp2.BasicDataSource;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.waldo.inventory.Utils.Statics.QueryType.*;
 import static com.waldo.inventory.database.settings.SettingsManager.settings;
-import static com.waldo.inventory.gui.Application.scriptResource;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
 public class ImageDbAccess {
@@ -33,10 +35,13 @@ public class ImageDbAccess {
 
     // Singleton
     private static final ImageDbAccess INSTANCE = new ImageDbAccess();
+
     public static ImageDbAccess imDb() {
         return INSTANCE;
     }
-    private ImageDbAccess() {}
+
+    private ImageDbAccess() {
+    }
 
     private BasicDataSource imageDataSource;
 
@@ -108,7 +113,6 @@ public class ImageDbAccess {
     public void registerShutDownHook() {
         Runtime.getRuntime().addShutdownHook(new Thread(this::close));
     }
-
 
 
     /*
@@ -289,7 +293,7 @@ public class ImageDbAccess {
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     public void insert(final DbImage image) {
         image.getAud().setInserted(loggedUser);
-        if (!Main.CACHE_ONLY) {
+        if (initialized) {
             SwingUtilities.invokeLater(() -> {
                 DbQueueObject toInsert = new DbQueueObject(image, Insert);
                 try {
@@ -303,7 +307,7 @@ public class ImageDbAccess {
 
     public void update(final DbImage image) {
         image.getAud().setUpdated(loggedUser);
-        if (!Main.CACHE_ONLY) {
+        if (initialized) {
             SwingUtilities.invokeLater(() -> {
                 DbQueueObject toUpdate = new DbQueueObject(image, Update);
                 try {
@@ -316,7 +320,7 @@ public class ImageDbAccess {
     }
 
     public void delete(final DbImage image) {
-        if (!Main.CACHE_ONLY) {
+        if (initialized) {
             SwingUtilities.invokeLater(() -> {
                 DbQueueObject toDelete = new DbQueueObject(image, Delete);
                 try {
@@ -328,33 +332,77 @@ public class ImageDbAccess {
         }
     }
 
+    public DbImage fetch(final ImageType type, final long id) {
+        DbImage image = null;
+        if (initialized && (type != null) && (id > DbObject.UNKNOWN_ID)) {
+            String sql = "SELECT * FROM " + type.getFolderName() + " WHERE id = " + id + ";";
+            try (Connection connection = getConnection()) {
+                try (PreparedStatement stmt = connection.prepareStatement(sql);
+                     ResultSet rs = stmt.executeQuery()) {
 
+                    if (rs.next()) {
+                        image = new DbImage(ImageType.ItemImage);
+                        image.setId(rs.getLong("id"));
+                        image.setName(rs.getString("name"));
+                        image.setImageType(rs.getInt("imageType"));
+                        image.setImageIcon(DbImage.blobToImage(rs.getBlob("image")));
+                        image.setInserted(true);
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return image;
+    }
 
 
     // Remove with more efficient!
     public List<DbImage> fetchItemImages() {
         List<DbImage> images = new ArrayList<>();
 
-        DbImage d = null;
-        String sql = scriptResource.readString(ImageType.ItemImage.getFolderName() + DbObject.SQL_SELECT_ALL);
-        try (Connection connection = getConnection()) {
-            try (PreparedStatement stmt = connection.prepareStatement(sql);
-                 ResultSet rs = stmt.executeQuery()) {
+        File itemImageFolder = new File("Images\\ItemImages\\");
+        long id = 2;
+        if (itemImageFolder.exists()) {
+            File[] files = itemImageFolder.listFiles();
+            if (files != null) {
+                for (File imageFile : files) {
+                    BufferedImage img;
 
-                while (rs.next()) {
-                    d = new DbImage(ImageType.ItemImage);
-                    d.setId(rs.getLong("id"));
-                    d.setName(rs.getString("name"));
-                    d.setImageType(rs.getInt("imageType"));
-                    d.setImageIcon(DbImage.blobToImage(rs.getBlob("image")));
-                    d.setInserted(true);
-
-                    images.add(d);
+                    try {
+                        img = ImageIO.read(imageFile);
+                        if (img != null) {
+                            DbImage image = new DbImage(ImageType.ItemImage, new ImageIcon(img), imageFile.getName());
+                            image.setId(id++);
+                            images.add(image);
+                        }
+                    } catch (final IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
+
+//        DbImage d;
+//        String sql = scriptResource.readString(ImageType.ItemImage.getFolderName() + DbObject.SQL_SELECT_ALL);
+//        try (Connection connection = getConnection()) {
+//            try (PreparedStatement stmt = connection.prepareStatement(sql);
+//                 ResultSet rs = stmt.executeQuery()) {
+//
+//                while (rs.next()) {
+//                    d = new DbImage(ImageType.ItemImage);
+//                    d.setId(rs.getLong("id"));
+//                    d.setName(rs.getString("name"));
+//                    d.setImageType(rs.getInt("imageType"));
+//                    d.setImageIcon(DbImage.blobToImage(rs.getBlob("image")));
+//                    d.setInserted(true);
+//
+//                    images.add(d);
+//                }
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
 
         return images;
     }

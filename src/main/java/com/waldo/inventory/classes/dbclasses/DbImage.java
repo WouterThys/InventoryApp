@@ -16,6 +16,7 @@ import java.sql.Blob;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Objects;
 
 import static com.waldo.inventory.database.ImageDbAccess.imDb;
 import static com.waldo.inventory.gui.Application.scriptResource;
@@ -37,6 +38,23 @@ public class DbImage extends DbObject {
         this.imageType = imageType;
         this.imageIcon = imageIcon;
         this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        DbImage dbImage = (DbImage) o;
+        return getId() == dbImage.getId() &&
+                Objects.equals(getName(), dbImage.getName()) &&
+                (getImageType() == dbImage.getImageType());
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(super.hashCode(), getImageType());
     }
 
     @Override
@@ -69,8 +87,9 @@ public class DbImage extends DbObject {
     @Override
     public DbImage createCopy(DbObject copyInto) {
         DbImage cpy = (DbImage) copyInto;
+        copyBaseFields(cpy);
         cpy.imageType = imageType;
-        cpy.image = image;
+        cpy.imageIcon = imageIcon;
         return cpy;
     }
 

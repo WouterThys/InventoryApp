@@ -1,13 +1,13 @@
 package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.Utils.resource.ImageResource;
+import com.waldo.inventory.classes.dbclasses.DbImage;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.components.popups.CopyPastePopup;
-import com.waldo.inventory.gui.dialogs.imagedialogs.selectimagedialog.SelectImageDialog;
+import com.waldo.inventory.gui.dialogs.editimagedialog.EditImageDialog;
 import com.waldo.test.ImageSocketServer.ImageType;
 import com.waldo.utils.GuiUtils;
-import com.waldo.utils.icomponents.IDialog;
 import com.waldo.utils.icomponents.IEditedListener;
 import com.waldo.utils.icomponents.IPanel;
 
@@ -32,6 +32,8 @@ public class IImagePanel extends IPanel implements ImageResource.ImageRequester,
     private ImageType imageType;
     private String imageName;
     private Dimension imageDimension;
+
+    private DbObject dbObject;
 
     private Window parent;
     private IEditedListener editedListener;
@@ -82,6 +84,13 @@ public class IImagePanel extends IPanel implements ImageResource.ImageRequester,
         }
     }
 
+    public DbObject getDbObject() {
+        return dbObject;
+    }
+
+    public void setDbObject(DbObject dbObject) {
+        this.dbObject = dbObject;
+    }
 
     public void setEditable(boolean editable) {
         this.editable = editable;
@@ -93,6 +102,10 @@ public class IImagePanel extends IPanel implements ImageResource.ImageRequester,
             imageType = ImageType.Other;
         }
         return imageType;
+    }
+
+    public void setImageType(ImageType imageType) {
+        this.imageType = imageType;
     }
 
     @Override
@@ -265,11 +278,13 @@ public class IImagePanel extends IPanel implements ImageResource.ImageRequester,
         IActions.EditAction editImageAction = new IActions.EditAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                SelectImageDialog selectImageDialog = new SelectImageDialog(parent, false, imageType);
-                if (selectImageDialog.showDialog() == IDialog.OK) {
-                    String imageName = selectImageDialog.getImageName();
-                    saveImage(imageName, selectImageDialog.getSelectedFile());
-                }
+//                SelectImageDialog selectImageDialog = new SelectImageDialog(parent, false, imageType);
+//                if (selectImageDialog.showDialog() == IDialog.OK) {
+//                    String imageName = selectImageDialog.getImageName();
+//                    saveImage(imageName, selectImageDialog.getSelectedFile());
+//                }
+                EditImageDialog dialog = new EditImageDialog(parent);
+                dialog.showDialog();
             }
         };
 
@@ -314,6 +329,18 @@ public class IImagePanel extends IPanel implements ImageResource.ImageRequester,
 
     @Override
     public void updateComponents(Object... objects) {
+
+        if (dbObject != null) {
+            SwingUtilities.invokeLater(() -> {
+                DbImage image = imageResource.getImage(imageType, dbObject.getImageId());
+                if (image != null) {
+                    setImage(image.getImageIcon());
+                }
+            });
+            return;
+        }
+
+        // Old way
         if (!getImageName().isEmpty()) {
             imageResource.requestImage(this);
         } else {
@@ -321,4 +348,8 @@ public class IImagePanel extends IPanel implements ImageResource.ImageRequester,
         }
     }
 
+    @Override
+    public long getImageId() {
+        return 0;
+    }
 }

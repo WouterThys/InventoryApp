@@ -30,9 +30,8 @@ public class ImageResource extends Resource implements Client.ImageClientListene
 
     public interface ImageRequester {
         ImageType getImageType();
-
+        long getImageId();
         String getImageName();
-
         void setImage(ImageIcon image);
     }
 
@@ -64,8 +63,12 @@ public class ImageResource extends Resource implements Client.ImageClientListene
     private final Map<String, ImageIcon> otherImageMap = new HashMap<>();
 
     // NEW CACHE FOR DB IMAGES
-    private final Map<Long, DbImage> itemDbImageMap = new HashMap<>();
-    private List<DbImage> dbImageList = null;
+    private final Map<Long, DbImage> dbItemImageList = new HashMap<>();
+    private final Map<Long, DbImage> dbDistributorList = new HashMap<>();
+    private final Map<Long, DbImage> dbManufacturerImageList = new HashMap<>();
+    private final Map<Long, DbImage> dbIdeImageList = new HashMap<>();
+    private final Map<Long, DbImage> dbProjectImageList = new HashMap<>();
+    private final Map<Long, DbImage> dbOtherImageList = new HashMap<>();
 
     // Requests for image
     private List<ImageRequest> imageRequests = new ArrayList<>();
@@ -95,23 +98,6 @@ public class ImageResource extends Resource implements Client.ImageClientListene
         }
     }
 
-
-    public DbImage getDbImage(ImageType type, long id) {
-        if (id > DbObject.UNKNOWN_ID) {
-            if (dbImageList == null) {
-                dbImageList = imDb().fetchItemImages();
-            }
-
-            for (DbImage image : dbImageList) {
-                if (image.getId() == id) {
-                    return image;
-                }
-            }
-        }
-        return null;
-    }
-
-
     public ImageIcon getDefaultImage(ImageType imageType) {
         switch (imageType) {
             case ItemImage:
@@ -129,6 +115,185 @@ public class ImageResource extends Resource implements Client.ImageClientListene
                 return otherImageMap.get(DEFAULT);
         }
     }
+
+
+    public void dummy(ImageType type) {
+        switch (type) {
+            case ItemImage:
+                break;
+            case DistributorImage:
+                break;
+            case ManufacturerImage:
+                break;
+            case IdeImage:
+                break;
+            case ProjectImage:
+                break;
+            case Other:
+                break;
+            default:
+                break;
+        }
+    }
+
+
+    /**
+     * Make this call on a different thread!!
+     */
+    public DbImage getImage(ImageType type, long id) {
+        DbImage image = null;
+        if (type != null) {
+            image = findImageForRequest(type, id);
+            if (image == null) {
+                image = imDb().fetch(type, id);
+                onInserted(image); // Adds image
+            }
+        }
+        return  image;
+    }
+
+    private DbImage findImageForRequest(ImageType type, long id) {
+        DbImage foundImage = null;
+            if ((type != null) && (id > DbObject.UNKNOWN_ID)) {
+                switch (type) {
+                    case ItemImage:
+                        foundImage = dbItemImageList.get(id);
+                        break;
+                    case DistributorImage:
+                        foundImage = dbDistributorList.get(id);
+                        break;
+                    case ManufacturerImage:
+                        foundImage = dbManufacturerImageList.get(id);
+                        break;
+                    case IdeImage:
+                        foundImage = dbIdeImageList.get(id);
+                        break;
+                    case ProjectImage:
+                        foundImage = dbProjectImageList.get(id);
+                        break;
+                    case Other:
+                        foundImage = dbOtherImageList.get(id);
+                        break;
+                    default:
+                        break;
+                }
+
+        }
+        return foundImage;
+    }
+
+    public List<DbImage> getAll(ImageType type) {
+        List<DbImage> imageList = new ArrayList<>();
+        switch (type) {
+            case ItemImage:
+                imageList.addAll(imDb().fetchItemImages());
+                break;
+            case DistributorImage:
+                imageList.addAll(dbDistributorList.values());
+                break;
+            case ManufacturerImage:
+                imageList.addAll(dbManufacturerImageList.values());
+                break;
+            case IdeImage:
+                imageList.addAll(dbIdeImageList.values());
+                break;
+            case ProjectImage:
+                imageList.addAll(dbProjectImageList.values());
+                break;
+            case Other:
+                imageList.addAll(dbOtherImageList.values());
+                break;
+            default:
+                break;
+        }
+        return imageList;
+    }
+
+
+
+    //
+    // Image db listener
+    //
+    @Override
+    public void onInserted(DbImage image) {
+        switch (image.getImageType()) {
+            case ItemImage:
+                dbItemImageList.put(image.getId(), image);
+                break;
+            case DistributorImage:
+                dbDistributorList.put(image.getId(), image);
+                break;
+            case ManufacturerImage:
+                dbManufacturerImageList.put(image.getId(), image);
+                break;
+            case IdeImage:
+                dbIdeImageList.put(image.getId(), image);
+                break;
+            case ProjectImage:
+                dbProjectImageList.put(image.getId(), image);
+                break;
+            case Other:
+                dbOtherImageList.put(image.getId(), image);
+                break;
+                default:
+                    break;
+
+        }
+    }
+
+    @Override
+    public void onUpdated(DbImage image) {
+
+    }
+
+    @Override
+    public void onDeleted(DbImage image) {
+        switch (image.getImageType()) {
+            case ItemImage:
+                dbItemImageList.remove(image.getId());
+                break;
+            case DistributorImage:
+                dbDistributorList.remove(image.getId());
+                break;
+            case ManufacturerImage:
+                dbManufacturerImageList.remove(image.getId());
+                break;
+            case IdeImage:
+                dbIdeImageList.remove(image.getId());
+                break;
+            case ProjectImage:
+                dbProjectImageList.remove(image.getId());
+                break;
+            case Other:
+                dbOtherImageList.remove(image.getId());
+                break;
+            default:
+                break;
+
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // OLD ->
+
+
 
     public void requestImage(final ImageRequester imageRequester) {
         if (imageRequester != null) {
@@ -517,22 +682,4 @@ public class ImageResource extends Resource implements Client.ImageClientListene
         }
     }
 
-
-    //
-    // Image db listener
-    //
-    @Override
-    public void onInserted(DbImage image) {
-        itemDbImageMap.put(image.getId(), image);
-    }
-
-    @Override
-    public void onUpdated(DbImage image) {
-
-    }
-
-    @Override
-    public void onDeleted(DbImage image) {
-        itemDbImageMap.remove(image.getId());
-    }
 }

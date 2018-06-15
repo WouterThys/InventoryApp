@@ -362,6 +362,34 @@ public class Statics {
         }
     }
 
+    public enum ImageServerTypes {
+        Unknown  (""),
+        Server   ("Server"),
+        Database ("Database");
+
+        private final String string;
+        ImageServerTypes(String string) {
+            this.string = string;
+        }
+
+        @Override
+        public String toString() {
+            return string;
+        }
+
+        public static ImageServerTypes fromString(String type) {
+            if (type != null) {
+                switch (type) {
+                    default:
+                    case "": return Unknown;
+                    case "Server": return Server;
+                    case "Database": return Database;
+                }
+            }
+            return Unknown;
+        }
+    }
+
     public enum DbTypes {
         Unknown (""),
         Online  ("Online (MySQL)"),

@@ -597,6 +597,8 @@ public class SettingsManager {
                     ImageServerSettings imageServerSettings = new ImageServerSettings();
 
                     imageServerSettings.setName(rs.getString("name"));
+                    //imageServerSettings.setType(rs.getString("type"));
+
                     imageServerSettings.setImageServerName(rs.getString("imageServerName"));
                     imageServerSettings.setConnectAsName(rs.getString("connectAsName"));
 
@@ -682,14 +684,16 @@ public class SettingsManager {
         String sql = scriptResource.readString("imageserversettings.sqlInsert");
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                stmt.setString(1,  set.getName());
-                stmt.setString(2, set.getImageServerName());
-                stmt.setString(3, set.getConnectAsName());
-                stmt.setString(2, set.getImageDbSettings().getDbName());
-                stmt.setString(3, set.getImageDbSettings().getDbIp());
-                stmt.setString(4, set.getImageDbSettings().getDbUserName());
-                stmt.setString(5, set.getImageDbSettings().getDbUserPw());
-                stmt.setString(6, Statics.DbTypes.Online.toString());
+                int ndx = 1;
+                stmt.setString(ndx++, set.getName());
+                stmt.setString(ndx++, set.getType().toString());
+                stmt.setString(ndx++, set.getImageServerName());
+                stmt.setString(ndx++, set.getConnectAsName());
+                stmt.setString(ndx++, set.getImageDbSettings().getDbName());
+                stmt.setString(ndx++, set.getImageDbSettings().getDbIp());
+                stmt.setString(ndx++, set.getImageDbSettings().getDbUserName());
+                stmt.setString(ndx++, set.getImageDbSettings().getDbUserPw());
+                stmt.setString(ndx, Statics.DbTypes.Online.toString());
                 stmt.execute();
             }
         } catch (SQLException e) {
@@ -754,14 +758,16 @@ public class SettingsManager {
         String sql = scriptResource.readString("imageserversettings.sqlUpdate");
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                stmt.setString(1, set.getImageServerName());
-                stmt.setString(2, set.getConnectAsName());
-                stmt.setString(3, set.getImageDbSettings().getDbName());
-                stmt.setString(4, set.getImageDbSettings().getDbIp());
-                stmt.setString(5, set.getImageDbSettings().getDbUserName());
-                stmt.setString(6, set.getImageDbSettings().getDbUserPw());
-                stmt.setString(7, Statics.DbTypes.Online.toString());
-                stmt.setString(8,  set.getName()); // Where name
+                int ndx = 1;
+                stmt.setString(ndx++, set.getType().toString());
+                stmt.setString(ndx++, set.getImageServerName());
+                stmt.setString(ndx++, set.getConnectAsName());
+                stmt.setString(ndx++, set.getImageDbSettings().getDbName());
+                stmt.setString(ndx++, set.getImageDbSettings().getDbIp());
+                stmt.setString(ndx++, set.getImageDbSettings().getDbUserName());
+                stmt.setString(ndx++, set.getImageDbSettings().getDbUserPw());
+                stmt.setString(ndx++, Statics.DbTypes.Online.toString());
+                stmt.setString(ndx,  set.getName()); // Where name
 
                 stmt.execute();
             }
