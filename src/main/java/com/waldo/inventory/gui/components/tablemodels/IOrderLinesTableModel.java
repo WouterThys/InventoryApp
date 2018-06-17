@@ -25,16 +25,6 @@ public class IOrderLinesTableModel extends IAbstractTableModel<AbstractOrderLine
         super(COLUMN_NAMES, COLUMN_CLASSES);
     }
 
-//    @Override
-//    public void setItemList(List<AbstractOrderLine> itemList) {
-//        super.setItemList(itemList);
-//
-//        if (itemList.size() > 0) {
-//            AbstractOrder order = itemList.get(0).getOrder();
-//            isEditable = order != null && (order.isPlanned() || !order.isLocked());
-//        }
-//    }
-
     @Override
     public void clearItemList() {
         super.clearItemList();
@@ -52,7 +42,9 @@ public class IOrderLinesTableModel extends IAbstractTableModel<AbstractOrderLine
                 case 1: // Amount
                     return line.getAmount();
                 case 2: // Name
-                    return line.toString();
+                    if (line.getLine() != null) {
+                        return line.getLine().toString();
+                    }
                 case 3: // Reference
                     DistributorPartLink pn = line.getDistributorPartLink();
                     if (pn != null) {

@@ -332,7 +332,7 @@ public class ItemOrderPanel extends ItemOrderPanelLayout {
 //    }
 
     @Override
-    void onMoveToOrdered(ItemOrder itemOrder) {
+    void onMoveToOrdered(AbstractOrder itemOrder) {
         Application.beginWait(ItemOrderPanel.this);
         try {
             if (OrderManager.moveToOrdered(itemOrder)) {
@@ -362,7 +362,7 @@ public class ItemOrderPanel extends ItemOrderPanelLayout {
     }
 
     @Override
-    void onMoveToReceived(ItemOrder itemOrder) {
+    void onMoveToReceived(AbstractOrder itemOrder) {
         Application.beginWait(ItemOrderPanel.this);
         try {
             OrderManager.moveToReceived(itemOrder);
@@ -372,7 +372,7 @@ public class ItemOrderPanel extends ItemOrderPanelLayout {
     }
 
     @Override
-    void onBackToOrdered(ItemOrder itemOrder) {
+    void onBackToOrdered(AbstractOrder itemOrder) {
         if (itemOrder != null && itemOrder.canBeSaved() && itemOrder.isReceived()) {
             int res = JOptionPane.showConfirmDialog(
                     ItemOrderPanel.this,
@@ -393,7 +393,7 @@ public class ItemOrderPanel extends ItemOrderPanelLayout {
     }
 
     @Override
-    void onBackToPlanned(ItemOrder itemOrder) {
+    void onBackToPlanned(AbstractOrder itemOrder) {
         if (itemOrder != null && itemOrder.canBeSaved() && itemOrder.isOrdered()) {
             int res = JOptionPane.showConfirmDialog(
                     ItemOrderPanel.this,

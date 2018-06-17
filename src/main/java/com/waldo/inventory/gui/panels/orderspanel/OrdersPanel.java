@@ -4,7 +4,7 @@ import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.managers.OrderManager;
+import com.waldo.inventory.gui.components.IdBToolBar;
 
 import java.awt.event.MouseEvent;
 
@@ -18,11 +18,6 @@ public class OrdersPanel extends OrdersPanelLayout {
 
         initializeComponents();
         initializeLayouts();
-
-//        cache().addListener(Division.class, divisionsChanged);
-//        cache().addListener(Item.class, itemsChanged);
-//        cache().addListener(Set.class, setsChanged);
-
 
         cache().addListener(ItemOrder.class, createItemOrderListener());
         cache().addListener(PcbOrder.class, createPcbOrderListener());
@@ -176,6 +171,27 @@ public class OrdersPanel extends OrdersPanelLayout {
     }
 
 
+    // Tool bars
+    @Override
+    public void onToolBarRefresh(IdBToolBar source) {
+
+    }
+
+    @Override
+    public void onToolBarAdd(IdBToolBar source) {
+
+    }
+
+    @Override
+    public void onToolBarDelete(IdBToolBar source) {
+
+    }
+
+    @Override
+    public void onToolBarEdit(IdBToolBar source) {
+
+    }
+
     // Selection
     @Override
     void onOrderSelected(AbstractOrder order) {
@@ -186,6 +202,7 @@ public class OrdersPanel extends OrdersPanelLayout {
             lineTableInitialize(order);
         } else {
             orderTableClear();
+            lineTableClear();
         }
         orderDetailsPanel.updateComponents(order);
         updateEnabledComponents();
@@ -227,34 +244,5 @@ public class OrdersPanel extends OrdersPanelLayout {
     @Override
     void onLineRightClick(MouseEvent e) {
 
-    }
-
-    // Update order state
-    @Override
-    void onMoveToOrdered(AbstractOrder order) {
-        if (order != null) {
-            OrderManager.moveToOrdered(order);
-        }
-    }
-
-    @Override
-    void onMoveToReceived(AbstractOrder order) {
-        if (order != null) {
-            OrderManager.moveToReceived(order);
-        }
-    }
-
-    @Override
-    void onBackToOrdered(AbstractOrder order) {
-        if (order != null) {
-            OrderManager.backToOrdered(order);
-        }
-    }
-
-    @Override
-    void onBackToPlanned(AbstractOrder order) {
-        if (order != null) {
-            OrderManager.backToPlanned(order);
-        }
     }
 }

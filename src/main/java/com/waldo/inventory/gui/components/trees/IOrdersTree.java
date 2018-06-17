@@ -67,6 +67,14 @@ public class IOrdersTree extends ITree<IOrdersTree.OrderTreeNode> {
         }
 
         @Override
+        public String toString() {
+            return "OrderTreeNode{" +
+                    "orderState=" + orderState +
+                    ", year=" + year +
+                    '}';
+        }
+
+        @Override
         public boolean equals(Object o) {
             if (this == o) return true;
             if (!(o instanceof OrderTreeNode)) return false;
@@ -196,7 +204,7 @@ public class IOrdersTree extends ITree<IOrdersTree.OrderTreeNode> {
         }
 
         receivedNode.removeAllChildren();
-        for (OrderTreeNode o : orderedList) {
+        for (OrderTreeNode o : receivedList) {
             receivedNode.add(new DefaultMutableTreeNode(o, false));
         }
     }

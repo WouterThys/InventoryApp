@@ -17,9 +17,9 @@ import static com.waldo.inventory.gui.Application.imageResource;
 public class IOrderTableModel extends IAbstractTableModel<AbstractOrder> {
 
     // Names and classes
-    private static final String[] COLUMN_NAMES = {"", "Distributor", "Name", "Modified", "Ordered", "Received", "A"};
-    private static final String[] TOOLTIPS = {"State", "Ordered by", "Order name", "Date modified", "Date ordered", "Date received", "Auto order"};
-    private static final Class[] COLUMN_CLASSES = {ILabel.class, String.class, String.class, String.class, String.class, String.class, Boolean.class};
+    private static final String[] COLUMN_NAMES = {"", "Distributor", "Name", "Modified", "Ordered", "Received"};
+    private static final String[] TOOLTIPS = {"State", "Ordered by", "Order name", "Date modified", "Date ordered", "Date received"};
+    private static final Class[] COLUMN_CLASSES = {ILabel.class, String.class, String.class, String.class, String.class, String.class};
 
     public IOrderTableModel() {
         super(COLUMN_NAMES, COLUMN_CLASSES, TOOLTIPS);
@@ -48,8 +48,6 @@ public class IOrderTableModel extends IAbstractTableModel<AbstractOrder> {
                     return DateUtils.formatDate(order.getDateOrdered());
                 case 5: // Received
                     return DateUtils.formatDate(order.getDateReceived());
-                case 6: // Auto order
-                    return order.isAutoOrder();
 
             }
         }

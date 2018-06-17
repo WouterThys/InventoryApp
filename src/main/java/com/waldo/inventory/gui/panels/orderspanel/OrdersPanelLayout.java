@@ -5,6 +5,7 @@ import com.waldo.inventory.classes.dbclasses.AbstractOrder;
 import com.waldo.inventory.classes.dbclasses.AbstractOrderLine;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.ITablePanel;
+import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.tablemodels.IOrderLinesTableModel;
 import com.waldo.inventory.gui.components.tablemodels.IOrderTableModel;
 import com.waldo.inventory.gui.components.trees.IOrdersTree;
@@ -18,7 +19,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class OrdersPanelLayout extends IPanel {
+public abstract class OrdersPanelLayout extends IPanel implements IdBToolBar.IdbToolBarListener{
 
 
     /*
@@ -59,11 +60,6 @@ public abstract class OrdersPanelLayout extends IPanel {
     abstract void onOrderRightClick(MouseEvent e);
     abstract void onLineRightClick(MouseEvent e);
 
-    abstract void onMoveToOrdered(AbstractOrder order);
-    abstract void onMoveToReceived(AbstractOrder order);
-    abstract void onBackToOrdered(AbstractOrder order);
-    abstract void onBackToPlanned(AbstractOrder order);
-
     abstract void onOrderSelected(AbstractOrder order);
     abstract void onLineSelected(AbstractOrderLine line);
     abstract void onTreeSelected(OrderStates states, int year);
@@ -98,11 +94,18 @@ public abstract class OrdersPanelLayout extends IPanel {
     //
     // Table stuff
     //
-    public void orderTableInitialize(OrderStates orderState, int year) {
+    void orderTableInitialize(OrderStates orderState, int year) {
         List<AbstractOrder> orderList = SearchManager.sm().findOrdersForStateAndYear(orderState, year);
         orderTableModel.setItemList(orderList);
-        selectedOrder = null;
+
         selectedOrderLine = null;
+        if (orderList.contains(selectedOrder)) {
+            onOrderSelected(selectedOrder);
+        } else if (orderList.size() > 0) {
+            onOrderSelected(orderList.get(0));
+        } else {
+            onOrderSelected(null);
+        }
     }
 
     long orderTableUpdate() {
@@ -208,8 +211,24 @@ public abstract class OrdersPanelLayout extends IPanel {
     public void initializeComponents() {
 
         // Details
-        orderDetailsPanel = new OrderDetailsPanel();
-        lineDetailsPanel = new OrderLineDetailsPanel();
+        orderDetailsPanel = new OrderDetailsPanel(application) {
+            @Override
+            public void onToolBarDelete(IdBToolBar source) {
+                OrdersPanelLayout.this.onToolBarDelete(source);
+            }
+
+            @Override
+            public void onToolBarEdit(IdBToolBar source) {
+                OrdersPanelLayout.this.onToolBarEdit(source);
+            }
+        };
+        orderDetailsPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createEmptyBorder(2, -1, -1, -1),
+                BorderFactory.createLineBorder(Color.lightGray, 1)
+        ));
+
+
+        lineDetailsPanel = new OrderLineDetailsPanel(application);
 
         // Tree
         ordersTree = new IOrdersTree(IOrdersTree.defaultRoot);
@@ -229,6 +248,7 @@ public abstract class OrdersPanelLayout extends IPanel {
                 SwingUtilities.invokeLater(() -> onOrderSelected(orderTableGetSelected()));
             }
         }, false);
+        orderTablePanel.setDbToolBar(this, true, true, false, false);
         orderTablePanel.setHeaderPanelVisible(true);
         orderTablePanel.addMouseListener(new MouseAdapter() {
             @Override

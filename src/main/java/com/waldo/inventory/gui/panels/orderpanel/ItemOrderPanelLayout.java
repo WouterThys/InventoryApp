@@ -77,10 +77,10 @@ abstract class ItemOrderPanelLayout extends IPanel implements
     abstract void onTreeRightClick(MouseEvent e);
     abstract void onTableRowClicked(MouseEvent e);
 
-    abstract void onMoveToOrdered(ItemOrder itemOrder);
-    abstract void onMoveToReceived(ItemOrder itemOrder);
-    abstract void onBackToOrdered(ItemOrder itemOrder);
-    abstract void onBackToPlanned(ItemOrder itemOrder);
+    abstract void onMoveToOrdered(AbstractOrder itemOrder);
+    abstract void onMoveToReceived(AbstractOrder itemOrder);
+    abstract void onBackToOrdered(AbstractOrder itemOrder);
+    abstract void onBackToPlanned(AbstractOrder itemOrder);
 
     abstract void onDeleteOrderItem(ItemOrderLine orderItem);
     abstract void onEditItem(Item orderItem);
@@ -299,22 +299,22 @@ abstract class ItemOrderPanelLayout extends IPanel implements
 
         tbOrderFlowPanel = new IOrderFlowPanel() {
             @Override
-            public void moveToOrdered(ItemOrder itemOrder) {
+            public void moveToOrdered(AbstractOrder itemOrder) {
                 onMoveToOrdered(itemOrder);
             }
 
             @Override
-            public void moveToReceived(ItemOrder itemOrder) {
+            public void moveToReceived(AbstractOrder itemOrder) {
                 onMoveToReceived(itemOrder);
             }
 
             @Override
-            public void backToOrdered(ItemOrder itemOrder) {
+            public void backToOrdered(AbstractOrder itemOrder) {
                 onBackToOrdered(itemOrder);
             }
 
             @Override
-            public void backToPlanned(ItemOrder itemOrder) {
+            public void backToPlanned(AbstractOrder itemOrder) {
                 onBackToPlanned(itemOrder);
             }
         };

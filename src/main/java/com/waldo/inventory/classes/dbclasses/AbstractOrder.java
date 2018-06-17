@@ -67,22 +67,22 @@ public abstract class AbstractOrder<T extends Orderable> extends DbObject {
         return ndx;
     }
 
-    @Override
-    public String toString() {
-        if (isOrdered()) {
-            return DateUtils.formatMonthDate(dateOrdered) + " - " + super.toString();
-        } else {
-            if (isUnknown() || !canBeSaved()) {
-                return super.toString();
-            } else {
-                if (dateModified != null) {
-                    return DateUtils.formatMonthDate(dateModified) + " - " + super.toString();
-                } else {
-                    return "";
-                }
-            }
-        }
-    }
+//    @Override
+//    public String toString() {
+//        if (isOrdered()) {
+//            return DateUtils.formatMonthDate(dateOrdered) + " - " + super.toString();
+//        } else {
+//            if (isUnknown() || !canBeSaved()) {
+//                return super.toString();
+//            } else {
+//                if (dateModified != null) {
+//                    return DateUtils.formatMonthDate(dateModified) + " - " + super.toString();
+//                } else {
+//                    return "";
+//                }
+//            }
+//        }
+//    }
 
     @Override
     public boolean equals(Object obj) {
