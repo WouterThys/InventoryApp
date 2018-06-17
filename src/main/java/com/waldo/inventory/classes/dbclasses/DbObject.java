@@ -214,6 +214,7 @@ public abstract class DbObject {
             if (!(o instanceof DbObject)) return false;
             dbObject = (DbObject) o;
             if (getId() == dbObject.getId() &&
+                    getImageId() == dbObject.getImageId() &&
                     Objects.equals(TABLE_NAME, dbObject.TABLE_NAME) &&
                     Objects.equals(getName(), dbObject.getName())) {
                 return true;

@@ -25,8 +25,8 @@ public class ImageLabel extends ILabel implements MouseListener {
         setText(image.toString());
         if (image.getImageIcon() != null) {
             ImageIcon icon = image.getImageIcon();
-            if (icon.getIconWidth() > 128 || icon.getIconHeight() > 128) {
-                icon = ImageResource.scaleImage(icon, new Dimension(128, 128));
+            if (icon.getIconWidth() > 100 || icon.getIconHeight() > 100) {
+                icon = ImageResource.scaleImage(icon, new Dimension(100, 100));
             }
             setIcon(icon);
         } else {

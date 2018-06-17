@@ -1,9 +1,11 @@
 package com.waldo.inventory.gui.dialogs.editimagedialog;
 
+import com.waldo.inventory.Utils.Statics.ImageType;
+import com.waldo.inventory.Utils.resource.ImageResource;
 import com.waldo.inventory.classes.dbclasses.DbImage;
 import com.waldo.inventory.gui.components.IdBToolBar;
-import com.waldo.test.ImageSocketServer.ImageType;
 import com.waldo.utils.GuiUtils;
+import com.waldo.utils.icomponents.ILabel;
 import com.waldo.utils.icomponents.IPanel;
 import com.waldo.utils.icomponents.ITextField;
 
@@ -24,6 +26,7 @@ public class ImagesPanel extends IPanel {
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private JPanel imagePanel;
 
+    private ILabel imageLbl;
     private ITextField imageNameTf;
     private ITextField imageTypeTf;
     private ITextField imageIdTf;
@@ -99,11 +102,13 @@ public class ImagesPanel extends IPanel {
 
     private void setImageDetails(DbImage image) {
         if (image != null) {
+            imageLbl.setIcon(ImageResource.scaleImage(image.getImageIcon(), new Dimension(200, 200)));
             imageNameTf.setText(image.getName());
             imageTypeTf.setText(image.getImageType().toString());
             imageIdTf.setText(String.valueOf(image.getId()));
             imageLocationTf.setText(image.getImageType().getFolderName());
         } else {
+            imageLbl.setIcon(null);
             imageNameTf.setText("");
             imageTypeTf.setText("");
             imageIdTf.setText("");
@@ -121,8 +126,12 @@ public class ImagesPanel extends IPanel {
         gbc.addLine("Type: ", imageTypeTf);
         gbc.addLine("Location: ", imageLocationTf);
 
-        detailsPanel.add(toolBar, BorderLayout.NORTH);
-        detailsPanel.add(infoPanel, BorderLayout.CENTER);
+        Box box = Box.createVerticalBox();
+        box.add(imageLbl);
+        box.add(infoPanel);
+
+        detailsPanel.add(toolBar, BorderLayout.PAGE_START);
+        detailsPanel.add(box, BorderLayout.CENTER);
 
         return detailsPanel;
     }
@@ -134,7 +143,15 @@ public class ImagesPanel extends IPanel {
     public void initializeComponents() {
         imagePanel = new JPanel(new GridLayout(0, 3));
         setPreferredSize(new Dimension(800, 600));
-        //imagePanel = new JPanel(new FlowLayout());
+
+        imageLbl = new ILabel();
+        imageLbl.setBorder(BorderFactory.createLineBorder(Color.gray, 1));
+        imageLbl.setHorizontalAlignment(SwingConstants.CENTER);
+        imageLbl.setPreferredSize(new Dimension(200, 200));
+        imageLbl.setMaximumSize(new Dimension(200, 200));
+        imageLbl.setMinimumSize(new Dimension(200, 200));
+        imageLbl.setBackground(Color.WHITE);
+        imageLbl.setOpaque(true);
 
         imageNameTf = new ITextField(false);
         imageTypeTf = new ITextField(false);

@@ -1,11 +1,11 @@
 package com.waldo.inventory.gui.panels.projectspanel.projectdetailpanel;
 
 import com.waldo.inventory.Utils.GuiUtils;
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IImagePanel;
 import com.waldo.inventory.gui.dialogs.editremarksdialog.EditRemarksDialog;
-import com.waldo.test.ImageSocketServer.ImageType;
 import com.waldo.utils.DateUtils;
 import com.waldo.utils.icomponents.IDialog;
 import com.waldo.utils.icomponents.ITextField;
@@ -69,11 +69,7 @@ public class ProjectDetailsPanel extends JPanel implements GuiUtils.GuiInterface
      *                  METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private void updateIcon(ProjectObject projectObject) {
-        if (projectObject != null && projectObject.getProject() != null) {
-            imagePanel.setImage(projectObject.getProject().getIconPath());
-        } else {
-            imagePanel.setImage(imageResource.getDefaultImage(ImageType.ProjectImage));
-        }
+        imagePanel.updateComponents(projectObject);
     }
 
     private void updateDetails(ProjectObject project) {
@@ -204,7 +200,7 @@ public class ProjectDetailsPanel extends JPanel implements GuiUtils.GuiInterface
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     @Override
     public void initializeComponents() {
-        imagePanel = new IImagePanel(ImageType.ProjectImage, new Dimension(150,150));
+        imagePanel = new IImagePanel(null, Statics.ImageType.ProjectImage, null, new Dimension(150,150));
 
         nameTf = new ITextField(false);
         directoryTf = new ITextField(false);

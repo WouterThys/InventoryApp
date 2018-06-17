@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.dialogs.edititemdialog;
 
 import com.waldo.inventory.Utils.GuiUtils;
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Set;
 import com.waldo.inventory.gui.components.IImagePanel;
@@ -8,7 +9,6 @@ import com.waldo.inventory.gui.components.iDialog;
 import com.waldo.inventory.gui.dialogs.edititemdialog.panels.ComponentPanel;
 import com.waldo.inventory.gui.dialogs.edititemdialog.panels.EditItemOrderPanel;
 import com.waldo.inventory.gui.dialogs.edititemdialog.panels.EditItemStockPanel;
-import com.waldo.test.ImageSocketServer.ImageType;
 import com.waldo.utils.icomponents.IEditedListener;
 import com.waldo.utils.icomponents.ITabbedPane;
 
@@ -78,7 +78,7 @@ public abstract class EditItemDialogLayout<T extends Item> extends iDialog imple
         getButtonNeutral().setText("Save");
         getButtonNeutral().setEnabled(false);
 
-        setTitleImage(new IImagePanel(EditItemDialogLayout.this, ImageType.ItemImage, "", this, new Dimension(64,64)));
+        setTitleImage(new IImagePanel(EditItemDialogLayout.this, Statics.ImageType.ItemImage, selectedItem, new Dimension(64,64), this));
 
         // Tabbed pane
         tabbedPane = new ITabbedPane(JTabbedPane.LEFT);
@@ -134,8 +134,7 @@ public abstract class EditItemDialogLayout<T extends Item> extends iDialog imple
     public void updateComponents(Object... object) {
         beginWait();
         try {
-            //setTitleIcon(ImageResource.scaleImage(selectedItem.getItemIcon(), new Dimension(64, 64)));
-            setTitleIcon(selectedItem.getIconPath());
+            setTitleIcon(selectedItem);
 
             if (selectedItem.isSet()) {
                 setInfoIcon(imageResource.readIcon("Sets.Edit.Title"));

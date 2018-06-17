@@ -2,6 +2,7 @@ package com.waldo.inventory.gui.dialogs.distributorsdialog;
 
 import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.Utils.GuiUtils;
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.Utils.Statics.DistributorType;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Distributor;
@@ -16,7 +17,6 @@ import com.waldo.inventory.gui.components.tablemodels.IOrderFlowTableModel;
 import com.waldo.inventory.gui.dialogs.editdistributororderflowdialog.EditDistributorOrderflowDialog;
 import com.waldo.inventory.gui.dialogs.editorderfileformatdialog.EditOrderFileFormatDialog;
 import com.waldo.inventory.managers.SearchManager;
-import com.waldo.test.ImageSocketServer.ImageType;
 import com.waldo.utils.icomponents.IComboBox;
 import com.waldo.utils.icomponents.ITable;
 import com.waldo.utils.icomponents.ITextField;
@@ -70,7 +70,7 @@ public class DistributorsDialog extends IResourceDialog<Distributor> implements 
 
         detailName = new ITextField("Name");
         detailName.setEnabled(false);
-        detailLogo = new IImagePanel(this, ImageType.DistributorImage, "", this, new Dimension(128, 128));
+        detailLogo = new IImagePanel(this, Statics.ImageType.DistributorImage, null, new Dimension(128, 128), this);
 
         distributorTypeCb = new IComboBox<>(DistributorType.values());
         distributorTypeCb.addItemListener(e -> {
@@ -191,11 +191,10 @@ public class DistributorsDialog extends IResourceDialog<Distributor> implements 
 
     @Override
     protected void setDetails(Distributor distributor) {
-        detailLogo.setImage(imageResource.getDefaultImage(ImageType.DistributorImage));
         if (distributor != null) {
             detailName.setText(distributor.getName());
             browseDistributorPanel.setText(distributor.getWebsite());
-            detailLogo.setImage(distributor.getIconPath());
+            detailLogo.updateComponents(distributor);
             distributorTypeCb.setSelectedItem(distributor.getDistributorType());
 
             // Order flow
@@ -208,6 +207,7 @@ public class DistributorsDialog extends IResourceDialog<Distributor> implements 
             detailName.clearText();
             browseDistributorPanel.clearText();
             distributorTypeCb.setSelectedItem(null);
+            detailLogo.updateComponents((Distributor)null);
             tableModel.clearItemList();
             browseOrderLinkPanel.clearText();
             detailOrderFileFormatCb.setSelectedItem(null);
@@ -236,7 +236,7 @@ public class DistributorsDialog extends IResourceDialog<Distributor> implements 
     public void clearDetails() {
         detailName.setText("");
         browseDistributorPanel.clearText();
-        detailLogo.setImage(imageResource.getDefaultImage(ImageType.DistributorImage));
+        detailLogo.updateComponents((Distributor)null);
 
         // Order flow
         //..

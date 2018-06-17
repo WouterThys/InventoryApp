@@ -1,19 +1,13 @@
 package com.waldo.inventory.Utils.resource;
 
-import com.waldo.inventory.Main;
+import com.waldo.inventory.Utils.Statics.ImageType;
 import com.waldo.inventory.classes.dbclasses.DbImage;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.database.interfaces.ImageChangedListener;
-import com.waldo.inventory.database.settings.SettingsManager;
-import com.waldo.inventory.database.settings.settingsclasses.ImageServerSettings;
-import com.waldo.test.ImageSocketServer.ImageType;
-import com.waldo.test.client.Client;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -26,14 +20,7 @@ import java.util.List;
 import static com.waldo.inventory.database.ImageDbAccess.imDb;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
 
-public class ImageResource extends Resource implements Client.ImageClientListener, ImageChangedListener {
-
-    public interface ImageRequester {
-        ImageType getImageType();
-        long getImageId();
-        String getImageName();
-        void setImage(ImageIcon image);
-    }
+public class ImageResource extends Resource implements ImageChangedListener {
 
     private static final ImageResource INSTANCE = new ImageResource();
 
@@ -43,56 +30,27 @@ public class ImageResource extends Resource implements Client.ImageClientListene
 
     private ImageResource() {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            if (client != null) {
-                client.disconnectClient(true);
-            }
+            imDb().close();
         }));
     }
 
-    private static final String DEFAULT = "default";
+    private static final int DEFAULT = 1;
 
     // Local images
     private final Map<String, ImageIcon> iconImageMap = new HashMap<>();
 
-    // Cache for server images
-    private final Map<String, ImageIcon> itemImageMap = new HashMap<>();
-    private final Map<String, ImageIcon> distributorImageMap = new HashMap<>();
-    private final Map<String, ImageIcon> manufacturerImageMap = new HashMap<>();
-    private final Map<String, ImageIcon> ideImageMap = new HashMap<>();
-    private final Map<String, ImageIcon> projectImageMap = new HashMap<>();
-    private final Map<String, ImageIcon> otherImageMap = new HashMap<>();
-
-    // NEW CACHE FOR DB IMAGES
-    private final Map<Long, DbImage> dbItemImageList = new HashMap<>();
-    private final Map<Long, DbImage> dbDistributorList = new HashMap<>();
-    private final Map<Long, DbImage> dbManufacturerImageList = new HashMap<>();
-    private final Map<Long, DbImage> dbIdeImageList = new HashMap<>();
-    private final Map<Long, DbImage> dbProjectImageList = new HashMap<>();
-    private final Map<Long, DbImage> dbOtherImageList = new HashMap<>();
-
-    // Requests for image
-    private List<ImageRequest> imageRequests = new ArrayList<>();
-
-    private Client client;
+    private final Map<ImageType, Vector<DbImage>> imageMap = new EnumMap<>(ImageType.class);
 
     public void initIcons(String propertiesUrl, String fileName) throws IOException {
         super.initProperties(propertiesUrl, fileName);
-
-        iconImageMap.put(DEFAULT, readIcon("Common.UnknownIcon32"));
-        itemImageMap.put(DEFAULT, readIcon("Items.Edit.Title"));
-        distributorImageMap.put(DEFAULT, readIcon("Distributors.Title"));
-        manufacturerImageMap.put(DEFAULT, readIcon("Manufacturers.Title"));
-        ideImageMap.put(DEFAULT, readIcon("Ides.Title"));
-        projectImageMap.put(DEFAULT, readIcon("Projects.Icon"));
-        otherImageMap.put(DEFAULT, readIcon("Common.UnknownIcon48"));
     }
 
     public void initServer() {
-        updateImageServerConnection();
         try {
             imDb().init();
             imDb().addImageChangedListener(this);
             imDb().startImageWorkers();
+            Status().updateConnectionStatus();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -101,18 +59,17 @@ public class ImageResource extends Resource implements Client.ImageClientListene
     public ImageIcon getDefaultImage(ImageType imageType) {
         switch (imageType) {
             case ItemImage:
-                return itemImageMap.get(DEFAULT);
+                return readIcon("Items.Edit.Title");
             case IdeImage:
-                return ideImageMap.get(DEFAULT);
+                return readIcon("Ides.Title");
             case ProjectImage:
-                return projectImageMap.get(DEFAULT);
+                return readIcon("Projects.Icon");
             case DistributorImage:
-                return distributorImageMap.get(DEFAULT);
+                return readIcon("Distributors.Title");
             case ManufacturerImage:
-                return manufacturerImageMap.get(DEFAULT);
-            //case DivisionImage: return .get(DEFAULT);
+                return readIcon("Manufacturers.Title");
             default:
-                return otherImageMap.get(DEFAULT);
+                return readIcon("Common.UnknownIcon48");
         }
     }
 
@@ -153,60 +110,24 @@ public class ImageResource extends Resource implements Client.ImageClientListene
     }
 
     private DbImage findImageForRequest(ImageType type, long id) {
-        DbImage foundImage = null;
-            if ((type != null) && (id > DbObject.UNKNOWN_ID)) {
-                switch (type) {
-                    case ItemImage:
-                        foundImage = dbItemImageList.get(id);
-                        break;
-                    case DistributorImage:
-                        foundImage = dbDistributorList.get(id);
-                        break;
-                    case ManufacturerImage:
-                        foundImage = dbManufacturerImageList.get(id);
-                        break;
-                    case IdeImage:
-                        foundImage = dbIdeImageList.get(id);
-                        break;
-                    case ProjectImage:
-                        foundImage = dbProjectImageList.get(id);
-                        break;
-                    case Other:
-                        foundImage = dbOtherImageList.get(id);
-                        break;
-                    default:
-                        break;
+        if ((type != null) && (id > DbObject.UNKNOWN_ID)) {
+            if (imageMap.containsKey(type)) {
+                for (DbImage image : imageMap.get(type)) {
+                    if (image.getId() == id) {
+                        return image;
+                    }
                 }
-
+            }
         }
-        return foundImage;
+        return null;
     }
 
     public List<DbImage> getAll(ImageType type) {
-        List<DbImage> imageList = new ArrayList<>();
-        switch (type) {
-            case ItemImage:
-                imageList.addAll(imDb().fetchItemImages());
-                break;
-            case DistributorImage:
-                imageList.addAll(dbDistributorList.values());
-                break;
-            case ManufacturerImage:
-                imageList.addAll(dbManufacturerImageList.values());
-                break;
-            case IdeImage:
-                imageList.addAll(dbIdeImageList.values());
-                break;
-            case ProjectImage:
-                imageList.addAll(dbProjectImageList.values());
-                break;
-            case Other:
-                imageList.addAll(dbOtherImageList.values());
-                break;
-            default:
-                break;
+        if (!type.isAllFetched()) {
+            imageMap.put(type, new Vector<>(imDb().fetchAllImages(type)));
+            type.setAllFetched(true);
         }
-        return imageList;
+        return imageMap.get(type);
     }
 
 
@@ -216,28 +137,13 @@ public class ImageResource extends Resource implements Client.ImageClientListene
     //
     @Override
     public void onInserted(DbImage image) {
-        switch (image.getImageType()) {
-            case ItemImage:
-                dbItemImageList.put(image.getId(), image);
-                break;
-            case DistributorImage:
-                dbDistributorList.put(image.getId(), image);
-                break;
-            case ManufacturerImage:
-                dbManufacturerImageList.put(image.getId(), image);
-                break;
-            case IdeImage:
-                dbIdeImageList.put(image.getId(), image);
-                break;
-            case ProjectImage:
-                dbProjectImageList.put(image.getId(), image);
-                break;
-            case Other:
-                dbOtherImageList.put(image.getId(), image);
-                break;
-                default:
-                    break;
-
+        if (image != null) {
+            if (!imageMap.containsKey(image.getImageType())) {
+                imageMap.put(image.getImageType(), new Vector<>());
+            }
+            if (!imageMap.get(image.getImageType()).contains(image)) {
+                imageMap.get(image.getImageType()).add(image);
+            }
         }
     }
 
@@ -248,28 +154,10 @@ public class ImageResource extends Resource implements Client.ImageClientListene
 
     @Override
     public void onDeleted(DbImage image) {
-        switch (image.getImageType()) {
-            case ItemImage:
-                dbItemImageList.remove(image.getId());
-                break;
-            case DistributorImage:
-                dbDistributorList.remove(image.getId());
-                break;
-            case ManufacturerImage:
-                dbManufacturerImageList.remove(image.getId());
-                break;
-            case IdeImage:
-                dbIdeImageList.remove(image.getId());
-                break;
-            case ProjectImage:
-                dbProjectImageList.remove(image.getId());
-                break;
-            case Other:
-                dbOtherImageList.remove(image.getId());
-                break;
-            default:
-                break;
-
+        if (image != null) {
+            if (imageMap.containsKey(image.getImageType())) {
+                imageMap.get(image.getImageType()).remove(image);
+            }
         }
     }
 
@@ -295,68 +183,7 @@ public class ImageResource extends Resource implements Client.ImageClientListene
 
 
 
-    public void requestImage(final ImageRequester imageRequester) {
-        if (imageRequester != null) {
-            //SwingUtilities.invokeLater(() -> {
-                switch (imageRequester.getImageType()) {
-                    case ItemImage:
-                        fromMap(itemImageMap, imageRequester);
-                        break;
-                    case IdeImage:
-                        fromMap(ideImageMap, imageRequester);
-                        break;
-                    case ProjectImage:
-                        fromMap(projectImageMap, imageRequester);
-                        break;
-                    case DistributorImage:
-                        fromMap(distributorImageMap, imageRequester);
-                        break;
-                    case ManufacturerImage:
-                        fromMap(manufacturerImageMap, imageRequester);
-                        break;
-                    case DivisionImage:
-                        //fromMap(divisio)
-                        break;
-                    case Other:
-                        fromMap(otherImageMap, imageRequester);
-                        break;
-                    default:
-                        break;
-                }
-            //});
-        }
-    }
 
-    public ImageIcon readIdeIcon(String name) {
-        return fromMap(ideImageMap, name, ImageType.IdeImage);
-    }
-
-    private ImageIcon fromMap(Map<String, ImageIcon> map, String name, ImageType imageType) {
-        ImageIcon icon = null;
-        if ((name != null) && (!name.isEmpty())) {
-            if (map.containsKey(name)) {
-                icon = map.get(name);
-            } else {
-                SwingUtilities.invokeLater(() -> fetchImage(imageType, name));
-            }
-        }
-        if (icon == null) {
-            icon = map.get(DEFAULT);
-        }
-        map.put(name, icon);
-        return icon;
-    }
-
-    private void fromMap(Map<String, ImageIcon> map, ImageRequester requester) {
-        String imageName = requester.getImageName();
-        if ((imageName != null) && (!imageName.isEmpty())) {
-            if (map.containsKey(imageName)) {
-                requester.setImage(map.get(imageName));
-            } else {
-                createRequest(requester);
-            }
-        }
-    }
 
     public ImageIcon fetchImage(String imagePath) {
         ImageIcon icon = null;
@@ -435,251 +262,5 @@ public class ImageResource extends Resource implements Client.ImageClientListene
         return null;
     }
 
-
-    //
-    // Image server client
-    //
-
-    public Client getClient() {
-        return client;
-    }
-
-    public boolean serverConnected() {
-        return Main.IMAGE_SERVER && client != null && client.isConnected();
-    }
-
-    public void updateImageServerConnection() {
-        if (Main.IMAGE_SERVER) {
-            ImageServerSettings imageServerSettings = SettingsManager.settings().getImageServerSettings();
-            String clientName = imageServerSettings.getConnectAsName();
-            if (client == null || !client.getClientName().equalsIgnoreCase(clientName) || !client.isConnected()) {
-
-                if (client != null) {
-                    client.disconnectClient(true);
-                }
-
-                client = new Client(imageServerSettings.getImageServerName(), imageServerSettings.getConnectAsName());
-                client.addImageClientListener(this);
-                client.connectClient();
-            }
-        }
-    }
-
-    private void fetchImage(ImageType imageType, String name) {
-        try {
-            client.getImage(name, imageType);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void saveImage(BufferedImage image, ImageType imageType, String imageName) {
-        ImageIcon imageIcon;
-        try {
-            if (image != null) {
-                if (serverConnected()) {
-                    client.sendImage(image, imageName, imageType);
-                }
-                imageIcon = new ImageIcon(image);
-                switch (imageType) {
-                    case ItemImage:
-                        itemImageMap.put(imageName, imageIcon);
-                        break;
-                    case DistributorImage:
-                        distributorImageMap.put(imageName, imageIcon);
-                        break;
-                    case ManufacturerImage:
-                        manufacturerImageMap.put(imageName, imageIcon);
-                        break;
-                    case IdeImage:
-                        ideImageMap.put(imageName, imageIcon);
-                        break;
-                    case ProjectImage:
-                        projectImageMap.put(imageName, imageIcon);
-                        break;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void saveImage(File file, ImageType imageType, String imageName) {
-        ImageIcon imageIcon;
-        try {
-            BufferedImage image = client.sendImage(file, imageType, imageName);
-            if (image != null) {
-                imageIcon = new ImageIcon(image);
-                switch (imageType) {
-                    case ItemImage:
-                        itemImageMap.put(imageName, imageIcon);
-                        break;
-                    case DistributorImage:
-                        distributorImageMap.put(imageName, imageIcon);
-                        break;
-                    case ManufacturerImage:
-                        manufacturerImageMap.put(imageName, imageIcon);
-                        break;
-                    case IdeImage:
-                        ideImageMap.put(imageName, imageIcon);
-                        break;
-                    case ProjectImage:
-                        projectImageMap.put(imageName, imageIcon);
-                        break;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    @Override
-    public void onConnected(String clientName) {
-        if (Main.DEBUG_MODE) System.out.println("Client " + clientName + " connected");
-        Status().updateConnectionStatus();
-    }
-
-    @Override
-    public void onDisconnected(String clientName) {
-        if (Main.DEBUG_MODE) System.out.println("Client " + clientName + " disconnected");
-        Status().updateConnectionStatus();
-    }
-
-    @Override
-    public void onImageTransmitted(String imageName, ImageType imageType) {
-        System.out.println("Image " + imageName + " transmitted");
-    }
-
-    @Override
-    public void onImageReceived(BufferedImage bufferedImage, String imageName, ImageType imageType) {
-        if (bufferedImage != null) {
-            ImageIcon icon = new ImageIcon(bufferedImage);
-            switch (imageType) {
-                case ItemImage:
-                    itemImageMap.put(imageName, icon);
-                    break;
-                case DistributorImage:
-                    distributorImageMap.put(imageName, icon);
-                    break;
-                case ManufacturerImage:
-                    manufacturerImageMap.put(imageName, icon);
-                    break;
-                case IdeImage:
-                    ideImageMap.put(imageName, icon);
-                    break;
-                case ProjectImage:
-                    projectImageMap.put(imageName, icon);
-                    break;
-            }
-
-            checkRequests(icon, imageType, imageName);
-        } else {
-            if (Main.DEBUG_MODE) System.out.println("IR: onImageReceived - Empty image received for " + imageType + ", " + imageName);
-        }
-    }
-
-    private void checkRequests(ImageIcon icon, ImageType imageType, String imageName) {
-        ImageRequest request = findImageRequest(imageType, imageName);
-        if (request != null) {
-            for (ImageRequester requester : request.getImageRequesters()) {
-                if (requester != null) {
-                    // Is requester still interested?
-                    if (requester.getImageType().equals(imageType) && request.getImageName().equals(imageName)) {
-                        requester.setImage(icon);
-                        if (Main.DEBUG_MODE)
-                            System.out.println("IR: checkRequests - set image " + imageType + ", " + imageName);
-                    } else {
-                        if (Main.DEBUG_MODE)
-                            System.out.println("IR: checkRequests - no requester changed his mind " + imageType + ", " + imageName);
-                    }
-                } else {
-                    if (Main.DEBUG_MODE)
-                        System.out.println("IR: checkRequests - no requester found for " + imageType + ", " + imageName);
-                }
-            }
-            imageRequests.remove(request);
-
-        } else {
-            if (Main.DEBUG_MODE) System.out.println("IR: checkRequests - no request found for " + imageType + ", " + imageName);
-        }
-    }
-
-    private ImageRequest findImageRequest(ImageType imageType, String imageName) {
-
-        for (ImageRequest imageRequest : imageRequests) {
-            if (imageRequest.isThis(imageType, imageName)) {
-                return imageRequest;
-            }
-        }
-
-        return null;
-    }
-
-    private void createRequest(final ImageRequester requester) {
-        if (serverConnected() && requester != null) {
-            SwingUtilities.invokeLater(() -> {
-                ImageRequest request = findImageRequest(requester.getImageType(), requester.getImageName());
-                if (request == null) {
-                    request = new ImageRequest(requester.getImageName(), requester.getImageType(), requester);
-
-                    imageRequests.add(request);
-                    fetchImage(request.getImageType(), request.getImageName());
-                } else {
-                    request.addRequester(requester);
-                }
-            });
-        }
-    }
-
-    private class ImageRequest {
-
-        private String imageName;
-        private ImageType imageType;
-        private List<ImageRequester> imageRequesters;
-
-        ImageRequest(String imageName, ImageType imageType, ImageRequester imageRequest) {
-            this.imageName = imageName;
-            this.imageType = imageType;
-            this.imageRequesters = new ArrayList<>();
-            this.imageRequesters.add(imageRequest);
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof ImageRequest)) return false;
-            ImageRequest that = (ImageRequest) o;
-            return Objects.equals(getImageName(), that.getImageName()) &&
-                    getImageType() == that.getImageType();
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(getImageName(), getImageType());
-        }
-
-        boolean isThis(ImageType imageType, String imageName) {
-            return imageType != null && imageName != null && getImageType().equals(imageType) && getImageName().equals(imageName);
-        }
-
-        void addRequester(ImageRequester requester) {
-            if (!imageRequesters.contains(requester)) {
-                imageRequesters.add(requester);
-            }
-        }
-
-        String getImageName() {
-            return imageName;
-        }
-
-        ImageType getImageType() {
-            return imageType;
-        }
-
-        List<ImageRequester> getImageRequesters() {
-            return imageRequesters;
-        }
-    }
 
 }

@@ -8,24 +8,20 @@ import com.waldo.inventory.database.settings.settingsclasses.ImageServerSettings
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.components.iDialog;
-import com.waldo.inventory.gui.dialogs.imagedialogs.selectimagedialog.SelectImageDialog;
-import com.waldo.inventory.gui.dialogs.imagedialogs.sendfullcontentdialog.SendFullContentDialog;
-import com.waldo.test.ImageSocketServer.ImageType;
-import com.waldo.test.client.Client;
-import com.waldo.utils.icomponents.*;
+import com.waldo.utils.icomponents.ICheckBox;
+import com.waldo.utils.icomponents.IComboBox;
+import com.waldo.utils.icomponents.ILabel;
+import com.waldo.utils.icomponents.ITextField;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.util.List;
 
 import static com.waldo.inventory.database.settings.SettingsManager.settings;
-import static com.waldo.inventory.gui.Application.imageResource;
 
-public class ImageServerPanel extends SettingsPnl<ImageServerSettings> implements Client.ImageClientListener {
+public class ImageServerPanel extends SettingsPnl<ImageServerSettings>  {
 
     /*
      *                  COMPONENTS
@@ -68,31 +64,31 @@ public class ImageServerPanel extends SettingsPnl<ImageServerSettings> implement
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
     private void sendFolderContent() {
-        File folder = null;
-        ImageType type = null;
-
-        if (!imageResource.getClient().isConnected()) {
-            JOptionPane.showMessageDialog(
-                    parent,
-                    "Client is not connected..",
-                    "Not connected",
-                    JOptionPane.ERROR_MESSAGE
-            );
-            return;
-        }
-
-        // Folder
-        SelectImageDialog selectImageDialog = new SelectImageDialog(parent, true);
-        if (selectImageDialog.showDialog() == IDialog.OK) {
-            folder = selectImageDialog.getSelectedFile();
-            type = selectImageDialog.getImageType();
-        }
-
-        if (folder != null && folder.exists() && folder.isDirectory() && type != null) {
-            // Send to client
-            SendFullContentDialog dialog = new SendFullContentDialog(parent, imageResource.getClient(), folder, type);
-            dialog.showDialog();
-        }
+//        File folder = null;
+//        ImageType type = null;
+//
+//        if (!imageResource.getClient().isConnected()) {
+//            JOptionPane.showMessageDialog(
+//                    parent,
+//                    "Client is not connected..",
+//                    "Not connected",
+//                    JOptionPane.ERROR_MESSAGE
+//            );
+//            return;
+//        }
+//
+//        // Folder
+//        SelectImageDialog selectImageDialog = new SelectImageDialog(parent, true);
+//        if (selectImageDialog.showDialog() == IDialog.OK) {
+//            folder = selectImageDialog.getSelectedFile();
+//            type = selectImageDialog.getImageType();
+//        }
+//
+//        if (folder != null && folder.exists() && folder.isDirectory() && type != null) {
+//            // Send to client
+//            SendFullContentDialog dialog = new SendFullContentDialog(parent, imageResource.getClient(), folder, type);
+//            dialog.showDialog();
+//        }
     }
 
     @Override
@@ -148,7 +144,7 @@ public class ImageServerPanel extends SettingsPnl<ImageServerSettings> implement
 
             imageServerNameTf.setText(selectedSettings.getImageServerName());
             connectAsNameTf.setText(selectedSettings.getConnectAsName());
-            connectionStateLbl.setText(imageResource.serverConnected() ? "Connected" : "Not connected");
+            //connectionStateLbl.setText(imageResource.serverConnected() ? "Connected" : "Not connected");
 
             imageServerDbNameTf.setText(selectedSettings.getImageDbSettings().getDbName());
             imageServerDbIpTf.setText(selectedSettings.getImageDbSettings().getDbIp());
@@ -218,13 +214,13 @@ public class ImageServerPanel extends SettingsPnl<ImageServerSettings> implement
 
         imageServerEnabledCb = new ICheckBox("Enabled", Main.IMAGE_SERVER);
         imageServerEnabledCb.addActionListener(e -> {
-            if (imageResource.serverConnected()) {
-                if (imageResource.getClient() != null) {
-                    imageResource.getClient().disconnectClient(true);
-                }
-            }
-            Main.IMAGE_SERVER = imageServerEnabledCb.isSelected();
-            updateEnabledComponents();
+//            if (imageResource.serverConnected()) {
+//                if (imageResource.getClient() != null) {
+//                    imageResource.getClient().disconnectClient(true);
+//                }
+//            }
+//            Main.IMAGE_SERVER = imageServerEnabledCb.isSelected();
+//            updateEnabledComponents();
         });
 
         imageServerNameTf = new ITextField(this, "imageServerName");
@@ -235,14 +231,14 @@ public class ImageServerPanel extends SettingsPnl<ImageServerSettings> implement
         connectAction = new IActions.ConnectAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                imageResource.updateImageServerConnection();
-                imageResource.getClient().addImageClientListener(ImageServerPanel.this);
+//                imageResource.updateImageServerConnection();
+//                imageResource.getClient().addImageClientListener(ImageServerPanel.this);
             }
         };
         disconnectAction = new IActions.DisconnectAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                imageResource.getClient().disconnectClient(false);
+//                imageResource.getClient().disconnectClient(false);
             }
         };
         sendContentAction = new IActions.SendContentAction() {
@@ -311,9 +307,9 @@ public class ImageServerPanel extends SettingsPnl<ImageServerSettings> implement
                 }
             }
 
-            if (imageResource.getClient() != null) {
-                imageResource.getClient().addImageClientListener(this);
-            }
+//            if (imageResource.getClient() != null) {
+//                imageResource.getClient().addImageClientListener(this);
+//            }
 
             if (selectedSettings != null) {
                 cbSelectSettings(selectedSettings);
@@ -333,24 +329,24 @@ public class ImageServerPanel extends SettingsPnl<ImageServerSettings> implement
     // Image client listener
     //
 
-    @Override
-    public void onConnected(String clientName) {
-        connectionStateLbl.setText("Connected");
-    }
-
-    @Override
-    public void onDisconnected(String clientName) {
-        connectionStateLbl.setText("Disconnected");
-    }
-
-    @Override
-    public void onImageTransmitted(String imageName, ImageType imageType) {
-
-    }
-
-    @Override
-    public void onImageReceived(BufferedImage bufferedImage, String imageName, ImageType imageType) {
-
-    }
+//    @Override
+//    public void onConnected(String clientName) {
+//        connectionStateLbl.setText("Connected");
+//    }
+//
+//    @Override
+//    public void onDisconnected(String clientName) {
+//        connectionStateLbl.setText("Disconnected");
+//    }
+//
+//    @Override
+//    public void onImageTransmitted(String imageName, ImageType imageType) {
+//
+//    }
+//
+//    @Override
+//    public void onImageReceived(BufferedImage bufferedImage, String imageName, ImageType imageType) {
+//
+//    }
 }
     

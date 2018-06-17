@@ -1,14 +1,14 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
-import com.waldo.inventory.Utils.resource.ImageResource;
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.Project;
+import com.waldo.inventory.classes.dbclasses.ProjectIDE;
 import com.waldo.inventory.classes.dbclasses.ProjectObject;
 import com.waldo.inventory.gui.dialogs.editprojectdialog.ProjectObjectPreview;
 import com.waldo.utils.FileUtils;
 import com.waldo.utils.icomponents.IAbstractTableModel;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,8 +45,10 @@ public class IProjectObjectPreviewTableModel extends IAbstractTableModel<Project
                     return projectObject.isAddToProject();
                 case 1: // Project icon
                     try {
-                        String ideIconPath = projectObject.getProjectObject().getProjectIDE().getIconPath();
-                        return ImageResource.scaleImage(imageResource.readIdeIcon(ideIconPath), new Dimension(28, 28));
+                        ProjectIDE ide = projectObject.getProjectObject().getProjectIDE();
+                        if (ide != null && ide.getImageId() > 1) {
+                            return imageResource.getImage(Statics.ImageType.IdeImage, ide.getImageId());
+                        }
                     } catch (Exception e) {
                         //
                     }

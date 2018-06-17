@@ -2,7 +2,7 @@ package com.waldo.inventory.classes.dbclasses;
 
 import com.sun.istack.internal.NotNull;
 import com.waldo.inventory.Utils.Statics;
-import com.waldo.test.ImageSocketServer.ImageType;
+import com.waldo.inventory.Utils.Statics.ImageType;
 
 import javax.imageio.ImageIO;
 import javax.sql.rowset.serial.SerialBlob;
@@ -27,7 +27,7 @@ public class DbImage extends DbObject {
     private ImageIcon imageIcon;
 
 
-    private List<Item> dbObjects;
+    private List<ProjectIDE> dbObjects;
 
     public DbImage(@NotNull ImageType imageType) {
         this(imageType, null, "");
@@ -193,7 +193,7 @@ public class DbImage extends DbObject {
 
 
 
-    public void setDbObjects(List<Item> objects) {
+    public void setDbObjects(List<ProjectIDE> objects) {
         this.dbObjects = objects;
     }
 

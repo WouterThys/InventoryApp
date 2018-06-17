@@ -1,6 +1,6 @@
 package com.waldo.inventory.gui.dialogs.imagedialogs.selectimagedialog;
 
-import com.waldo.test.ImageSocketServer.ImageType;
+import com.waldo.inventory.Utils.Statics.ImageType;
 
 import java.awt.*;
 import java.io.File;

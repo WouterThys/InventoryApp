@@ -3,6 +3,7 @@ package com.waldo.inventory.gui.dialogs.edititemdialog.panels;
 import com.sun.istack.internal.NotNull;
 import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.Utils.GuiUtils;
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.gui.components.ICacheDialog;
 import com.waldo.inventory.gui.components.IDivisionPanel;
@@ -13,7 +14,6 @@ import com.waldo.inventory.gui.dialogs.allaliasesdialog.AllAliasesDialog;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialogLayout;
 import com.waldo.inventory.gui.dialogs.manufacturerdialog.ManufacturersDialog;
 import com.waldo.inventory.gui.dialogs.selectdivisiondialog.SelectDivisionDialog;
-import com.waldo.test.ImageSocketServer.ImageType;
 import com.waldo.utils.icomponents.*;
 
 import javax.swing.*;
@@ -25,7 +25,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.text.NumberFormat;
 
-import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class ComponentPanel<T extends Item> extends JPanel implements GuiUtils.GuiInterface {
@@ -110,12 +109,7 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiUtils.G
 
     private void updateManufacturerCb(Manufacturer manufacturer) {
         manufacturerCb.setSelectedItem(manufacturer);
-
-        if (manufacturer != null) {
-            manufacturerIconLbl.setImage(manufacturer.getIconPath());
-        } else {
-            manufacturerIconLbl.setImage(imageResource.getDefaultImage(ImageType.ManufacturerImage));
-        }
+        manufacturerIconLbl.updateComponents(manufacturer);
     }
 
     /*
@@ -201,14 +195,10 @@ public class ComponentPanel<T extends Item> extends JPanel implements GuiUtils.G
         manufacturerCb.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 Manufacturer m = (Manufacturer) manufacturerCb.getSelectedItem();
-                if (m != null) {
-                    manufacturerIconLbl.setImage(m.getIconPath());
-                } else {
-                    manufacturerIconLbl.setImage(imageResource.getDefaultImage(ImageType.ManufacturerImage));
-                }
+                manufacturerIconLbl.updateComponents(m);
             }
         });
-        manufacturerIconLbl = new IImagePanel(ImageType.ManufacturerImage, new Dimension(48,48));
+        manufacturerIconLbl = new IImagePanel(null, Statics.ImageType.ManufacturerImage, null, new Dimension(48,48));
 
         // Remarks stuff
         starRater = new IStarRater(5, 0,0);

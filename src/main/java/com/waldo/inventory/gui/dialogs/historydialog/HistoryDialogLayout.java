@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.dialogs.historydialog;
 
 import com.waldo.inventory.Utils.GuiUtils;
-import com.waldo.inventory.Utils.resource.ImageResource;
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Order;
 import com.waldo.inventory.classes.dbclasses.ProjectPcb;
@@ -11,7 +11,6 @@ import com.waldo.inventory.gui.components.iDialog;
 import com.waldo.inventory.gui.components.tablemodels.IOrderHistoryTableModel;
 import com.waldo.inventory.gui.components.tablemodels.IPcbHistoryTableModel;
 import com.waldo.inventory.managers.SearchManager;
-import com.waldo.test.ImageSocketServer.ImageType;
 import com.waldo.utils.DateUtils;
 import com.waldo.utils.icomponents.ILabel;
 import com.waldo.utils.icomponents.ITable;
@@ -94,7 +93,7 @@ abstract class HistoryDialogLayout extends iDialog implements GuiUtils.GuiInterf
     @Override
     public void initializeComponents() {
         // Dialog
-        setTitleImage(new IImagePanel(ImageType.ItemImage, new Dimension(64,64)));
+        setTitleImage(new IImagePanel(null, Statics.ImageType.ItemImage, null, new Dimension(64,64)));
         setTitleIcon(imageResource.readIcon("History.Title"));
         setTitleName(getTitle());
 
@@ -158,7 +157,7 @@ abstract class HistoryDialogLayout extends iDialog implements GuiUtils.GuiInterf
         if (object.length != 0 && object[0] != null) {
             Item historyItem = (Item) object[0];
 
-            setTitleIcon(historyItem.getIconPath());
+            setTitleIcon(historyItem);
 
             updateHistoryViews(historyItem);
         }

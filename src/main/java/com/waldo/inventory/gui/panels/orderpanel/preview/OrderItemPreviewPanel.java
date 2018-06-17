@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.panels.orderpanel.preview;
 
 import com.waldo.inventory.Utils.GuiUtils;
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.OrderLine;
@@ -11,7 +12,6 @@ import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.panels.mainpanel.AbstractDetailPanel;
 import com.waldo.inventory.gui.panels.mainpanel.ItemDetailListener;
 import com.waldo.inventory.gui.panels.mainpanel.OrderDetailListener;
-import com.waldo.test.ImageSocketServer.ImageType;
 import com.waldo.utils.icomponents.*;
 
 import javax.swing.*;
@@ -96,37 +96,28 @@ public abstract class OrderItemPreviewPanel extends AbstractDetailPanel implemen
             if (orderLine.isItemOrderType()) {
                 Item item = orderLine.getItem();
                 if (item != null) {
-                    if (item.getIconPath().isEmpty()) {
-                        imagePanel.setImage(imageResource.getDefaultImage(ImageType.ItemImage));
-                    } else {
-                        imagePanel.setImage(item.getIconPath());
-                    }
                     nameTf.setText(item.toString());
                     descriptionTa.setText(item.getDescription());
                     starRater.setRating(item.getRating());
                 } else {
-                    imagePanel.setImage(imageResource.getDefaultImage(ImageType.ItemImage));
                     nameTf.setText("");
                     descriptionTa.setText("");
                     starRater.setRating(0);
                 }
+                imagePanel.updateComponents(item);
             } else {
                 ProjectPcb pcb = orderLine.getPcb();
                 if (pcb != null) {
-                    if (pcb.getProject() != null) {
-                        imagePanel.setImage(pcb.getProject().getIconPath());
-                    } else {
-                        imagePanel.setImage(imageResource.getDefaultImage(ImageType.ProjectImage));
-                    }
+
                     nameTf.setText(pcb.toString());
                     descriptionTa.setText(pcb.getDescription());
                     starRater.setRating(0);
                 } else {
-                    imagePanel.setImage(imageResource.getDefaultImage(ImageType.ProjectImage));
                     nameTf.setText("");
                     descriptionTa.setText("");
                     starRater.setRating(0);
                 }
+                imagePanel.updateComponents(pcb);
             }
         }
     }
@@ -172,7 +163,6 @@ public abstract class OrderItemPreviewPanel extends AbstractDetailPanel implemen
                 locationTf.setText("");
             }
         } else {
-            imagePanel.setImage(imageResource.getDefaultImage(ImageType.ItemImage));
             nameTf.setText("");
             aliasLbl.setText("");
             descriptionTa.setText("");
@@ -307,7 +297,7 @@ public abstract class OrderItemPreviewPanel extends AbstractDetailPanel implemen
     @Override
     public void initializeComponents() {
         // Image
-        imagePanel = new IImagePanel(ImageType.ItemImage, new Dimension(150, 150));
+        imagePanel = new IImagePanel(null, Statics.ImageType.ItemImage, null, new Dimension(150, 150));
 
         // Data
         nameTf = new ITextField(false);

@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.panels.projectspanel.preview;
 
 import com.waldo.inventory.Utils.GuiUtils;
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Project;
 import com.waldo.inventory.classes.dbclasses.ProjectIDE;
@@ -10,7 +11,6 @@ import com.waldo.inventory.gui.components.IImagePanel;
 import com.waldo.inventory.gui.components.IRemarksPanel;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.actions.IActions;
-import com.waldo.test.ImageSocketServer.ImageType;
 import com.waldo.utils.icomponents.IPanel;
 import com.waldo.utils.icomponents.ITextArea;
 import com.waldo.utils.icomponents.ITextField;
@@ -135,18 +135,13 @@ public abstract class ProjectPreviewPanel<P extends ProjectObject> extends IPane
 
     private void updateHeader(P projectObject) {
         if (projectObject != null) {
-            if (projectObject.getProject() != null) {
-                imagePanel.setImage(projectObject.getProject().getIconPath());
-            } else {
-                imagePanel.setImage(imageResource.getDefaultImage(ImageType.ProjectImage));
-            }
             nameTf.setText(projectObject.toString());
             descriptionTa.setText(projectObject.getDescription());
         } else {
-
             nameTf.setText("");
             descriptionTa.setText("");
         }
+        imagePanel.updateComponents(projectObject);
     }
 
     private void updateData(P projectObject) {
@@ -240,7 +235,7 @@ public abstract class ProjectPreviewPanel<P extends ProjectObject> extends IPane
     @Override
     public void initializeComponents() {
         // Image
-        imagePanel = new IImagePanel(ImageType.ProjectImage, new Dimension(150,150));
+        imagePanel = new IImagePanel(null, Statics.ImageType.ProjectImage, selectedProjectObject, new Dimension(150,150));
 
         // Data
         nameTf = new ITextField(false);

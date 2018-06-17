@@ -1,12 +1,12 @@
 package com.waldo.inventory.gui.dialogs.editimagedialog;
 
+import com.waldo.inventory.Utils.Statics.ImageType;
 import com.waldo.inventory.Utils.resource.ImageResource;
 import com.waldo.inventory.classes.dbclasses.DbImage;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.iDialog;
-import com.waldo.test.ImageSocketServer.ImageType;
 
 import javax.swing.*;
 import java.awt.*;
@@ -33,12 +33,14 @@ abstract class EditImageDialogLayout extends iDialog implements ImagesPanel.Imag
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     DbImage selectedImage;
+    private ImageType imageType;
 
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    EditImageDialogLayout(Window window, String title) {
+    EditImageDialogLayout(Window window, String title, ImageType imageType) {
         super(window, title);
+        this.imageType = imageType;
 
     }
 
@@ -57,6 +59,9 @@ abstract class EditImageDialogLayout extends iDialog implements ImagesPanel.Imag
     @Override
     public void initializeComponents() {
         setResizable(true);
+
+        getButtonOK().setText("Select");
+        getButtonOK().setEnabled(false);
     }
 
     @Override
@@ -69,24 +74,59 @@ abstract class EditImageDialogLayout extends iDialog implements ImagesPanel.Imag
             updateEnabledComponents();
         });
 
-        tabbedPane.addTab("Items ",
-                itemTypeIcon,
-                new ImagesPanel(ImageType.ItemImage, this, this));
-        tabbedPane.addTab("Distributors ",
-                distributorTypeIcon,
-                new ImagesPanel(ImageType.DistributorImage, this, this));
-        tabbedPane.addTab("Manufacturers ",
-                manufacturerTypeIcon,
-                new ImagesPanel(ImageType.ManufacturerImage, this, this));
-        tabbedPane.addTab("IDE's ",
-                ideTypeIcon,
-                new ImagesPanel(ImageType.IdeImage, this, this));
-        tabbedPane.addTab("Projects ",
-                projectTypeIcon,
-                new ImagesPanel(ImageType.ProjectImage, this, this));
-        tabbedPane.addTab("Others ",
-                otherTypeIcon,
-                new ImagesPanel(ImageType.Other, this, this));
+        if (imageType == null) {
+            tabbedPane.addTab("Items ",
+                    itemTypeIcon,
+                    new ImagesPanel(ImageType.ItemImage, this, this));
+            tabbedPane.addTab("Distributors ",
+                    distributorTypeIcon,
+                    new ImagesPanel(ImageType.DistributorImage, this, this));
+            tabbedPane.addTab("Manufacturers ",
+                    manufacturerTypeIcon,
+                    new ImagesPanel(ImageType.ManufacturerImage, this, this));
+            tabbedPane.addTab("IDE's ",
+                    ideTypeIcon,
+                    new ImagesPanel(ImageType.IdeImage, this, this));
+            tabbedPane.addTab("Projects ",
+                    projectTypeIcon,
+                    new ImagesPanel(ImageType.ProjectImage, this, this));
+            tabbedPane.addTab("Others ",
+                    otherTypeIcon,
+                    new ImagesPanel(ImageType.Other, this, this));
+        } else {
+            switch (imageType) {
+                case ItemImage:
+                    tabbedPane.addTab("Items ",
+                            itemTypeIcon,
+                            new ImagesPanel(ImageType.ItemImage, this, this));
+                    break;
+                case DistributorImage:
+                    tabbedPane.addTab("Distributors ",
+                            distributorTypeIcon,
+                            new ImagesPanel(ImageType.DistributorImage, this, this));
+                    break;
+                case ManufacturerImage:
+                    tabbedPane.addTab("Manufacturers ",
+                            manufacturerTypeIcon,
+                            new ImagesPanel(ImageType.ManufacturerImage, this, this));
+                    break;
+                case IdeImage:
+                    tabbedPane.addTab("IDE's ",
+                            ideTypeIcon,
+                            new ImagesPanel(ImageType.IdeImage, this, this));
+                    break;
+                case ProjectImage:
+                    tabbedPane.addTab("Projects ",
+                            projectTypeIcon,
+                            new ImagesPanel(ImageType.ProjectImage, this, this));
+                    break;
+                case Other:
+                    tabbedPane.addTab("Others ",
+                            otherTypeIcon,
+                            new ImagesPanel(ImageType.Other, this, this));
+                    break;
+            }
+        }
 
 
         getContentPanel().add(tabbedPane, BorderLayout.CENTER);

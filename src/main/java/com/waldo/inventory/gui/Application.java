@@ -165,9 +165,9 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
 
 //        new Thread(() -> {
 //
-//            Map<String, List<Item>> map = new TreeMap<>();
+//            Map<String, List<ProjectIDE>> map = new TreeMap<>();
 //
-//            for (Item item : cache().getItems()) {
+//            for (ProjectIDE item : cache().getProjectIDES()) {
 //                String path = item.getIconPath();
 //                if (path != null && !path.isEmpty()) {
 //                    if (!map.containsKey(path)) {
@@ -183,7 +183,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
 //                    imageResource.requestImage(new ImageResource.ImageRequester() {
 //                        @Override
 //                        public ImageType getImageType() {
-//                            return ImageType.ItemImage;
+//                            return ImageType.IdeImage;
 //                        }
 //
 //                        @Override
@@ -193,7 +193,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
 //
 //                        @Override
 //                        public void setImage(ImageIcon image) {
-//                            DbImage dbImage = new DbImage(ImageType.ItemImage, image, path);
+//                            DbImage dbImage = new DbImage(ImageType.IdeImage, image, path);
 //                            dbImage.setDbObjects(map.get(path));
 //                            dbImage.save();
 //                        }

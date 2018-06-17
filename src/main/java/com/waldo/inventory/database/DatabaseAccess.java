@@ -631,6 +631,7 @@ public class DatabaseAccess {
                     m.setName(rs.getString("name"));
                     m.setWebsite(rs.getString("website"));
                     m.setIconPath(rs.getString("iconpath"));
+                    m.setImageId(rs.getLong("imageId"));
 
                     m.setInserted(true);
                     manufacturers.add(m);
@@ -848,6 +849,7 @@ public class DatabaseAccess {
                     d.setId(rs.getLong("id"));
                     d.setName(rs.getString("name"));
                     d.setIconPath(rs.getString("iconPath"));
+                    d.setImageId(rs.getLong("imageId"));
                     d.setWebsite(rs.getString("website"));
                     d.setOrderLink(rs.getString("orderLink"));
                     d.setOrderFileFormatId(rs.getLong("orderFileFormatId"));
@@ -1041,6 +1043,7 @@ public class DatabaseAccess {
                     p.setId(rs.getLong("id"));
                     p.setName(rs.getString("name"));
                     p.setIconPath(rs.getString("iconPath"));
+                    p.setImageId(rs.getLong("imageId"));
                     p.setMainDirectory(rs.getString("mainDirectory"));
 
                     p.setInserted(true);

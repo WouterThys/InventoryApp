@@ -1,5 +1,6 @@
 package com.waldo.inventory.gui.dialogs.editimagedialog;
 
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.DbImage;
 import com.waldo.inventory.gui.components.IdBToolBar;
 
@@ -11,7 +12,12 @@ public class EditImageDialog extends EditImageDialogLayout {
 
 
     public EditImageDialog(Window window) {
-        super(window, "Images");
+        this(window, null);
+
+    }
+
+    public EditImageDialog(Window window, Statics.ImageType imageType) {
+        super(window, "Images", imageType);
 
         initializeComponents();
         initializeLayouts();
@@ -19,10 +25,17 @@ public class EditImageDialog extends EditImageDialogLayout {
 
     }
 
+    public DbImage getSelectedImage() {
+        return selectedImage;
+    }
+
 
     @Override
     public void onImageClicked(MouseEvent e, DbImage image) {
         selectedImage = image;
+        if (image != null) {
+            getButtonOK().setEnabled(true);
+        }
         updateEnabledComponents();
     }
 
