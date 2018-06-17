@@ -2,7 +2,6 @@ package com.waldo.inventory.gui.panels.mainpanel.preview;
 
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.Utils.Statics.ImageType;
-import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Division;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.gui.components.IDivisionPanel;
@@ -92,19 +91,19 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
         if (item != null) {
             divisionPnl.updateComponents(item.getDivision());
 
-            if (item.getManufacturerId() > DbObject.UNKNOWN_ID) {
+            if (item.getManufacturer() != null) {
                 manufacturerTf.setText(item.getManufacturer().toString());
             } else {
                 manufacturerTf.setText("");
             }
 
-            if (item.getPackageTypeId() > DbObject.UNKNOWN_ID) {
+            if (item.getPackageType() != null) {
                 footprintTf.setText(item.getPackageType().getPrettyString());
             } else {
                 footprintTf.setText("");
             }
 
-            if (item.getLocationId() > DbObject.UNKNOWN_ID) {
+            if (item.getLocation() != null) {
                 locationTf.setText(item.getLocation().getPrettyString());
             } else {
                 locationTf.setText("");

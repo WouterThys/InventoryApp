@@ -105,8 +105,8 @@ public class DatabaseAccess {
 
     private void initSqLite(DbSettings settings) {
         mainDataSource = new BasicDataSource();
-        mainDataSource.setDriverClassName("net.sf.log4jdbc.DriverSpy");
-        mainDataSource.setUrl("jdbc:log4jdbc:sqlite:" + settings.getDbName());
+        mainDataSource.setDriverClassName("org.sqlite.JDBC");
+        mainDataSource.setUrl("jdbc:sqlite:" + settings.getDbName());
         mainDataSource.setUsername(settings.getDbUserName());
         mainDataSource.setPassword("");
         mainDataSource.setMaxIdle(10);
@@ -115,7 +115,7 @@ public class DatabaseAccess {
         mainDataSource.setInitialSize(5);
         mainDataSource.setRemoveAbandonedTimeout(60);
 
-        String sql = "PRAGMA foreign_keys=ON;";
+        String sql = "PRAGMA foreign_keys=OFF;";
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                 stmt.execute();
