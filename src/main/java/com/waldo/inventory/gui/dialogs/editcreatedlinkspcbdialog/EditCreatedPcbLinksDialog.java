@@ -614,10 +614,10 @@ public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout i
                 Price itemsPrice = new Price(0, Statics.PriceUnits.Euro);
 
                 // Price for itemOrder
-                ItemOrder itemOrder = createdPcb.getItemOrder();
-//                if (itemOrder != null && itemOrder.getItemOrderLines().size() > 0) {
-//                    orderPrice = itemOrder.getItemOrderLines().get(0).getPrice();
-//                }
+                PcbOrder pcbOrder = createdPcb.getPcbOrder();
+                if (pcbOrder != null && pcbOrder.getOrderLines().size() > 0) {
+                    orderPrice = pcbOrder.getOrderLines().get(0).getPrice();
+                }
 
 //                for (CreatedPcbLink link : createdPcb.getCreatedPcbLinks()) {
 //                    int amount = link.getUsedAmount();
@@ -630,7 +630,7 @@ public class EditCreatedPcbLinksDialog extends EditCreatedPcbLinksDialogLayout i
 //                            itemsPrice = Price.add(itemsPrice, v * amount);
 //                        }
 //                    }
-//                } TODO
+//                }
 
                 totalPrice = Price.add(itemsPrice, orderPrice);
 

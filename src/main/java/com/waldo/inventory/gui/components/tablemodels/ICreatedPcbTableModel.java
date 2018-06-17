@@ -36,7 +36,7 @@ public class ICreatedPcbTableModel extends IAbstractTableModel<CreatedPcb> {
                     return pcb.toString();
                 case 2: // ItemOrder
                     if (pcb.getOrderId() > DbObject.UNKNOWN_ID) {
-                        return pcb.getItemOrder().toString();
+                        return pcb.getPcbOrder().toString();
                     }
                     return "";
                 case 3: // Date

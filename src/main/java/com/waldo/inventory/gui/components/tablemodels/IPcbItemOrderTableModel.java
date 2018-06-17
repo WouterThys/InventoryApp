@@ -20,7 +20,7 @@ public class IPcbItemOrderTableModel extends IAbstractTableModel<ItemOrderLine> 
 //                case -1: // Reference to object itself
 //                    return orderItem;
 //                case 0: // ItemOrder name
-//                    return orderItem.getItemOrder().getName();
+//                    return orderItem.getPcbOrder().getName();
 //                case 1: // Item name
 //                    return orderItem.getItem().toString();
 //                case 2: // Amount
