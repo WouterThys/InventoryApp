@@ -58,10 +58,10 @@ public abstract class OrdersPanelLayout extends IPanel implements IdBToolBar.Idb
     abstract void onTreeRightClick(MouseEvent e);
     abstract void onOrderDoubleClick(MouseEvent e);
     abstract void onOrderRightClick(MouseEvent e);
-    abstract void onLineRightClick(MouseEvent e);
+    abstract void onLinesRightClick(MouseEvent e);
 
     abstract void onOrderSelected(AbstractOrder order);
-    abstract void onLineSelected(AbstractOrderLine line);
+    abstract void onLinesSelected(List<AbstractOrderLine> lineList);
     abstract void onTreeSelected(OrderStates states, int year);
 
     //
@@ -248,6 +248,7 @@ public abstract class OrdersPanelLayout extends IPanel implements IdBToolBar.Idb
                 SwingUtilities.invokeLater(() -> onOrderSelected(orderTableGetSelected()));
             }
         }, false);
+        orderTablePanel.setListSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         orderTablePanel.setDbToolBar(this, true, true, false, false);
         orderTablePanel.setHeaderPanelVisible(true);
         orderTablePanel.addMouseListener(new MouseAdapter() {
@@ -266,7 +267,7 @@ public abstract class OrdersPanelLayout extends IPanel implements IdBToolBar.Idb
         linesTableModel = new IOrderLinesTableModel();
         linesTablePanel = new ITablePanel<>(linesTableModel, lineDetailsPanel, e -> {
             if (!e.getValueIsAdjusting()) {
-                SwingUtilities.invokeLater(() -> onLineSelected(lineTableGetSelected()));
+            SwingUtilities.invokeLater(() -> onLinesSelected(lineTableGetAllSelected()));
             }
         }, false);
         linesTablePanel.setHeaderPanelVisible(false);
@@ -274,7 +275,7 @@ public abstract class OrdersPanelLayout extends IPanel implements IdBToolBar.Idb
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (SwingUtilities.isRightMouseButton(e)) {
-                    SwingUtilities.invokeLater(() -> onLineRightClick(e));
+                    SwingUtilities.invokeLater(() -> onLinesRightClick(e));
                 }
             }
         });

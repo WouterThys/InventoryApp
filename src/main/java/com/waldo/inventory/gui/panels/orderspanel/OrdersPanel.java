@@ -5,8 +5,10 @@ import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IdBToolBar;
+import com.waldo.inventory.gui.components.popups.OrderPopup;
 
 import java.awt.event.MouseEvent;
+import java.util.List;
 
 import static com.waldo.inventory.managers.CacheManager.cache;
 
@@ -192,6 +194,23 @@ public class OrdersPanel extends OrdersPanelLayout {
     }
 
 
+    private void onAddOrder() {
+
+    }
+
+    private void onEditOrder(AbstractOrder order) {
+
+    }
+
+    private void onDeleteOrder(AbstractOrder order) {
+
+    }
+
+    private void onLockOrder(AbstractOrder order, boolean locked) {
+
+    }
+
+
     // Tool bars
     @Override
     public void onToolBarRefresh(IdBToolBar source) {
@@ -200,17 +219,17 @@ public class OrdersPanel extends OrdersPanelLayout {
 
     @Override
     public void onToolBarAdd(IdBToolBar source) {
-
+        onAddOrder();
     }
 
     @Override
     public void onToolBarDelete(IdBToolBar source) {
-
+        onDeleteOrder(selectedOrder);
     }
 
     @Override
     public void onToolBarEdit(IdBToolBar source) {
-
+        onEditOrder(selectedOrder);
     }
 
     // Selection
@@ -230,10 +249,17 @@ public class OrdersPanel extends OrdersPanelLayout {
     }
 
     @Override
-    void onLineSelected(AbstractOrderLine line) {
-        selectedOrderLine = line;
-        lineDetailsPanel.updateComponents(line);
-        updateEnabledComponents();
+    void onLinesSelected(List<AbstractOrderLine> lineList) {
+        if (lineList != null) {
+            if (lineList.size() == 1) {
+                selectedOrderLine = lineList.get(0);
+                lineDetailsPanel.updateComponents(lineList.get(0));
+            } else {
+                selectedOrderLine = null;
+                lineDetailsPanel.updateComponents((AbstractOrderLine)null);
+            }
+            updateEnabledComponents();
+        }
     }
 
     @Override
@@ -254,16 +280,39 @@ public class OrdersPanel extends OrdersPanelLayout {
 
     @Override
     void onOrderDoubleClick(MouseEvent e) {
+        if (selectedOrder != null) {
 
+        }
     }
 
     @Override
     void onOrderRightClick(MouseEvent e) {
+        if (selectedOrder != null) {
+            OrderPopup popup = new OrderPopup(selectedOrder) {
+                @Override
+                public void onEditOrder(AbstractOrder order) {
+                    OrdersPanel.this.onEditOrder(order);
+                }
 
+                @Override
+                public void onDeleteOrder(AbstractOrder order) {
+                    OrdersPanel.this.onDeleteOrder(order);
+                }
+
+                @Override
+                public void onLocked(AbstractOrder order, boolean locked) {
+                    OrdersPanel.this.onLockOrder(order, locked);
+                }
+            };
+            popup.show(e.getComponent(), e.getX(), e.getY());
+        }
     }
 
     @Override
-    void onLineRightClick(MouseEvent e) {
+    void onLinesRightClick(MouseEvent e) {
+        List<AbstractOrderLine> orderLineList = lineTableGetAllSelected();
+        if (orderLineList != null && orderLineList.size() > 0) {
 
+        }
     }
 }

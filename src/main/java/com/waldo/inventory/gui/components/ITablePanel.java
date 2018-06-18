@@ -84,6 +84,10 @@ public class ITablePanel<T extends DbObject> extends JPanel implements GuiUtils.
         table.getSelectionModel().addListSelectionListener(listSelectionListener);
     }
 
+    public void setListSelectionMode(int selectionMode) {
+        table.getSelectionModel().setSelectionMode(selectionMode);
+    }
+
     public void print(String headerName) {
         MessageFormat header = new MessageFormat(headerName);
         MessageFormat footer = new MessageFormat(" - {0} - ");

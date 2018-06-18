@@ -1,106 +1,93 @@
 package com.waldo.inventory.gui.components.popups;
 
-import com.waldo.inventory.classes.dbclasses.ItemOrder;
+import com.waldo.inventory.classes.dbclasses.AbstractOrder;
 import com.waldo.inventory.gui.components.actions.IActions;
+import com.waldo.inventory.managers.OrderManager;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
 public abstract class OrderPopup extends JPopupMenu {
 
-    protected OrderPopup(final ItemOrder itemOrder) {
+    protected OrderPopup(final AbstractOrder order) {
         super();
 
-        init(itemOrder);
+        init(order);
     }
 
-    public abstract void onEditOrder(ItemOrder itemOrder);
-    public abstract void onDeleteOrder(ItemOrder itemOrder);
-    public abstract void onOrderDetails(ItemOrder itemOrder);
-    public abstract void onMoveToOrdered(ItemOrder itemOrder);
-    public abstract void onMoveToReceived(ItemOrder itemOrder);
-    public abstract void onBackToOrdered(ItemOrder itemOrder);
-    public abstract void onBackToPlanned(ItemOrder itemOrder);
-    public abstract void onLocked(ItemOrder itemOrder, boolean locked);
+    public abstract void onEditOrder(AbstractOrder order);
+    public abstract void onDeleteOrder(AbstractOrder order);
+    public abstract void onLocked(AbstractOrder order, boolean locked);
 
 
-    private void init(final ItemOrder itemOrder) {
+    private void init(final AbstractOrder order) {
         IActions.EditAction editOrderAction = new IActions.EditAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                onEditOrder(itemOrder);
+                onEditOrder(order);
             }
         };
-        editOrderAction.setName("Edit itemOrder");
+        editOrderAction.setName("Edit order");
 
         IActions.DeleteAction deleteOrderAction = new IActions.DeleteAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                onDeleteOrder(itemOrder);
+                onDeleteOrder(order);
             }
         };
-        deleteOrderAction.setName("Delete itemOrder");
-
-        IActions.OrderDetailsAction orderDetailsAction = new IActions.OrderDetailsAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                onOrderDetails(itemOrder);
-            }
-        };
+        deleteOrderAction.setName("Delete order");
 
         IActions.MoveToOrderedAction moveToOrderedAction = new IActions.MoveToOrderedAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                onMoveToOrdered(itemOrder);
+                SwingUtilities.invokeLater(() -> OrderManager.moveToOrdered(order));
             }
         };
 
         IActions.MoveToReceivedAction moveToReceivedAction = new IActions.MoveToReceivedAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                onMoveToReceived(itemOrder);
+                SwingUtilities.invokeLater(() -> OrderManager.moveToReceived(order));
             }
         };
 
         IActions.BackToOrderedAction backToOrderedAction = new IActions.BackToOrderedAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                onBackToOrdered(itemOrder);
+                SwingUtilities.invokeLater(() -> OrderManager.backToOrdered(order));
             }
         };
 
         IActions.BackToPlannedAction backToPlannedAction = new IActions.BackToPlannedAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                onBackToPlanned(itemOrder);
+                SwingUtilities.invokeLater(() -> OrderManager.backToPlanned(order));
             }
         };
 
-        IActions.LockAction lockAction = new IActions.LockAction(itemOrder.isLocked()) {
+        IActions.LockAction lockAction = new IActions.LockAction(order.isLocked()) {
             @Override
             public void actionPerformed(ActionEvent e, boolean locked) {
-                onLocked(itemOrder, locked);
+                onLocked(order, locked);
             }
         };
 
         add(editOrderAction);
         add(deleteOrderAction);
         addSeparator();
-        add(orderDetailsAction);
-        addSeparator();
-        JMenu stateMenu = new JMenu("ItemOrder state");
+        JMenu stateMenu = new JMenu("Order state");
 
-        if (itemOrder.isPlanned()) {
+        if (order.isPlanned()) {
             stateMenu.add(moveToOrderedAction);
-        } else if (itemOrder.isReceived()) {
+        } else if (order.isReceived()) {
             stateMenu.add(backToOrderedAction);
-        } else if (itemOrder.isOrdered()) {
+        } else if (order.isOrdered()) {
             stateMenu.add(moveToReceivedAction);
             stateMenu.add(backToPlannedAction);
         }
         add(stateMenu);
 
-        if (!itemOrder.isPlanned()) {
+        if (!order.isPlanned()) {
             addSeparator();
             add(lockAction);
         }
