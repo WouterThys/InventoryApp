@@ -208,6 +208,9 @@ public abstract class AbstractOrder<T extends Orderable> extends DbObject {
     }
 
     public void setDateOrdered(Date dateOrdered) {
+        if (dateOrdered != null && DateUtils.getYear(dateOrdered) < 1980) {
+            dateOrdered = null;
+        }
         this.dateOrdered = dateOrdered;
     }
 
@@ -228,6 +231,9 @@ public abstract class AbstractOrder<T extends Orderable> extends DbObject {
     }
 
     public void setDateModified(Date dateModified) {
+        if (dateModified != null && DateUtils.getYear(dateModified) < 1980) {
+            dateModified = null;
+        }
         this.dateModified = dateModified;
     }
 
@@ -242,6 +248,9 @@ public abstract class AbstractOrder<T extends Orderable> extends DbObject {
     }
 
     public void setDateReceived(Date dateReceived) {
+        if (dateReceived != null && DateUtils.getYear(dateReceived) < 1980) {
+            dateReceived = null;
+        }
         this.dateReceived = dateReceived;
     }
 

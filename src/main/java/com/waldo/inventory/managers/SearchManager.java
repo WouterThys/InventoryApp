@@ -505,7 +505,7 @@ public class SearchManager {
         if (itemOrders.size() == 0) return null;
         else if (itemOrders.size() == 1) return itemOrders.get(0);
         else {
-            itemOrders.sort(new ItemOrder.SortAllOrders());
+            //itemOrders.sort(new ItemOrder.SortAllOrders());
             return itemOrders.get(itemOrders.size()-1); // Return the last one
         }
     }

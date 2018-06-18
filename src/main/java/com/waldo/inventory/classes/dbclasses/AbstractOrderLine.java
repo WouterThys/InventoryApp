@@ -148,6 +148,9 @@ public abstract class AbstractOrderLine<T extends Orderable> extends DbObject {
     }
 
     public void setAmount(int amount) {
+        if (amount < 0) {
+            amount = 0;
+        }
         this.amount = amount;
     }
 

@@ -44,7 +44,6 @@ public abstract class ProjectsPanelLayout extends JPanel implements
 
     TopToolBar topToolBar;
     IdBToolBar projectsToolBar;
-    //private ProjectDetailsPanel detailsPanel;
 
     JTabbedPane tabbedPane;
     private ProjectCodePanel projectCodePanel;
@@ -60,7 +59,6 @@ public abstract class ProjectsPanelLayout extends JPanel implements
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     final Application application;
     Project selectedProject;
-    private Project rootProject;
 
 
     /*
@@ -177,7 +175,7 @@ public abstract class ProjectsPanelLayout extends JPanel implements
     @Override
     public void initializeComponents() {
         // Project tree
-        rootProject = new Project("All");
+        Project rootProject = new Project("All");
         rootProject.setCanBeSaved(false);
 
         projectsTree = new IProjectTree(rootProject, false, false);

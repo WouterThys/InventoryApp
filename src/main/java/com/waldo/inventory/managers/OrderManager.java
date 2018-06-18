@@ -74,6 +74,8 @@ public class OrderManager {
             // Add
             for (T line : list) {
                 AbstractOrderLine orderLine = line.createOrderLine(order);
+                line.updateOrderState();
+                line.save();
                 orderLine.save();
             }
         }

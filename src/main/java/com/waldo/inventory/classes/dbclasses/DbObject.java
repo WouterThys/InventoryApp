@@ -61,6 +61,7 @@ public abstract class DbObject {
 
     protected final String TABLE_NAME;
     protected boolean isInserted = false;
+    protected boolean isDeleted = false;
 
     protected long id = -1;
     protected String name = "";
@@ -317,6 +318,10 @@ public abstract class DbObject {
 
     public void setInserted(boolean inserted) {
         this.isInserted = inserted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.isDeleted = deleted;
     }
 
     public AddUpdateDelete getAud() {

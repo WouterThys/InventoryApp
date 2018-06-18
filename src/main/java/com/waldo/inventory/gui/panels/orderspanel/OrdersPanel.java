@@ -23,6 +23,7 @@ public class OrdersPanel extends OrdersPanelLayout {
         cache().addListener(PcbOrder.class, createPcbOrderListener());
         cache().addListener(ItemOrderLine.class, createItemOrderLineListener());
         cache().addListener(PcbOrderLine.class, createPcbOrderLineListener());
+        cache().addListener(DistributorPartLink.class, createDistributorPartLinkListener());
 
         updateComponents((Object) null);
     }
@@ -124,6 +125,31 @@ public class OrdersPanel extends OrdersPanelLayout {
         };
     }
 
+    private CacheChangedListener<DistributorPartLink> createDistributorPartLinkListener() {
+        return new CacheChangedListener<DistributorPartLink>() {
+            @Override
+            public void onInserted(DistributorPartLink object) {
+
+            }
+
+            @Override
+            public void onUpdated(DistributorPartLink object) {
+                lineTableUpdate();
+                lineDetailsPanel.updateComponents(selectedOrderLine);
+            }
+
+            @Override
+            public void onDeleted(DistributorPartLink object) {
+
+            }
+
+            @Override
+            public void onCacheCleared() {
+
+            }
+        };
+    }
+
 
     private void onOrderAdded(AbstractOrder order) {
         orderTableAdd(order);
@@ -151,13 +177,8 @@ public class OrdersPanel extends OrdersPanelLayout {
     }
 
     private void onLineUpdated(AbstractOrderLine line) {
-        if (line != null) {
-            AbstractOrder order = line.getOrder();
-            if (order != null) {
-                order.updateOrderLines();
-            }
-            onOrderSelected(order);
-        }
+        lineTableUpdate();
+        lineDetailsPanel.updateComponents(line);
     }
 
     private void onLineDeleted(AbstractOrderLine line) {

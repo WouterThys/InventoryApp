@@ -759,7 +759,7 @@ public class DatabaseAccess {
             }
         }
         itemOrders.add(0, ItemOrder.getUnknownOrder());
-        itemOrders.sort(new ItemOrder.SortAllOrders());
+        //itemOrders.sort(new ItemOrder.SortAllOrders());
 
         return itemOrders;
     }

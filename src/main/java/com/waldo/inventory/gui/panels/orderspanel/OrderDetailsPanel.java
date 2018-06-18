@@ -14,6 +14,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
+import static com.waldo.inventory.gui.Application.imageResource;
+
 public abstract class OrderDetailsPanel extends IPanel implements IdBToolBar.IdbToolBarListener {
 
     /*
@@ -216,10 +218,10 @@ public abstract class OrderDetailsPanel extends IPanel implements IdBToolBar.Idb
 
         JPanel infoPanel = new JPanel();
         GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(infoPanel);
-        gbc.addLine("Name: ", orderNameTf);
-        gbc.addLine("Distributor: ", GuiUtils.createComponentWithActions(distributorTf, editDistributorAction)); // TODO label
-        gbc.addLine("Reference: ", GuiUtils.createComponentWithActions(orderReferenceTf, editReferenceAction, deleteReferenceAction, browseReferenceAction)); // TODO edit/delete
-        gbc.addLine("Tracking: ", GuiUtils.createComponentWithActions(trackingLinkTf, editTrackingAction, deleteTrackingAction, browseTrackingAction)); // TODO actions
+        gbc.addLine("Order name", imageResource.readIcon("Actions.Tag"), orderNameTf);
+        gbc.addLine("Distributor", imageResource.readIcon("Distributors.Menu"), GuiUtils.createComponentWithActions(distributorTf, editDistributorAction)); // TODO label
+        gbc.addLine("Order reference", imageResource.readIcon("Orders.LineReference"), GuiUtils.createComponentWithActions(orderReferenceTf, editReferenceAction, deleteReferenceAction, browseReferenceAction)); // TODO edit/delete
+        gbc.addLine("Tracking reference", imageResource.readIcon("Orders.Table.Ordered"), GuiUtils.createComponentWithActions(trackingLinkTf, editTrackingAction, deleteTrackingAction, browseTrackingAction)); // TODO actions
 
 
         Box box = Box.createVerticalBox();
