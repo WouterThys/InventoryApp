@@ -2,14 +2,11 @@ package com.waldo.inventory.gui.dialogs.addtoorderdialog;
 
 
 import com.waldo.inventory.Utils.Statics;
-import com.waldo.inventory.classes.dbclasses.Distributor;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.ItemOrder;
-import com.waldo.inventory.classes.dbclasses.PendingOrder;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.dialogs.editordersdialog.EditOrdersDialog;
-import com.waldo.inventory.gui.dialogs.pendingordersdialog.PendingOrdersCacheDialog;
 import com.waldo.inventory.managers.OrderManager;
 import com.waldo.utils.icomponents.IDialog;
 
@@ -17,7 +14,7 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AddToOrderDialog extends AddToOrderCacheDialogLayout implements CacheChangedListener<ItemOrder> {
+public class AddToOrderDialog extends AddToOrderDialogLayout implements CacheChangedListener<ItemOrder> {
 
     private final Application application;
     private Item itemToOrder;
@@ -25,8 +22,8 @@ public class AddToOrderDialog extends AddToOrderCacheDialogLayout implements Cac
     private boolean orderList;
     private boolean createOnConfirm;
 
-    public AddToOrderDialog(Application parent, String title, Item itemToOrder, boolean createOnConfirm, boolean pendingOption) {
-        super(parent, title, pendingOption, Statics.DistributorType.Items);
+    public AddToOrderDialog(Application parent, String title, Item itemToOrder, boolean createOnConfirm) {
+        super(parent, title, Statics.DistributorType.Items);
         this.application = parent;
         this.itemToOrder = itemToOrder;
         this.orderList = false;
@@ -39,8 +36,8 @@ public class AddToOrderDialog extends AddToOrderCacheDialogLayout implements Cac
         updateComponents();
     }
 
-    public AddToOrderDialog(Application parent, String title, List<Item> itemsToOrder, boolean createOnConfirm, boolean pendingOption) {
-        super(parent, title, pendingOption, Statics.DistributorType.Items);
+    public AddToOrderDialog(Application parent, String title, List<Item> itemsToOrder, boolean createOnConfirm) {
+        super(parent, title, Statics.DistributorType.Items);
         this.application = parent;
         this.itemsToOrderList = itemsToOrder;
         this.orderList = true;
@@ -74,32 +71,6 @@ public class AddToOrderDialog extends AddToOrderCacheDialogLayout implements Cac
             }
         }
         super.onOK();
-    }
-
-    @Override
-    void addToPending() {
-        if (distributorCb.getSelectedItem() == null) {
-            JOptionPane.showMessageDialog(AddToOrderDialog.this, "Selected a distributor", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        Distributor distributor = (Distributor) distributorCb.getSelectedItem();
-        List<Item> itemsToPending = new ArrayList<>();
-        if (orderList) {
-            itemsToPending.addAll(itemsToOrderList);
-        } else {
-            itemsToPending.add(itemToOrder);
-        }
-
-        List<PendingOrder> pendingOrders = new ArrayList<>();
-        for (Item item : itemsToPending) {
-            PendingOrder pendingOrder = new PendingOrder(item, distributor);
-            pendingOrders.add(pendingOrder);
-        }
-
-        super.onOK();
-
-        PendingOrdersCacheDialog dialog = new PendingOrdersCacheDialog(application, "Pending orders", pendingOrders);
-        dialog.showDialog();
     }
 
     @Override

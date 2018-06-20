@@ -44,6 +44,7 @@ public class ItemOrderLine extends AbstractOrderLine<Item> {
         cpy.setOrderId(getOrderId());
         cpy.setAmount(getAmount());
         cpy.setLineId(getLineId());
+        cpy.setPending(isPending());
         return cpy;
     }
 

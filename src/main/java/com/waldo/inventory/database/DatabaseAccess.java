@@ -42,7 +42,7 @@ public class DatabaseAccess {
         return INSTANCE;
     }
 
-    private BasicDataSource dataSource;//MysqlDataSource dataSource;//BasicDataSource dataSource;
+    private BasicDataSource dataSource;
     private boolean initialized = false;
     private String loggedUser = "";
     private long cacheOnlyFakedId = 2;
@@ -782,6 +782,7 @@ public class DatabaseAccess {
                     o.setOrderId(rs.getLong("orderId"));
                     o.setAmount(rs.getInt("amount"));
                     o.setLineId(rs.getLong("itemId"));
+                    o.setPending(rs.getBoolean("isPending"));
 
                     o.setInserted(true);
                     if (o.getId() != DbObject.UNKNOWN_ID) {
@@ -868,6 +869,7 @@ public class DatabaseAccess {
                     o.setOrderId(rs.getLong("orderId"));
                     o.setAmount(rs.getInt("amount"));
                     o.setLineId(rs.getLong("pcbId"));
+                    o.setPending(rs.getBoolean("isPending"));
 
                     o.setInserted(true);
                     if (o.getId() != DbObject.UNKNOWN_ID) {
@@ -1895,9 +1897,7 @@ public class DatabaseAccess {
                 while (rs.next()) {
                     p = new PendingOrder();
                     p.setId(rs.getLong("id"));
-                    p.setItemId(rs.getLong("itemId"));
-                    p.setDistributorId(rs.getLong("distributorId"));
-                    p.setOrderDate(rs.getTimestamp("orderDate"));
+                    p.setOriginalOrderId(rs.getLong("originalOrderId"));
                     p.setInserted(true);
 
                     pendingOrders.add(p);

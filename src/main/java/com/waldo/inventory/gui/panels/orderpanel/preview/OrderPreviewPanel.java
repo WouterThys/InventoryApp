@@ -8,7 +8,6 @@ import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.dialogs.editordersdialog.EditOrdersDialog;
 import com.waldo.inventory.gui.dialogs.orderdetailsdialog.OrderDetailsCacheDialog;
 import com.waldo.inventory.gui.dialogs.ordersearchitemdialog.OrderSearchItemsDialog;
-import com.waldo.inventory.gui.dialogs.pendingordersdialog.PendingOrdersCacheDialog;
 import com.waldo.utils.GuiUtils;
 import com.waldo.utils.icomponents.IPanel;
 import com.waldo.utils.icomponents.ITextField;
@@ -120,11 +119,6 @@ public class OrderPreviewPanel extends IPanel implements IdBToolBar.IdbToolBarLi
                 dialog.showDialog();
             }
         }
-    }
-
-    private void viewPendingOrders() {
-        PendingOrdersCacheDialog dialog = new PendingOrdersCacheDialog(application, "Pending orders");
-        dialog.showDialog();
     }
 
     private void searchOrderItems() {

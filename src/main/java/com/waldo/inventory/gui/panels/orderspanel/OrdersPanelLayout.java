@@ -55,7 +55,6 @@ public abstract class OrdersPanelLayout extends IPanel implements IdBToolBar.Idb
      *                  METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-    abstract void onTreeRightClick(MouseEvent e);
     abstract void onOrderDoubleClick(MouseEvent e);
     abstract void onOrderRightClick(MouseEvent e);
     abstract void onLinesRightClick(MouseEvent e);

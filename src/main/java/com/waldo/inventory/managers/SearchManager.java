@@ -976,22 +976,12 @@ public class SearchManager {
         return setItemLinks;
     }
 
-    public List<PendingOrder> findPendingOrdersByDistributorId(long distributorId) {
-        List<PendingOrder> pendingOrders = new ArrayList<>();
-        if (distributorId > DbObject.UNKNOWN_ID) {
+    public PendingOrder findPendingOrderById(long id) {
+        if (id > DbObject.UNKNOWN_ID) {
             for (PendingOrder po : cache().getPendingOrders()) {
-                if (po.getDistributorId() == distributorId) {
-                    pendingOrders.add(po);
+                if (po.getId() == id) {
+                    return po;
                 }
-            }
-        }
-        return pendingOrders;
-    }
-
-    public PendingOrder findPendingOrderByItemAndDistributor(long itemId, long distributorId) {
-        for (PendingOrder po : cache().getPendingOrders()) {
-            if (po.getItemId() == itemId && po.getDistributorId() == distributorId) {
-                return po;
             }
         }
         return null;

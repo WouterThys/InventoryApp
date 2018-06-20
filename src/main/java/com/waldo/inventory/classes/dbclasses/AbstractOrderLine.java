@@ -12,6 +12,7 @@ public abstract class AbstractOrderLine<T extends Orderable> extends DbObject {
     // Variables
     protected long orderId;
     protected AbstractOrder<T> order;
+    protected boolean isPending;
 
     // Order element
     protected long lineId;
@@ -48,6 +49,7 @@ public abstract class AbstractOrderLine<T extends Orderable> extends DbObject {
         statement.setInt(ndx++, getAmount());
         statement.setLong(ndx++, getOrderId());
         statement.setLong(ndx++, getLineId());
+        statement.setBoolean(ndx++, isPending());
 
         return ndx;
     }
@@ -154,4 +156,11 @@ public abstract class AbstractOrderLine<T extends Orderable> extends DbObject {
         this.amount = amount;
     }
 
+    public boolean isPending() {
+        return isPending;
+    }
+
+    public void setPending(boolean pending) {
+        isPending = pending;
+    }
 }

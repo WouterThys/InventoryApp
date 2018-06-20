@@ -5,8 +5,13 @@ import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IdBToolBar;
+import com.waldo.inventory.gui.components.popups.OrderLinePopup;
 import com.waldo.inventory.gui.components.popups.OrderPopup;
+import com.waldo.inventory.gui.dialogs.editdistributorpartlinkdialog.EditDistributorPartLinkDialog;
+import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
+import com.waldo.utils.icomponents.IDialog;
 
+import javax.swing.*;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
@@ -211,6 +216,60 @@ public class OrdersPanel extends OrdersPanelLayout {
     }
 
 
+    private void onAddOrderLines() {
+
+    }
+
+    private void onDeleteOrderLines(List<AbstractOrderLine> orderLineList) {
+        if (orderLineList != null && orderLineList.size() > 0) {
+            String msg;
+            if (orderLineList.size() == 1) {
+                msg = "Delete " + orderLineList.get(0).getLine() + " from order?";
+            } else {
+                msg = "Delete " + orderLineList.size() + " lines from order?";
+            }
+
+            int res = JOptionPane.showConfirmDialog(
+                    application,
+                    msg,
+                    "Delete",
+                    JOptionPane.YES_NO_OPTION
+            );
+            if (res == JOptionPane.YES_OPTION) {
+                for (AbstractOrderLine line : orderLineList) {
+                    line.delete();
+                }
+            }
+        }
+    }
+
+    private void onEditOrderLine(AbstractOrderLine orderLine) {
+        if (orderLine != null) {
+            if (orderLine.getLine() instanceof Item) {
+                EditItemDialog dialog = new EditItemDialog<>(application, "Item", (Item) orderLine.getLine());
+                dialog.showDialog();
+            } else {
+                // TODO pcb dialog
+            }
+        }
+    }
+
+    private void onEditLineReferenceAndPrice(AbstractOrderLine orderLine) {
+        if (orderLine != null && !orderLine.isLocked()) {
+            DistributorPartLink link = orderLine.getDistributorPartLink();
+            if (link == null) {
+                long id = orderLine.getLineId();
+                link = new DistributorPartLink(orderLine.getOrder().getDistributor(), id);
+            }
+            EditDistributorPartLinkDialog dialog = new EditDistributorPartLinkDialog(application, link);
+            dialog.enableDistributor(false);
+            if (dialog.showDialog() == IDialog.OK) {
+                link.save();
+            }
+        }
+    }
+
+
     // Tool bars
     @Override
     public void onToolBarRefresh(IdBToolBar source) {
@@ -231,6 +290,7 @@ public class OrdersPanel extends OrdersPanelLayout {
     public void onToolBarEdit(IdBToolBar source) {
         onEditOrder(selectedOrder);
     }
+
 
     // Selection
     @Override
@@ -273,10 +333,6 @@ public class OrdersPanel extends OrdersPanelLayout {
 
 
     // Click
-    @Override
-    void onTreeRightClick(MouseEvent e) {
-
-    }
 
     @Override
     void onOrderDoubleClick(MouseEvent e) {
@@ -310,9 +366,45 @@ public class OrdersPanel extends OrdersPanelLayout {
 
     @Override
     void onLinesRightClick(MouseEvent e) {
-        List<AbstractOrderLine> orderLineList = lineTableGetAllSelected();
+        final List<AbstractOrderLine> orderLineList = lineTableGetAllSelected();
         if (orderLineList != null && orderLineList.size() > 0) {
+            OrderLinePopup popup = new OrderLinePopup(orderLineList) {
+                @Override
+                public void onDeleteOrderLines(List<AbstractOrderLine> orderLineList) {
+                    OrdersPanel.this.onDeleteOrderLines(orderLineList);
+                }
 
+                @Override
+                public void onOrderOrderLines(List<AbstractOrderLine> orderLineList) {
+
+                }
+
+                @Override
+                public void onEditReference(AbstractOrderLine orderLine) {
+                    onEditLineReferenceAndPrice(orderLine);
+                }
+
+                @Override
+                public void onEditLine(AbstractOrderLine orderLine) {
+                    onEditOrderLine(orderLine);
+                }
+
+                @Override
+                public void onOpenLocalDataSheet(Item item) {
+                    application.openDataSheet(item, false);
+                }
+
+                @Override
+                public void onOpenOnlineDataSheet(Item item) {
+                    application.openDataSheet(item, true);
+                }
+
+                @Override
+                public void onShowHistory(Item item) {
+                    application.showHistory(item);
+                }
+            };
+            popup.show(e.getComponent(), e.getX(), e.getY());
         }
     }
 }
