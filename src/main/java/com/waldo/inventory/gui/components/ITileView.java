@@ -1,10 +1,12 @@
 package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.Utils.GuiUtils;
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.Utils.resource.ImageResource;
+import com.waldo.inventory.classes.dbclasses.DbImage;
+import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.ProjectIDE;
 import com.waldo.inventory.classes.dbclasses.ProjectObject;
-import com.waldo.test.ImageSocketServer.ImageType;
 import com.waldo.utils.FileUtils;
 
 import javax.swing.*;
@@ -18,7 +20,7 @@ import java.io.File;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public class ITileView<IT extends ProjectObject> extends JPanel implements GuiUtils.GuiInterface, MouseListener, ImageResource.ImageRequester /*, ActionListener */ {
+public class ITileView<IT extends ProjectObject> extends JPanel implements GuiUtils.GuiInterface, MouseListener /*, ActionListener */ {
 
     public interface TileClickListener<IT extends ProjectObject> {
         void onTileClick(MouseEvent e, IT projectObject);
@@ -113,28 +115,53 @@ public class ITileView<IT extends ProjectObject> extends JPanel implements GuiUt
     public void updateComponents(Object... object) {
         ProjectIDE ide = projectObject.getProjectIDE();
 
-        if (ide != null && !ide.getIconPath().isEmpty()) {
-            //setIcon(projectObject.getProjectIDE().getIconPath(), projectObject.isValid());
-            imageResource.requestImage(this);
-
+        if (ide != null && ide.getImageId() > DbObject.UNKNOWN_ID) {
+            DbImage dbImage = imageResource.getImage(Statics.ImageType.IdeImage, ide.getImageId());
+            setImage(dbImage.getImageIcon());
         } else {
             String extension = FileUtils.getExtension(new File(projectObject.getDirectory()));
             String iconPath = "";
-            switch (extension) {
-                case "ods": iconPath = "ods.png"; break;
-                case "pdf": iconPath = "pdf.png"; break;
-                case "avi": iconPath = "avi-icon.png"; break;
-                case "csv": iconPath = "csv-icon.png"; break;
-                case "xls": iconPath = "excel-xls-icon.png"; break;
-                case "jpg": iconPath = "jpg-icon.png"; break;
-                case "mp3": iconPath = "mp3-icon.png"; break;
-                case "png": iconPath = "png-icon.png"; break;
-                case "ppt": iconPath = "ppt-icon.png"; break;
-                case "rar": iconPath = "rar-icon.png"; break;
-                case "txt": iconPath = "txt-icon.png"; break;
-                case "zip": iconPath = "zip-icon.png"; break;
-                default:
-                    break;
+            if (extension != null) {
+                switch (extension) {
+                    case "ods":
+                        iconPath = "ods.png";
+                        break;
+                    case "pdf":
+                        iconPath = "pdf.png";
+                        break;
+                    case "avi":
+                        iconPath = "avi-icon.png";
+                        break;
+                    case "csv":
+                        iconPath = "csv-icon.png";
+                        break;
+                    case "xls":
+                        iconPath = "excel-xls-icon.png";
+                        break;
+                    case "jpg":
+                        iconPath = "jpg-icon.png";
+                        break;
+                    case "mp3":
+                        iconPath = "mp3-icon.png";
+                        break;
+                    case "png":
+                        iconPath = "png-icon.png";
+                        break;
+                    case "ppt":
+                        iconPath = "ppt-icon.png";
+                        break;
+                    case "rar":
+                        iconPath = "rar-icon.png";
+                        break;
+                    case "txt":
+                        iconPath = "txt-icon.png";
+                        break;
+                    case "zip":
+                        iconPath = "zip-icon.png";
+                        break;
+                    default:
+                        break;
+                }
             }
             setIcon(iconPath, projectObject.isValid());
             //imageResource.requestImage(this);
@@ -147,13 +174,13 @@ public class ITileView<IT extends ProjectObject> extends JPanel implements GuiUt
     private void setIcon(String path, boolean isValid) {
         if (!path.isEmpty()) {
             try {
-                ImageIcon ideIcon = ImageResource.scaleImage(imageResource.readIdeIcon(path), new Dimension(60,60));
-                if (isValid) {
-                    iconBtn.setIcon(ideIcon);
-                } else {
-                    ImageIcon warnIcon = imageResource.readIcon("ErrorProvider.WarningIcon");
-                    iconBtn.setIcon(new CombinedIcon(ideIcon, warnIcon));
-                }
+//                ImageIcon ideIcon = ImageResource.scaleImage(imageResource.readIdeIcon(path), new Dimension(60,60));
+//                if (isValid) {
+//                    iconBtn.setIcon(ideIcon);
+//                } else {
+//                    ImageIcon warnIcon = imageResource.readIcon("ErrorProvider.WarningIcon");
+//                    iconBtn.setIcon(new CombinedIcon(ideIcon, warnIcon));
+//                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -231,26 +258,10 @@ public class ITileView<IT extends ProjectObject> extends JPanel implements GuiUt
         setSelected(isSelected);
     }
 
-    //
-    // Image request
-    //
-    @Override
-    public ImageType getImageType() {
-        return ImageType.IdeImage;
-    }
-
-    @Override
-    public String getImageName() {
-        if (projectObject != null && projectObject.getProjectIDE() != null) {
-            return  projectObject.getProjectIDE().getIconPath();
-        }
-        return "";
-    }
-
-    @Override
     public void setImage(ImageIcon image) {
         ImageIcon ideIcon = ImageResource.scaleImage(image, new Dimension(60,60));
         iconBtn.setIcon(ideIcon);
     }
+
 }
 

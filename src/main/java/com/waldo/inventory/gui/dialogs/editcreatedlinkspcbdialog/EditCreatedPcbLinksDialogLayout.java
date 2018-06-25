@@ -1,5 +1,6 @@
 package com.waldo.inventory.gui.dialogs.editcreatedlinkspcbdialog;
 
+import com.waldo.inventory.Utils.Statics.ImageType;
 import com.waldo.inventory.Utils.Statics.SolderItemState;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.gui.components.ICacheDialog;
@@ -8,7 +9,6 @@ import com.waldo.inventory.gui.components.IMenuBar;
 import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.components.tablemodels.ICreatedPcbLinkTableModel;
 import com.waldo.inventory.gui.components.tablemodels.ISolderItemTableModel;
-import com.waldo.test.ImageSocketServer.ImageType;
 import com.waldo.utils.DateUtils;
 import com.waldo.utils.GuiUtils;
 import com.waldo.utils.icomponents.*;
@@ -214,16 +214,11 @@ abstract class EditCreatedPcbLinksDialogLayout extends ICacheDialog implements I
         if (createdPcb != null) {
             pcbNameTf.setText(createdPcb.toString());
             pcbCreatedTf.setText(DateUtils.formatDateTime(createdPcb.getDateCreated()));
-            if (!createdPcb.getIconPath().isEmpty()) {
-                pcbImagePanel.setImage(createdPcb.getIconPath());
-            } else {
-                pcbImagePanel.setImage((ImageIcon)null);
-            }
         } else {
             pcbNameTf.setText("");
             pcbCreatedTf.setText("");
-            pcbImagePanel.setImage((ImageIcon)null);
         }
+        pcbImagePanel.updateComponents(projectPcb);
         updateLinkInfo(link);
     }
 
@@ -436,7 +431,7 @@ abstract class EditCreatedPcbLinksDialogLayout extends ICacheDialog implements I
             }
         };
 
-        pcbImagePanel = new IImagePanel(this, ImageType.Other, "", editedListener, new Dimension(250, 170));
+        pcbImagePanel = new IImagePanel(this, ImageType.Other, null, new Dimension(250, 170), editedListener);
 
         linkTableModel = new ICreatedPcbLinkTableModel();
         linkTable = new ITable<>(linkTableModel);

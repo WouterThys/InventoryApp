@@ -1,5 +1,6 @@
 package com.waldo.inventory.gui.components;
 
+import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.utils.GuiUtils;
 import com.waldo.utils.icomponents.ILabel;
 
@@ -307,14 +308,14 @@ public abstract class iDialog extends JDialog implements GuiUtils.GuiInterface, 
     }
 
     protected void setTitleIcon(ImageIcon titleIcon) {
-        if (titleImage != null) {
-            titleImage.setImage(titleIcon);
-        }
+//        if (titleImage != null) {
+//            titleImage.setIcon(titleIcon);
+//        }
     }
 
-    protected void setTitleIcon(String imageName) {
+    protected void setTitleIcon(DbObject dbObject) {
         if (titleImage != null) {
-            titleImage.setImage(imageName);
+            titleImage.updateComponents(dbObject);
         }
     }
 

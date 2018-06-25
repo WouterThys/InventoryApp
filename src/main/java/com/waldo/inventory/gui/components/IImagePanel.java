@@ -1,11 +1,13 @@
 package com.waldo.inventory.gui.components;
 
+import com.waldo.inventory.Utils.Statics.ImageType;
 import com.waldo.inventory.Utils.resource.ImageResource;
+import com.waldo.inventory.classes.dbclasses.DbImage;
 import com.waldo.inventory.classes.dbclasses.DbObject;
+import com.waldo.inventory.database.interfaces.ImageChangedListener;
 import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.components.popups.CopyPastePopup;
-import com.waldo.inventory.gui.dialogs.imagedialogs.selectimagedialog.SelectImageDialog;
-import com.waldo.test.ImageSocketServer.ImageType;
+import com.waldo.inventory.gui.dialogs.editimagedialog.EditImageDialog;
 import com.waldo.utils.GuiUtils;
 import com.waldo.utils.icomponents.IDialog;
 import com.waldo.utils.icomponents.IEditedListener;
@@ -18,48 +20,38 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public class IImagePanel extends IPanel implements ImageResource.ImageRequester, ClipboardOwner {
+public class IImagePanel extends IPanel implements ClipboardOwner, ImageChangedListener {
 
     private JLabel imageLbl;
     private JToolBar imageToolbar;
 
     private boolean editable;
     private ImageType imageType;
-    private String imageName;
     private Dimension imageDimension;
+    private DbObject dbObject;
 
     private Window parent;
     private IEditedListener editedListener;
 
-    public IImagePanel(ImageType imageType, Dimension imageDimension) {
-        this(imageType, "", null, imageDimension);
+
+
+    public IImagePanel(Window parent, ImageType imageType, DbObject dbObject, Dimension imageDimension) {
+        this(parent, imageType, dbObject, imageDimension, null);
     }
 
-    public IImagePanel(ImageType imageType, Dimension imageDimension, boolean editable) {
-        this(null, imageType, "", editable, null, imageDimension);
-    }
 
-    public IImagePanel(ImageType imageType, String imageName, IEditedListener editedListener, Dimension imageDimension) {
-        this(null, imageType, imageName, editedListener, imageDimension);
-    }
-
-    public IImagePanel(Window parent, ImageType imageType, String imageName, IEditedListener editedListener, Dimension imageDimension) {
-        this(parent, imageType, imageName, false, editedListener, imageDimension);
-    }
-
-    public IImagePanel(Window parent, ImageType imageType, String imageName, boolean editable, IEditedListener editedListener, Dimension imageDimension) {
+    public IImagePanel(Window parent, ImageType imageType, DbObject dbObject, Dimension imageDimension, IEditedListener editedListener) {
         super(new BorderLayout());
 
         this.parent = parent;
         this.imageType = imageType;
-        this.imageName = imageName;
+        this.dbObject = dbObject;
         this.editedListener = editedListener;
-        this.editable = editable || editedListener != null;
+        this.editable = editedListener != null;
         this.imageDimension = imageDimension;
 
         initializeComponents();
@@ -67,40 +59,22 @@ public class IImagePanel extends IPanel implements ImageResource.ImageRequester,
         updateComponents();
     }
 
-    @Override
-    public void setImage(ImageIcon imageIcon) {
-        if (imageIcon != null) {
-            imageIcon = ImageResource.scaleImage(imageIcon, imageDimension);
-        }
-        imageLbl.setIcon(imageIcon);
+    public DbObject getDbObject() {
+        return dbObject;
     }
 
-    public void setImage(String name) {
-        if (name == null || !name.equalsIgnoreCase(getImageName())) {
-            setImageName(name);
-            updateComponents();
-        }
+    public void setDbObject(DbObject dbObject) {
+        this.dbObject = dbObject;
+        updateComponents();
     }
 
-
-    public void setEditable(boolean editable) {
-        this.editable = editable;
-    }
-
-    @Override
     public ImageType getImageType() {
-        if (imageType == null) {
-            imageType = ImageType.Other;
-        }
         return imageType;
     }
 
-    @Override
-    public String getImageName() {
-        if (imageName == null) {
-            imageName = "";
-        }
-        return imageName;
+    public void setImageType(ImageType imageType) {
+        this.imageType = imageType;
+        updateComponents();
     }
 
     @Override
@@ -108,15 +82,22 @@ public class IImagePanel extends IPanel implements ImageResource.ImageRequester,
         //
     }
 
-    public void setImageName(String imageName) {
-        this.imageName = imageName;
-        if (imageName == null || imageName.isEmpty()) {
-            setToolTipText(null);
-        } else {
-            setToolTipText(getImageName());
+    private void setImage(ImageIcon imageIcon) {
+        if (imageIcon != null) {
+            imageIcon = ImageResource.scaleImage(imageIcon, imageDimension);
         }
+        imageLbl.setIcon(imageIcon);
     }
 
+    private void updateWithNewIcon(ImageIcon imageIcon) {
+        if(imageIcon != null) {
+            if (dbObject != null) {
+                DbImage image = new DbImage(imageType, imageIcon, dbObject.getName());
+                image.save();
+            }
+        }
+        setImage(imageIcon);
+    }
 
     private TransferHandler createNewTransferHandler() {
         return new TransferHandler() {
@@ -130,18 +111,8 @@ public class IImagePanel extends IPanel implements ImageResource.ImageRequester,
                 }
                 if (transferData instanceof BufferedImage) {
                     BufferedImage image = (BufferedImage) transferData;
-
-                    if (editedListener != null) {
-                        DbObject object = (DbObject) editedListener.getGuiObject();
-                        if (getImageName().isEmpty()) {
-                            imageName = object.getName() + ".jpg";
-                        }
-                        object.setIconPath(imageName);
-                        editedListener.onValueChanged(IImagePanel.this, "iconPath", "", imageName);
-                    }
-
-                    imageResource.saveImage(image, imageType, imageName);
-                    setImage(imageName);
+                    ImageIcon icon = new ImageIcon(image);
+                    updateWithNewIcon(icon);
                 }
                 return true;
             }
@@ -155,35 +126,22 @@ public class IImagePanel extends IPanel implements ImageResource.ImageRequester,
         };
     }
 
-    private void saveImage(String imageName, File imageFile) {
-        if (imageFile != null && imageFile.exists() && !imageName.equalsIgnoreCase(getImageName())) {
-            imageResource.saveImage(imageFile, imageType, imageName);
-            setImage(imageName);
-
-            if (editedListener != null) {
-                DbObject object = (DbObject) editedListener.getGuiObject();
-                object.setIconPath(imageName);
-                editedListener.onValueChanged(IImagePanel.this, "iconPath", "", imageName);
-            }
-        }
-    }
-
     private void deleteImage() {
         int res = JOptionPane.showConfirmDialog(
                 parent,
-                "Delete image " + getImageName() + "?",
+                "Delete image?",
                 "Delete",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE
         );
 
         if (res == JOptionPane.YES_OPTION) {
-            setImage((String) null);
-
+            setImage(imageResource.getDefaultImage(imageType));
+            if (dbObject != null) {
+                dbObject.setImageId(0);
+            }
             if (editedListener != null) {
-                DbObject object = (DbObject) editedListener.getGuiObject();
-                object.setIconPath("");
-                editedListener.onValueChanged(IImagePanel.this, "iconPath", "", "");
+                editedListener.onValueChanged(IImagePanel.this, "imageId", 0, 0);
             }
         }
     }
@@ -201,29 +159,62 @@ public class IImagePanel extends IPanel implements ImageResource.ImageRequester,
     }
 
     private void pasteFromClipboard() {
-        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-        if (clipboard != null) {
-            try {
-                BufferedImage image = (BufferedImage) clipboard.getData(DataFlavor.imageFlavor);
-                if (image != null) {
-                    if (editedListener != null) {
-                        DbObject object = (DbObject) editedListener.getGuiObject();
-                        if (getImageName().isEmpty()) {
-                            imageName = object.getName() + ".jpg";
-                        }
-                        object.setIconPath(imageName);
-                        editedListener.onValueChanged(IImagePanel.this, "iconPath", "", imageName);
+        if (editable) {
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            if (clipboard != null) {
+                try {
+                    BufferedImage image = (BufferedImage) clipboard.getData(DataFlavor.imageFlavor);
+                    if (image != null) {
+                        updateWithNewIcon(new ImageIcon(image));
                     }
-
-                    imageResource.saveImage(image, imageType, imageName);
-                    setImage(imageName);
+                } catch (UnsupportedFlavorException | IOException e) {
+                    e.printStackTrace();
                 }
-            } catch (UnsupportedFlavorException | IOException e) {
-                e.printStackTrace();
             }
         }
     }
 
+    //
+    // Images changed
+    //
+    @Override
+    public void onInserted(DbImage image) {
+        if (editable && dbObject != null && image != null) {
+            dbObject.setImageId(image.getId());
+
+            if (editedListener != null) {
+                editedListener.onValueChanged(this, "imageId", 0, image.getId());
+            }
+        }
+    }
+
+    @Override
+    public void onUpdated(DbImage image) {
+        if (editable && dbObject != null && image != null) {
+
+            if (dbObject.getImageId() == image.getId()) {
+                dbObject.setImageId(image.getId());
+
+                if (editedListener != null) {
+                    editedListener.onValueChanged(this, "imageId", 0, image.getId());
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onDeleted(DbImage image) {
+        if (editable && dbObject != null && image != null) {
+
+            if (dbObject.getImageId() == image.getId()) {
+                dbObject.setImageId(0);
+
+                if (editedListener != null) {
+                    editedListener.onValueChanged(this, "imageId", 0, image.getId());
+                }
+            }
+        }
+    }
 
     //
     // Gui
@@ -244,7 +235,7 @@ public class IImagePanel extends IPanel implements ImageResource.ImageRequester,
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     if (SwingUtilities.isRightMouseButton(e)) {
-                        JPopupMenu popupMenu = new CopyPastePopup(!getImageName().isEmpty(), true) {
+                        JPopupMenu popupMenu = new CopyPastePopup(imageLbl.getIcon() != null, true) {
                             @Override
                             public void onCopy() {
                                 copyToClipboard();
@@ -265,10 +256,18 @@ public class IImagePanel extends IPanel implements ImageResource.ImageRequester,
         IActions.EditAction editImageAction = new IActions.EditAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                SelectImageDialog selectImageDialog = new SelectImageDialog(parent, false, imageType);
-                if (selectImageDialog.showDialog() == IDialog.OK) {
-                    String imageName = selectImageDialog.getImageName();
-                    saveImage(imageName, selectImageDialog.getSelectedFile());
+                EditImageDialog dialog = new EditImageDialog(parent, imageType);
+                if (dialog.showDialog() == IDialog.OK) {
+                    DbImage image = dialog.getSelectedImage();
+                    if (image != null) {
+                        setImage(image.getImageIcon());
+                        if (dbObject != null) {
+                            dbObject.setImageId(image.getId());
+                        }
+                        if (editedListener != null) {
+                            editedListener.onValueChanged(IImagePanel.this, "imageId", 0, image.getId());
+                        }
+                    }
                 }
             }
         };
@@ -291,10 +290,6 @@ public class IImagePanel extends IPanel implements ImageResource.ImageRequester,
         imageToolbar = GuiUtils.createNewToolbar(editImageAction, deleteImageAction);
         imageToolbar.setOrientation(JToolBar.VERTICAL);
         imageToolbar.setVisible(editable);
-
-        if (!getImageName().isEmpty()) {
-            setToolTipText(getImageName());
-        }
     }
 
     @Override
@@ -314,11 +309,22 @@ public class IImagePanel extends IPanel implements ImageResource.ImageRequester,
 
     @Override
     public void updateComponents(Object... objects) {
-        if (!getImageName().isEmpty()) {
-            imageResource.requestImage(this);
+
+        if(objects != null && objects.length > 0) {
+            dbObject = (DbObject) objects[0];
+        }
+
+        if (dbObject != null) {
+            SwingUtilities.invokeLater(() -> {
+                DbImage image = imageResource.getImage(imageType, dbObject.getImageId());
+                if (image != null) {
+                    setImage(image.getImageIcon());
+                } else {
+                    setImage(imageResource.getDefaultImage(getImageType()));
+                }
+            });
         } else {
             setImage(imageResource.getDefaultImage(getImageType()));
         }
     }
-
 }

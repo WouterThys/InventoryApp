@@ -1,13 +1,13 @@
 package com.waldo.inventory.gui.dialogs.manufacturerdialog;
 
 import com.waldo.inventory.Utils.GuiUtils;
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.Manufacturer;
 import com.waldo.inventory.gui.components.IImagePanel;
 import com.waldo.inventory.gui.components.IResourceDialog;
 import com.waldo.inventory.managers.SearchManager;
-import com.waldo.test.ImageSocketServer.ImageType;
 import com.waldo.utils.icomponents.ILabel;
 import com.waldo.utils.icomponents.ITextField;
 
@@ -55,7 +55,7 @@ public class ManufacturersDialog extends IResourceDialog<Manufacturer> {
         // Details
         detailName = new ITextField("Name");
         detailName.setEnabled(false);
-        detailLogo = new IImagePanel(this, ImageType.ManufacturerImage, "", this, new Dimension(128, 128));
+        detailLogo = new IImagePanel(this, Statics.ImageType.ManufacturerImage, null, new Dimension(128, 128), this);
         browsePanel = new GuiUtils.IBrowseWebPanel("Web site", "website", this);
 
         detailItemDefaultListModel = new DefaultListModel<>();
@@ -95,8 +95,6 @@ public class ManufacturersDialog extends IResourceDialog<Manufacturer> {
         if (manufacturer != null) {
             detailName.setText(manufacturer.getName());
             browsePanel.setText(manufacturer.getWebsite());
-            //detailLogo.setIcon(ImageResource.scaleImage(imageResource.readManufacturerIcon(manufacturer.getIconPath()), new Dimension(48,48)));
-            detailLogo.setImage(manufacturer.getIconPath());
             detailItemDefaultListModel.removeAllElements();
             for (Item item : SearchManager.sm().getItemsForManufacturer(manufacturer.getId())) {
                 detailItemDefaultListModel.addElement(item);
@@ -104,13 +102,14 @@ public class ManufacturersDialog extends IResourceDialog<Manufacturer> {
         } else {
             clearDetails();
         }
+        detailLogo.updateComponents(manufacturer);
     }
 
     @Override
     protected void clearDetails() {
         detailName.setText("");
         browsePanel.clearText();
-        detailLogo.setImage(imageResource.getDefaultImage(ImageType.ManufacturerImage));
+        detailLogo.updateComponents((DbObject)null);
         detailItemDefaultListModel.removeAllElements();
     }
 

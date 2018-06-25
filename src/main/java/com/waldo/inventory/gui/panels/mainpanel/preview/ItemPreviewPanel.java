@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.panels.mainpanel.preview;
 
 import com.waldo.inventory.Utils.GuiUtils;
-import com.waldo.inventory.classes.dbclasses.DbObject;
+import com.waldo.inventory.Utils.Statics.ImageType;
 import com.waldo.inventory.classes.dbclasses.Division;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.gui.components.IDivisionPanel;
@@ -9,7 +9,6 @@ import com.waldo.inventory.gui.components.IImagePanel;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.panels.mainpanel.AbstractDetailPanel;
 import com.waldo.inventory.gui.panels.mainpanel.ItemDetailListener;
-import com.waldo.test.ImageSocketServer.ImageType;
 import com.waldo.utils.icomponents.*;
 
 import javax.swing.*;
@@ -77,39 +76,34 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
 
     private void updateHeader(Item item) {
         if (item != null) {
-            if (item.getIconPath().isEmpty()) {
-                imagePanel.setImage(imageResource.getDefaultImage(ImageType.ItemImage));
-            } else {
-                imagePanel.setImage(item.getIconPath());
-            }
             nameTf.setText(item.toString());
             descriptionTa.setText(item.getDescription());
             starRater.setRating(item.getRating());
         } else {
-            imagePanel.setImage(imageResource.getDefaultImage(ImageType.ItemImage));
             nameTf.setText("");
             descriptionTa.setText("");
             starRater.setRating(0);
         }
+        imagePanel.updateComponents(item);
     }
 
     private void updateData(Item item) {
         if (item != null) {
             divisionPnl.updateComponents(item.getDivision());
 
-            if (item.getManufacturerId() > DbObject.UNKNOWN_ID) {
+            if (item.getManufacturer() != null) {
                 manufacturerTf.setText(item.getManufacturer().toString());
             } else {
                 manufacturerTf.setText("");
             }
 
-            if (item.getPackageTypeId() > DbObject.UNKNOWN_ID) {
+            if (item.getPackageType() != null) {
                 footprintTf.setText(item.getPackageType().getPrettyString());
             } else {
                 footprintTf.setText("");
             }
 
-            if (item.getLocationId() > DbObject.UNKNOWN_ID) {
+            if (item.getLocation() != null) {
                 locationTf.setText(item.getLocation().getPrettyString());
             } else {
                 locationTf.setText("");
@@ -224,7 +218,7 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
     @Override
     public void initializeComponents() {
         // Image
-        imagePanel = new IImagePanel(ImageType.ItemImage, new Dimension(150,150));
+        imagePanel = new IImagePanel(null, ImageType.ItemImage, selectedItem, new Dimension(150,150));
 
         // Data
         nameTf = new ITextField(false);

@@ -159,6 +159,51 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
 
         Status().setMessage("Ready");
         Status().updateConnectionStatus();
+
+
+        //////////
+
+//        new Thread(() -> {
+//
+//            Map<String, List<ProjectIDE>> map = new TreeMap<>();
+//
+//            for (ProjectIDE item : cache().getProjectIDES()) {
+//                String path = item.getIconPath();
+//                if (path != null && !path.isEmpty()) {
+//                    if (!map.containsKey(path)) {
+//                        map.put(path, new ArrayList<>());
+//                    }
+//                    map.get(path).add(item);
+//                }
+//            }
+//
+//
+//            for (String path : map.keySet()) {
+//                if (path != null && !path.isEmpty()) {
+//                    imageResource.requestImage(new ImageResource.ImageRequester() {
+//                        @Override
+//                        public ImageType getImageType() {
+//                            return ImageType.IdeImage;
+//                        }
+//
+//                        @Override
+//                        public String getImageName() {
+//                            return path;
+//                        }
+//
+//                        @Override
+//                        public void setImage(ImageIcon image) {
+//                            DbImage dbImage = new DbImage(ImageType.IdeImage, image, path);
+//                            dbImage.setDbObjects(map.get(path));
+//                            dbImage.save();
+//                        }
+//                    });
+//                }
+//            }
+//
+//
+//        }).start();
+
     }
 
     public void addItemsToOrder(List<Item> itemsToOrder, Order order) {

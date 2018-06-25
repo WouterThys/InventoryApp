@@ -65,6 +65,9 @@ public abstract class DbObject {
     protected long id = -1;
     protected String name = "";
     protected String iconPath = "";
+
+    protected long imageId;
+
     protected boolean canBeSaved = true;
     protected final AddUpdateDelete aud = new AddUpdateDelete();
 
@@ -211,6 +214,7 @@ public abstract class DbObject {
             if (!(o instanceof DbObject)) return false;
             dbObject = (DbObject) o;
             if (getId() == dbObject.getId() &&
+                    getImageId() == dbObject.getImageId() &&
                     Objects.equals(TABLE_NAME, dbObject.TABLE_NAME) &&
                     Objects.equals(getName(), dbObject.getName())) {
                 return true;
@@ -252,6 +256,7 @@ public abstract class DbObject {
         newObject.setId(getId());
         newObject.setName(getName());
         newObject.setIconPath(getIconPath());
+        newObject.setImageId(getImageId());
 
         newObject.setInserted(isInserted);
         newObject.setCanBeSaved(false);
@@ -321,5 +326,17 @@ public abstract class DbObject {
 
     public AddUpdateDelete getAud() {
         return aud;
+    }
+
+
+    public long getImageId() {
+        if (imageId < UNKNOWN_ID) {
+            imageId = UNKNOWN_ID;
+        }
+        return imageId;
+    }
+
+    public void setImageId(long imageId) {
+        this.imageId = imageId;
     }
 }

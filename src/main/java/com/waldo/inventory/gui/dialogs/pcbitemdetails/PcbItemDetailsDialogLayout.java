@@ -1,11 +1,11 @@
 package com.waldo.inventory.gui.dialogs.pcbitemdetails;
 
 import com.waldo.inventory.Utils.GuiUtils;
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.gui.components.ICacheDialog;
 import com.waldo.inventory.gui.components.IImagePanel;
 import com.waldo.inventory.gui.components.actions.IActions;
-import com.waldo.test.ImageSocketServer.ImageType;
 import com.waldo.utils.icomponents.IEditedListener;
 import com.waldo.utils.icomponents.ILabel;
 import com.waldo.utils.icomponents.ITableLabel;
@@ -88,12 +88,11 @@ abstract class PcbItemDetailsDialogLayout extends ICacheDialog implements IEdite
         if (pcbProject != null) {
             Project project = pcbProject.getProject();
             if (project != null) {
-                projectIconLbl.setImage(project.getIconPath());
                 projectTf.setText(project.toString());
             } else {
-                projectIconLbl.setImage(imageResource.getDefaultImage(ImageType.ProjectImage));
                 projectTf.setText("");
             }
+            projectIconLbl.updateComponents(project);
             pcbProjectTf.setText(pcbProject.toString());
         }
     }
@@ -238,7 +237,7 @@ abstract class PcbItemDetailsDialogLayout extends ICacheDialog implements IEdite
 
         // This
         // Project
-        projectIconLbl = new IImagePanel(ImageType.ProjectImage, new Dimension(64,64));
+        projectIconLbl = new IImagePanel(null, Statics.ImageType.ProjectImage, null, new Dimension(64,64));
         projectTf = new ITextField(false);
         pcbProjectTf = new ITextField(false);
 
