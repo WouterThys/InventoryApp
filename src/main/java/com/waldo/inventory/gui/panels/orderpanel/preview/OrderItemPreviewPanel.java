@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.panels.orderpanel.preview;
 
 import com.waldo.inventory.Utils.GuiUtils;
+import com.waldo.inventory.Utils.Statics.ImageType;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.gui.components.IImagePanel;
 import com.waldo.inventory.gui.components.IdBToolBar;
@@ -8,7 +9,6 @@ import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.panels.mainpanel.AbstractDetailPanel;
 import com.waldo.inventory.gui.panels.mainpanel.ItemDetailListener;
 import com.waldo.inventory.gui.panels.mainpanel.OrderDetailListener;
-import com.waldo.test.ImageSocketServer.ImageType;
 import com.waldo.utils.icomponents.*;
 
 import javax.swing.*;
@@ -90,19 +90,15 @@ public abstract class OrderItemPreviewPanel extends AbstractDetailPanel implemen
     private void updateHeader(AbstractOrderLine orderLine) {
         if (orderLine != null) {
                 Orderable line = orderLine.getLine();
-                if (line != null && line instanceof Item) {
+                if (line instanceof Item) {
                     Item item = (Item) line;
-                        if (item.getIconPath().isEmpty()) {
-                            imagePanel.setImage(imageResource.getDefaultImage(ImageType.ItemImage));
-                        } else {
-                            imagePanel.setImage(item.getIconPath());
-                        }
+                        imagePanel.updateComponents(item);
                         nameTf.setText(item.toString());
                         descriptionTa.setText(item.getDescription());
                         starRater.setRating(item.getRating());
 
                 } else {
-                    imagePanel.setImage(imageResource.getDefaultImage(ImageType.ItemImage));
+                    imagePanel.updateComponents();
                     nameTf.setText("");
                     descriptionTa.setText("");
                     starRater.setRating(0);
@@ -153,7 +149,7 @@ public abstract class OrderItemPreviewPanel extends AbstractDetailPanel implemen
                 locationTf.setText("");
             }
         } else {
-            imagePanel.setImage(imageResource.getDefaultImage(ImageType.ItemImage));
+            imagePanel.updateComponents();
             nameTf.setText("");
             aliasLbl.setText("");
             descriptionTa.setText("");
@@ -279,7 +275,7 @@ public abstract class OrderItemPreviewPanel extends AbstractDetailPanel implemen
     @Override
     public void initializeComponents() {
         // Image
-        imagePanel = new IImagePanel(ImageType.ItemImage, new Dimension(150, 150));
+        imagePanel = new IImagePanel(null, ImageType.ItemImage, null, new Dimension(150, 150));
 
         // Data
         nameTf = new ITextField(false);
