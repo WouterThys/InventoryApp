@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.Utils.GuiUtils;
-import com.waldo.inventory.classes.dbclasses.Order;
+import com.waldo.inventory.classes.dbclasses.AbstractOrder;
 import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.utils.DateUtils;
 import com.waldo.utils.icomponents.ILabel;
@@ -62,7 +62,7 @@ public abstract class IOrderFlowPanel extends IPanel {
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private Order order;
+    private AbstractOrder order;
 
     /*
      *                  CONSTRUCTOR
@@ -77,10 +77,10 @@ public abstract class IOrderFlowPanel extends IPanel {
     /*
      *                  METHODS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public abstract void moveToOrdered(Order order);
-    public abstract void moveToReceived(Order order);
-    public abstract void backToOrdered(Order order);
-    public abstract void backToPlanned(Order order);
+    public abstract void moveToOrdered(AbstractOrder order);
+    public abstract void moveToReceived(AbstractOrder order);
+    public abstract void backToOrdered(AbstractOrder order);
+    public abstract void backToPlanned(AbstractOrder order);
 
     /*
      *                  LISTENERS
@@ -106,7 +106,7 @@ public abstract class IOrderFlowPanel extends IPanel {
         dateModifiedLbl.setForeground(Color.DARK_GRAY);
 
         dateModifiedLbl.setToolTipText("Last modified");
-        dateOrderedLbl.setToolTipText("Order date");
+        dateOrderedLbl.setToolTipText("ItemOrder date");
         dateReceivedLbl.setToolTipText("Received date");
 
         backToPlannedAction.setTooltip("Back to planned");
@@ -146,8 +146,8 @@ public abstract class IOrderFlowPanel extends IPanel {
 
     @Override
     public void updateComponents(Object... object) {
-        if (object.length != 0 && object[0] != null && object[0] instanceof Order) {
-            order = (Order) object[0];
+        if (object.length != 0 && object[0] != null && object[0] instanceof AbstractOrder) {
+            order = (AbstractOrder) object[0];
 
             switch (order.getOrderState()) {
                 case Planned:

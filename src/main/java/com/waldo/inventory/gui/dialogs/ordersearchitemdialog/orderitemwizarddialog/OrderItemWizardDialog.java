@@ -14,14 +14,14 @@ public class OrderItemWizardDialog extends OrderItemWizardDialogLayout {
 
     private List<SelectableTableItem> itemsToOrder = new ArrayList<>();
 
-    public OrderItemWizardDialog(Window window, Order order, OrderImportType orderImportType, ProjectPcb projectPcb) {
-        super(window, order, orderImportType, projectPcb);
+    public OrderItemWizardDialog(Window window, ItemOrder itemOrder, OrderImportType orderImportType, ProjectPcb projectPcb) {
+        super(window, itemOrder, orderImportType, projectPcb);
 
         initializeComponents();
         initializeLayouts();
         updateComponents();
 
-        orderCb.setEnabled(order == null);
+        orderCb.setEnabled(itemOrder == null);
         importTypeCb.setEnabled(orderImportType == null);
     }
 
@@ -29,8 +29,8 @@ public class OrderItemWizardDialog extends OrderItemWizardDialogLayout {
         return itemsToOrder;
     }
 
-    public Order getSelectedOrder() {
-        return selectedOrder;
+    public ItemOrder getSelectedOrder() {
+        return selectedItemOrder;
     }
 
     private void findItemsWithQuantities() {
@@ -46,7 +46,7 @@ public class OrderItemWizardDialog extends OrderItemWizardDialogLayout {
         if (allowEmptyRef) {
             itemsToOrder.add(new SelectableTableItem(item));
         } else {
-            DistributorPartLink link = SearchManager.sm().findDistributorPartLink(selectedOrder.getDistributorId(), item);
+            DistributorPartLink link = SearchManager.sm().findDistributorPartLink(selectedItemOrder.getDistributorId(), item);
             if (link != null) {
                 itemsToOrder.add(new SelectableTableItem(item));
             }
@@ -67,7 +67,7 @@ public class OrderItemWizardDialog extends OrderItemWizardDialogLayout {
                             if (allowEmptyRef) {
                                 itemsToOrder.add(selectableTableItem);
                             } else {
-                                DistributorPartLink link = SearchManager.sm().findDistributorPartLink(selectedOrder.getDistributorId(), item);
+                                DistributorPartLink link = SearchManager.sm().findDistributorPartLink(selectedItemOrder.getDistributorId(), item);
                                 if (link != null) {
                                     itemsToOrder.add(selectableTableItem);
                                 }
@@ -82,8 +82,8 @@ public class OrderItemWizardDialog extends OrderItemWizardDialogLayout {
 
     @Override
     protected void onOK() {
-        selectedOrder = (Order) orderCb.getSelectedItem();
-        if (selectedOrder == null) {
+        selectedItemOrder = (ItemOrder) orderCb.getSelectedItem();
+        if (selectedItemOrder == null) {
             JOptionPane.showMessageDialog(
                     this,
                     "Select an order..",

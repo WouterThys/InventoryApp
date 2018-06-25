@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
 import com.waldo.inventory.classes.dbclasses.DbObject;
-import com.waldo.inventory.classes.dbclasses.Order;
+import com.waldo.inventory.classes.dbclasses.ItemOrder;
 import com.waldo.inventory.gui.Application;
 import com.waldo.utils.DateUtils;
 import com.waldo.utils.icomponents.IAbstractTableModel;
@@ -63,17 +63,17 @@ public class IHistoryTableModel extends IAbstractTableModel {
         if (dbObject != null) {
             switch (DbObject.getType(dbObject)) {
                 case DbObject.TYPE_ORDER:
-                    Order order = (Order) dbObject;
+                    ItemOrder itemOrder = (ItemOrder) dbObject;
                     switch (columnIndex) {
                         case 0: // Icon
                             return Application.imageResource.readIcon("HistoryDialog.OrderIcon");
                         case 1: // Name
-                            return "Ordered in " + order.getName();
+                            return "Ordered in " + itemOrder.getName();
                         case 2: // Date
-                            if (order.isOrdered()) {
-                                return DateUtils.formatDateTime(order.getDateOrdered());
+                            if (itemOrder.isOrdered()) {
+                                return DateUtils.formatDateTime(itemOrder.getDateOrdered());
                             } else {
-                                return DateUtils.formatDateTime(order.getDateModified());
+                                return DateUtils.formatDateTime(itemOrder.getDateModified());
                             }
                         case 3: // Go to
                             return "Go";//imageResource.readIcon("Common.ArrowRight");

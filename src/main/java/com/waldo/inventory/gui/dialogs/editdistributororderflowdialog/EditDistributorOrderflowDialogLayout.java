@@ -36,7 +36,7 @@ abstract class EditDistributorOrderflowDialogLayout extends IDialog implements L
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     EditDistributorOrderflowDialogLayout(Window window) {
-        super(window, "Order flow");
+        super(window, "ItemOrder flow");
 
     }
 

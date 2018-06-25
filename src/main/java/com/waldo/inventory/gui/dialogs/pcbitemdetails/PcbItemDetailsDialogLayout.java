@@ -120,7 +120,7 @@ abstract class PcbItemDetailsDialogLayout extends ICacheDialog implements IEdite
                 updateMatchedItemPanel(itemLink.getLinkedItemName(), itemLink.getLinkedItemAmount());
             }
             if (pcbItem.getOrderItem() != null) {
-                orderTf.setText(pcbItem.getOrderItem().getOrder().toString());
+               // orderTf.setText(pcbItem.getOrderItem().getPcbOrder().toString());
             }
         }
     }
@@ -211,7 +211,7 @@ abstract class PcbItemDetailsDialogLayout extends ICacheDialog implements IEdite
 
         JPanel orderPnl = new JPanel(new BorderLayout());
         JButton orderBtn = new JButton(orderItemAction);
-        orderBtn.setText("Order ");
+        orderBtn.setText("ItemOrder ");
         orderPnl.add(orderLbl, BorderLayout.WEST);
         orderPnl.add(orderTf, BorderLayout.CENTER);
         orderPnl.add(orderBtn, BorderLayout.EAST);

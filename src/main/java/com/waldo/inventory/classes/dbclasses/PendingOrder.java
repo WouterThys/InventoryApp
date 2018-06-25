@@ -1,13 +1,14 @@
 package com.waldo.inventory.classes.dbclasses;
 
+import com.sun.istack.internal.NotNull;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.managers.SearchManager;
-import com.waldo.utils.DateUtils;
 
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 import static com.waldo.inventory.managers.CacheManager.cache;
 
@@ -15,81 +16,44 @@ public class PendingOrder extends DbObject {
 
     public static final String TABLE_NAME = "pendingorders";
 
-    private long itemId;
-    private Item item;
+    private long originalOrderId;
+    private ItemOrder originalOrder;
 
-    private long distributorId;
-    private Distributor distributor;
-
-    private Date orderDate;
+    private List<ItemOrderLine> pendingOrderLines;
 
     public PendingOrder() {
         super(TABLE_NAME);
-        orderDate = DateUtils.now();
     }
 
-    public PendingOrder(Item item, Distributor distributor) {
+    public PendingOrder(@NotNull ItemOrder originalOrder) {
         this();
 
-        this.item = item;
-        this.distributor = distributor;
-
-        if (item != null) {
-            itemId = item.getId();
-        }
-        if (distributor != null) {
-            distributorId = distributor.getId();
-        }
-    }
-
-    @Override
-    public String toString() {
-        return "PendingOrder{" +
-                "item=" + item +
-                ", distributor=" + distributor +
-                ", orderDate=" + orderDate +
-                ", id=" + id +
-                '}';
+        this.originalOrder = originalOrder;
+        this.originalOrderId = originalOrder.getId();
     }
 
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
-        int ndx = 1;
+        int ndx = addBaseParameters(statement);
 
-        if (getItemId() < UNKNOWN_ID) {
-            setItemId(UNKNOWN_ID);
-        }
-        if (getDistributorId() < UNKNOWN_ID) {
-            setDistributorId(UNKNOWN_ID);
-        }
-
-        statement.setLong(ndx++, getItemId());
-        statement.setLong(ndx++, getDistributorId());
-        if (orderDate != null) {
-            statement.setTimestamp(ndx++, new Timestamp(orderDate.getTime()));
-        } else {
-            statement.setDate(ndx++, null);
-        }
+        statement.setLong(ndx++, getOriginalOrderId());
 
         return ndx;
     }
 
+
     @Override
-    public boolean equals(Object obj) {
-        boolean result = super.equals(obj);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        PendingOrder that = (PendingOrder) o;
+        return getOriginalOrderId() == that.getOriginalOrderId();
+    }
 
-        if (result) {
-            if (obj instanceof PendingOrder) {
-                PendingOrder po = (PendingOrder) obj;
-
-                if (po.getItemId() != getItemId()) return false;
-                if (po.getDistributorId() != getDistributorId()) return false;
-
-                return true;
-            }
-        }
-
-        return result;
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getOriginalOrderId());
     }
 
     @Override
@@ -97,9 +61,7 @@ public class PendingOrder extends DbObject {
         PendingOrder cpy = new PendingOrder();
         copyBaseFields(cpy);
 
-        cpy.setItemId(getItemId());
-        cpy.setDistributorId(getDistributorId());
-        cpy.setOrderDate(getOrderDate());
+        cpy.setOriginalOrderId(getOriginalOrderId());
 
         return cpy;
     }
@@ -126,53 +88,41 @@ public class PendingOrder extends DbObject {
         }
     }
 
-    public long getItemId() {
-        return itemId;
-    }
-
-    public void setItemId(long itemId) {
-        if (item != null && item.getId() != itemId) {
-            item = null;
+    public long getOriginalOrderId() {
+        if (originalOrderId < UNKNOWN_ID) {
+            originalOrderId = UNKNOWN_ID;
         }
-        this.itemId = itemId;
+        return originalOrderId;
     }
 
-    public Item getItem() {
-        if (item == null) {
-            item = SearchManager.sm().findItemById(itemId);
+    public void setOriginalOrderId(long originalOrderId) {
+        if (originalOrder != null && originalOrderId != getOriginalOrderId()) {
+            originalOrder = null;
         }
-        return item;
+        this.originalOrderId = originalOrderId;
     }
 
-    public long getDistributorId() {
-        return distributorId;
-    }
-
-    public void setDistributorId(long distributorId) {
-        if (distributor != null && distributor.getId() != distributorId) {
-            distributor = null;
+    public ItemOrder getOriginalOrder() {
+        if (originalOrder == null && getOriginalOrderId() > UNKNOWN_ID) {
+            originalOrder = SearchManager.sm().findItemOrderById(getId());
         }
-        this.distributorId = distributorId;
+        return originalOrder;
     }
 
-    public Distributor getDistributor() {
-        if (distributor == null) {
-            distributor = SearchManager.sm().findDistributorById(distributorId);
+
+    public List<ItemOrderLine> getPendingOrderLines() {
+        if (pendingOrderLines == null && getOriginalOrder() != null) {
+            pendingOrderLines = new ArrayList<>();
+            for (AbstractOrderLine<Item> orderLine : originalOrder.getOrderLines()) {
+                if (orderLine.isPending()) {
+                    pendingOrderLines.add((ItemOrderLine) orderLine);
+                }
+            }
         }
-        return distributor;
+        return pendingOrderLines;
     }
 
-    public Date getOrderDate() {
-        return orderDate;
-    }
-
-    public void setOrderDate(Date orderDate) {
-        this.orderDate = orderDate;
-    }
-
-    public void setOrderDate(Timestamp orderDate) {
-        if (orderDate != null) {
-            this.orderDate = new Date(orderDate.getTime());
-        }
+    public void updatePendingOrderLines() {
+        pendingOrderLines = null;
     }
 }

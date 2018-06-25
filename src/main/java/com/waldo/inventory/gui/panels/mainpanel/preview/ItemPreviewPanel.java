@@ -46,12 +46,18 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private Item selectedItem;
     private final ItemDetailListener itemDetailListener;
+    private boolean simple = false;
 
     /*
      *                  CONSTRUCTORS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     protected ItemPreviewPanel(ItemDetailListener itemDetailListener) {
+        this(itemDetailListener, false);
+    }
+
+    protected ItemPreviewPanel(ItemDetailListener itemDetailListener, boolean simple) {
         this.itemDetailListener = itemDetailListener;
+        this.simple = simple;
         initializeComponents();
         initializeLayouts();
     }
@@ -169,11 +175,16 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
         headerPnl.add(scrollPane, gbc);
 
         // Rater
-        gbc.gridx = 0; gbc.weightx = 1;
-        gbc.gridy = 2; gbc.weighty = 0;
-        gbc.gridwidth = 2; gbc.gridheight = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        headerPnl.add(raterPnl, gbc);
+        if (!simple) {
+            gbc.gridx = 0;
+            gbc.weightx = 1;
+            gbc.gridy = 2;
+            gbc.weighty = 0;
+            gbc.gridwidth = 2;
+            gbc.gridheight = 1;
+            gbc.fill = GridBagConstraints.HORIZONTAL;
+            headerPnl.add(raterPnl, gbc);
+        }
 
         return headerPnl;
     }
@@ -192,11 +203,11 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
         JPanel infoPnl = new JPanel();
         infoPnl.setBorder(BorderFactory.createEmptyBorder(8,1,1,1));
         gbc = new GuiUtils.GridBagHelper(infoPnl);
-        gbc.addLine("Manufacturers", imageResource.readIcon("Manufacturers.Menu"), manufacturerTf);
+        if (!simple) gbc.addLine("Manufacturers", imageResource.readIcon("Manufacturers.Menu"), manufacturerTf);
         gbc.addLine("Footprint", imageResource.readIcon("Packages.Menu"), footprintTf);
         gbc.addLine("Location", imageResource.readIcon("Locations.Menu"), locationTf);
 
-        dataPnl.add(divisionPanel);
+        if (!simple) dataPnl.add(divisionPanel);
         dataPnl.add(infoPnl);
 
         return dataPnl;
@@ -255,7 +266,7 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
             }
         };
         dataSheetAa.putValue(AbstractAction.SHORT_DESCRIPTION, "Data sheet");
-        orderAa = new AbstractAction("Order", imageResource.readIcon("Items.Buttons.Order")) {
+        orderAa = new AbstractAction("ItemOrder", imageResource.readIcon("Items.Buttons.Order")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (selectedItem != null && itemDetailListener != null) {
@@ -263,7 +274,7 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
                 }
             }
         };
-        orderAa.putValue(AbstractAction.SHORT_DESCRIPTION, "Order");
+        orderAa.putValue(AbstractAction.SHORT_DESCRIPTION, "ItemOrder");
         historyAa = new AbstractAction("History", imageResource.readIcon("Items.Buttons.History")) {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -294,7 +305,7 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
         panel2.add(panel1, BorderLayout.CENTER);
 
         add(panel2, BorderLayout.NORTH);
-        add(remarksPanel, BorderLayout.CENTER);
+        if (!simple) add(remarksPanel, BorderLayout.CENTER);
     }
 
     @Override

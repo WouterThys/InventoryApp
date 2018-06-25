@@ -51,8 +51,8 @@ public class Main {
             app = new Application(startUpPath);
             app.setTitle("Inventory");
             app.setLocationByPlatform(true);
-            app.setPreferredSize(new Dimension(1600, 800));
-            app.setMinimumSize(new Dimension(800, 400));
+            app.setPreferredSize(new Dimension(1800, 900));
+            app.setMinimumSize(new Dimension(1000, 600));
             if (FULL_SCREEN || settings().getGeneralSettings().isGuiStartUpFullScreen()) {
                 app.setExtendedState(JFrame.MAXIMIZED_BOTH);
             }

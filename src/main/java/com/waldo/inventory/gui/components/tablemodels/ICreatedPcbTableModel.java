@@ -16,7 +16,7 @@ import static com.waldo.inventory.gui.Application.imageResource;
 
 public class ICreatedPcbTableModel extends IAbstractTableModel<CreatedPcb> {
 
-    private static final String[] COLUMN_NAMES = {"", "Name", "Order", "Created"};
+    private static final String[] COLUMN_NAMES = {"", "Name", "ItemOrder", "Created"};
     private static final Class[] COLUMN_CLASSES = {ILabel.class, ILabel.class, ILabel.class, ILabel.class};
 
     public ICreatedPcbTableModel() {
@@ -34,9 +34,9 @@ public class ICreatedPcbTableModel extends IAbstractTableModel<CreatedPcb> {
                     return pcb;
                 case 1: // Name
                     return pcb.toString();
-                case 2: // Order
+                case 2: // ItemOrder
                     if (pcb.getOrderId() > DbObject.UNKNOWN_ID) {
-                        return pcb.getOrder().toString();
+                        return pcb.getPcbOrder().toString();
                     }
                     return "";
                 case 3: // Date

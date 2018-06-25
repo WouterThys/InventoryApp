@@ -6,7 +6,7 @@ import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.Utils.Statics.DistributorType;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Distributor;
-import com.waldo.inventory.classes.dbclasses.Order;
+import com.waldo.inventory.classes.dbclasses.ItemOrder;
 import com.waldo.inventory.gui.components.IObjectDialog;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.utils.icomponents.IComboBox;
@@ -21,7 +21,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Date;
 
-public class EditOrdersDialog extends IObjectDialog<Order> implements ActionListener {
+public class EditOrdersDialog extends IObjectDialog<ItemOrder> implements ActionListener {
 
     private ITextField nameField;
     private IComboBox<Distributor> distributorCb;
@@ -33,16 +33,16 @@ public class EditOrdersDialog extends IObjectDialog<Order> implements ActionList
     private final boolean showDates;
     private final DistributorType type;
 
-    public EditOrdersDialog(Window window, Order order, DistributorType type, boolean showDates) {
-        super(window, "Order", order, Order.class);
+    public EditOrdersDialog(Window window, ItemOrder itemOrder, DistributorType type, boolean showDates) {
+        super(window, "ItemOrder", itemOrder, ItemOrder.class);
         this.showDates = showDates;
         this.type = type;
         initializeComponents();
         initializeLayouts();
-        updateComponents(order);
+        updateComponents(itemOrder);
     }
 
-    public Order getOrder() {
+    public ItemOrder getOrder() {
         return getObject();
     }
 
@@ -54,7 +54,7 @@ public class EditOrdersDialog extends IObjectDialog<Order> implements ActionList
     }
 
     @Override
-    public VerifyState verify(Order toVerify) {
+    public VerifyState verify(ItemOrder toVerify) {
         VerifyState ok = VerifyState.Ok;
 
         String name = getOrder().getName();
@@ -62,8 +62,8 @@ public class EditOrdersDialog extends IObjectDialog<Order> implements ActionList
             nameField.setError("Name can't be empty..");
             ok = VerifyState.Error;
         } else if (getOrder().getId() <= DbObject.UNKNOWN_ID) {
-            Order foundOrder = SearchManager.sm().findOrderByName(name);
-            if (foundOrder != null) {
+            ItemOrder foundItemOrder = SearchManager.sm().findItemOrderByName(name);
+            if (foundItemOrder != null) {
                 nameField.setError("Name already exists..");
                 ok = VerifyState.Error;
             }
@@ -99,7 +99,7 @@ public class EditOrdersDialog extends IObjectDialog<Order> implements ActionList
 
     @Override
     public void initializeComponents() {
-        nameField = new ITextField("Order name");
+        nameField = new ITextField("ItemOrder name");
         nameField.addEditedListener(this, "name");
 
         distributorCb = new IComboBox<>(SearchManager.sm().findDistributorsByType(type), new ComparatorUtils.DbObjectNameComparator<>(), false);

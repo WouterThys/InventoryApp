@@ -61,6 +61,7 @@ public abstract class DbObject {
 
     protected final String TABLE_NAME;
     protected boolean isInserted = false;
+    protected boolean isDeleted = false;
 
     protected long id = -1;
     protected String name = "";
@@ -97,8 +98,8 @@ public abstract class DbObject {
         if (dbObject instanceof Distributor) return TYPE_DISTRIBUTOR;
         if (dbObject instanceof Location) return TYPE_LOCATION;
         if (dbObject instanceof Manufacturer) return TYPE_MANUFACTURER;
-        if (dbObject instanceof Order) return TYPE_ORDER;
-        if (dbObject instanceof OrderLine) return TYPE_ORDER_LINE;
+        if (dbObject instanceof ItemOrder) return TYPE_ORDER;
+        if (dbObject instanceof ItemOrderLine) return TYPE_ORDER_LINE;
         if (dbObject instanceof PackageType) return TYPE_PACKAGE_TYPE;
         if (dbObject instanceof Project) return TYPE_PROJECT;
         if (dbObject instanceof ProjectIDE) return TYPE_PROJECT_TYPE;
@@ -322,6 +323,10 @@ public abstract class DbObject {
 
     public void setInserted(boolean inserted) {
         this.isInserted = inserted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.isDeleted = deleted;
     }
 
     public AddUpdateDelete getAud() {

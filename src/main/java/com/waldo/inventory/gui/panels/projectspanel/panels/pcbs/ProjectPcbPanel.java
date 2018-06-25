@@ -1,12 +1,13 @@
 package com.waldo.inventory.gui.panels.projectspanel.panels.pcbs;
 
-import com.waldo.inventory.Utils.Statics;
-import com.waldo.inventory.classes.dbclasses.*;
+import com.waldo.inventory.classes.dbclasses.CreatedPcb;
+import com.waldo.inventory.classes.dbclasses.PcbOrder;
+import com.waldo.inventory.classes.dbclasses.Project;
+import com.waldo.inventory.classes.dbclasses.ProjectPcb;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.dialogs.createpcbdialog.SelectPcbCacheDialog;
 import com.waldo.inventory.gui.dialogs.editcreatedlinkspcbdialog.EditCreatedPcbLinksDialog;
-import com.waldo.inventory.gui.dialogs.editordersdialog.EditOrdersDialog;
 import com.waldo.inventory.gui.dialogs.editprojectpcbdialog.EditProjectPcbDialog;
 import com.waldo.inventory.gui.dialogs.ordersearchitemdialog.OrderSearchItemsDialog;
 import com.waldo.inventory.gui.panels.projectspanel.panels.ProjectObjectPanel;
@@ -67,7 +68,7 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
     protected JPopupMenu showPopup(ProjectPcb projectObject) {
         JPopupMenu popupMenu = super.showPopup(projectObject);
 
-        JMenu orderMenu = new JMenu("Order");
+        JMenu orderMenu = new JMenu("ItemOrder");
         orderMenu.add(orderItemsAa);
         orderMenu.add(orderPcbAa);
 
@@ -97,12 +98,8 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
 
     private void onOrderPcb() {
         if (selectedProjectObject != null) {
-            Order order = new Order(selectedProjectObject.getName());
-            EditOrdersDialog dialog = new EditOrdersDialog(application, order, Statics.DistributorType.Pcbs, false);
-            if (dialog.showDialog() == IDialog.OK) {
-                OrderLine pcbOrderLine = new OrderLine(order, selectedProjectObject, 1);
-                pcbOrderLine.save();
-            }
+            PcbOrder pcbOrder = new PcbOrder(selectedProjectObject.getName());
+            // TODO
         }
     }
 
@@ -185,14 +182,14 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
         };
 
         // Actions
-        orderItemsAa = new AbstractAction("Order items", imageResource.readIcon("Items.S.Title")) {
+        orderItemsAa = new AbstractAction("ItemOrder items", imageResource.readIcon("Items.S.Title")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SwingUtilities.invokeLater(() -> onOrderItems());
             }
         };
 
-        orderPcbAa = new AbstractAction("Order PCB", imageResource.readIcon("Projects.Details.Pcb")) {
+        orderPcbAa = new AbstractAction("ItemOrder PCB", imageResource.readIcon("Projects.Details.Pcb")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SwingUtilities.invokeLater(() -> onOrderPcb());

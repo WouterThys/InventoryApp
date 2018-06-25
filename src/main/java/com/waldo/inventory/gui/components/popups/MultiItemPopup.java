@@ -37,7 +37,7 @@ public abstract class MultiItemPopup extends JPopupMenu {
                 onOrderItems(itemList);
             }
         };
-        orderItemAction.setName("Order item");
+        orderItemAction.setName("ItemOrder item");
 
         // Sets
         JMenu setMenu = new JMenu("Add to set");

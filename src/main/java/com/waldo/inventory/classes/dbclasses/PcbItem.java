@@ -28,8 +28,8 @@ public class PcbItem extends DbObject {
 
     private Date tStamp; // not used
 
-    // Order
-    private OrderLine orderItem = null;
+    // ItemOrder
+    private ItemOrderLine orderItem = null;
     private int orderAmount  = 0;
 
     // All known links
@@ -254,11 +254,11 @@ public class PcbItem extends DbObject {
         return orderItem != null;
     }
 
-    public OrderLine getOrderItem() {
+    public ItemOrderLine getOrderItem() {
         return orderItem;
     }
 
-    public void setOrderLine(OrderLine orderItem) {
+    public void setOrderLine(ItemOrderLine orderItem) {
         this.orderItem = orderItem;
     }
 

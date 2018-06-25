@@ -2,7 +2,7 @@ package com.waldo.inventory.gui.panels.mainpanel.preview.itemdetailpanel;
 
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.Item;
-import com.waldo.inventory.classes.dbclasses.OrderLine;
+import com.waldo.inventory.classes.dbclasses.ItemOrderLine;
 import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.panels.mainpanel.AbstractDetailPanel;
 import com.waldo.inventory.gui.panels.mainpanel.ItemDetailListener;
@@ -34,7 +34,7 @@ public abstract class ItemDetailPanelLayout extends AbstractDetailPanel {
     ICheckBox discourageOrderCb;
     ITextPane remarksTp;
 
-    // Order
+    // ItemOrder
     ITextField amountTf;
     ITextField priceTf;
     ITextField referenceTf;
@@ -53,7 +53,7 @@ public abstract class ItemDetailPanelLayout extends AbstractDetailPanel {
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     Item selectedItem;
-    OrderLine selectedOrderLine;
+    ItemOrderLine selectedItemOrderLine;
 
     private final ItemDetailListener itemDetailListener;
     private final OrderDetailListener orderDetailListener;
@@ -230,38 +230,38 @@ public abstract class ItemDetailPanelLayout extends AbstractDetailPanel {
         plusOneAction = new IActions.PlusOneAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (selectedOrderLine != null && orderDetailListener != null) {
-                    int currentAmount = selectedOrderLine.getAmount();
-                    orderDetailListener.onSetOrderItemAmount(selectedOrderLine, currentAmount + 1);
-                    updateComponents(selectedOrderLine);
+                if (selectedItemOrderLine != null && orderDetailListener != null) {
+                    int currentAmount = selectedItemOrderLine.getAmount();
+                    orderDetailListener.onSetOrderItemAmount(selectedItemOrderLine, currentAmount + 1);
+                    updateComponents(selectedItemOrderLine);
                 }
             }
         };
         minOneAction = new IActions.MinOneAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (selectedOrderLine != null && orderDetailListener != null) {
-                    int currentAmount = selectedOrderLine.getAmount();
-                    orderDetailListener.onSetOrderItemAmount(selectedOrderLine, currentAmount - 1);
-                    updateComponents(selectedOrderLine);
+                if (selectedItemOrderLine != null && orderDetailListener != null) {
+                    int currentAmount = selectedItemOrderLine.getAmount();
+                    orderDetailListener.onSetOrderItemAmount(selectedItemOrderLine, currentAmount - 1);
+                    updateComponents(selectedItemOrderLine);
                 }
             }
         };
         editReferenceAction = new IActions.EditAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (selectedOrderLine != null && orderDetailListener != null) {
-                    orderDetailListener.onEditReference(selectedOrderLine);
-                    updateComponents(selectedOrderLine);
+                if (selectedItemOrderLine != null && orderDetailListener != null) {
+                    orderDetailListener.onEditReference(selectedItemOrderLine);
+                    updateComponents(selectedItemOrderLine);
                 }
             }
         };
         editPriceAction = new IActions.EditAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (selectedOrderLine != null && orderDetailListener != null) {
-                    orderDetailListener.onEditPrice(selectedOrderLine);
-                    updateComponents(selectedOrderLine);
+                if (selectedItemOrderLine != null && orderDetailListener != null) {
+                    orderDetailListener.onEditPrice(selectedItemOrderLine);
+                    updateComponents(selectedItemOrderLine);
                 }
             }
         };
@@ -275,7 +275,7 @@ public abstract class ItemDetailPanelLayout extends AbstractDetailPanel {
         historyBtn.addActionListener(e -> itemDetailListener.onShowHistory(selectedItem));
 
         dataSheetBtn.setToolTipText("Data sheets");
-        orderBtn.setToolTipText("Order");
+        orderBtn.setToolTipText("ItemOrder");
         historyBtn.setToolTipText("History");
 
         remarksPnl = new JPanel(new BorderLayout());

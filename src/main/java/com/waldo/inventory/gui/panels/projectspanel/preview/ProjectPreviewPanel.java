@@ -46,16 +46,23 @@ public abstract class ProjectPreviewPanel<P extends ProjectObject> extends IPane
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private final Application application;
     private P selectedProjectObject;
+    private boolean simple;
 
     /*
      *                  CONSTRUCTORS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     ProjectPreviewPanel(Application application) {
+        this(application, false);
+    }
+
+    ProjectPreviewPanel(Application application, boolean simple) {
         super();
         this.application = application;
+        this.simple = true;
         initializeComponents();
         initializeLayouts();
     }
+
 
     abstract void initializeInfoComponents();
     abstract JPanel createInfoPanel();
@@ -222,7 +229,7 @@ public abstract class ProjectPreviewPanel<P extends ProjectObject> extends IPane
         JPanel infoPnl = createInfoPanel();
         infoPnl.setBorder(BorderFactory.createEmptyBorder(8,1,1,1));
 
-        dataPnl.add(commonPnl);
+        if (!simple) dataPnl.add(commonPnl);
         dataPnl.add(infoPnl);
 
         return dataPnl;
@@ -285,7 +292,6 @@ public abstract class ProjectPreviewPanel<P extends ProjectObject> extends IPane
         JPanel toolbarsPanel = createToolBarPanel();
         JPanel headerPanel = createHeaderPanel();
         JPanel dataPanel = createDataPanel();
-        //JPanel remarksPanel = createRemarksPanel();
 
         setLayout(new BorderLayout());
 
@@ -296,7 +302,7 @@ public abstract class ProjectPreviewPanel<P extends ProjectObject> extends IPane
         panel2.add(panel1, BorderLayout.CENTER);
 
         add(panel2, BorderLayout.NORTH);
-        add(remarksPnl, BorderLayout.CENTER);
+        if (!simple) add(remarksPnl, BorderLayout.CENTER);
     }
 
     @Override
