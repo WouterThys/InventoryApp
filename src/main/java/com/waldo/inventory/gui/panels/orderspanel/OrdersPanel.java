@@ -32,7 +32,7 @@ public class OrdersPanel extends OrdersPanelLayout {
         cache().addListener(PcbOrderLine.class, createPcbOrderLineListener());
         cache().addListener(DistributorPartLink.class, createDistributorPartLinkListener());
 
-        updateComponents((Object) null);
+        updateComponents();
     }
 
     // Listeners
@@ -164,7 +164,9 @@ public class OrdersPanel extends OrdersPanelLayout {
     }
 
     private void onOrderUpdated(AbstractOrder order) {
-        onOrderSelected(order);
+        treeReload();
+        orderTableUpdate();
+        SwingUtilities.invokeLater(() -> treeSelectOrder(order));
     }
 
     private void onOrderDeleted(AbstractOrder order) {
@@ -208,7 +210,17 @@ public class OrdersPanel extends OrdersPanelLayout {
     }
 
     private void onDeleteOrder(AbstractOrder order) {
-
+        if (order != null) {
+            int res = JOptionPane.showConfirmDialog(
+                    application,
+                    "Do you want to delete order '" + order + "'?",
+                    "Delete",
+                    JOptionPane.YES_NO_OPTION
+            );
+            if (res == JOptionPane.YES_OPTION) {
+                order.delete();
+            }
+        }
     }
 
     private void onLockOrder(AbstractOrder order, boolean locked) {
@@ -297,9 +309,19 @@ public class OrdersPanel extends OrdersPanelLayout {
     void onOrderSelected(AbstractOrder order) {
         selectedOrder = order;
         selectedOrderLine = null;
+        // Select order
         if (order != null) {
             orderTableSelect(order);
             lineTableInitialize(order);
+
+            // Select line
+            if (order.getOrderLines().size() > 0) {
+                SwingUtilities.invokeLater(() -> {
+                    AbstractOrderLine line = (AbstractOrderLine) order.getOrderLines().get(0);
+                    lineTableSelect(line);
+                });
+            }
+
         } else {
             orderTableClear();
             lineTableClear();

@@ -5,6 +5,7 @@ import com.waldo.inventory.classes.Value;
 import com.waldo.inventory.classes.cache.CacheList;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.classes.search.ObjectMatch;
+import com.waldo.utils.DateUtils;
 
 import java.util.Comparator;
 
@@ -278,4 +279,48 @@ public class ComparatorUtils {
             return Integer.compare(o1.getSequenceNumber(), o2.getSequenceNumber());
         }
     }
+
+    //
+    // Abstract orders
+    //
+    public static class OrderComparator implements Comparator<AbstractOrder> {
+        @Override
+        public String toString() {
+            return "Order";
+        }
+
+        @Override
+        public int compare(AbstractOrder o1, AbstractOrder o2) {
+            if (o1 == null && o2 != null) {
+                return -1;
+            } else if (o1 != null && o2 == null) {
+                return 1;
+            } else if (o1 != null){
+                // Actual compare
+
+                int res = Integer.compare(o1.getOrderState().getIntValue(), o2.getOrderState().getIntValue());
+                if (res == 0) {
+                    DateUtils.DateComparator dc = new DateUtils.DateComparator();
+                    switch (o1.getOrderState()) {
+                        default:
+                        case Planned:
+                            res = dc.compare(o1.getDateModified(), o2.getDateModified());
+                            break;
+                        case Ordered:
+                            res = dc.compare(o1.getDateOrdered(), o2.getDateOrdered());
+                            break;
+                        case Received:
+                            res = dc.compare(o1.getDateReceived(), o2.getDateReceived());
+                            break;
+                    }
+                }
+                return res;
+
+            } else {
+                return -1;
+            }
+        }
+    }
+
+
 }

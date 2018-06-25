@@ -39,6 +39,7 @@ public abstract class OrderDetailsPanel extends IPanel implements IdBToolBar.Idb
 
     // Actions
     private IActions.EditAction editDistributorAction;
+    private IActions.BrowseWebAction browseDistributorAction;
 
     private IActions.EditAction editReferenceAction;
     private IActions.DeleteAction deleteReferenceAction;
@@ -74,17 +75,20 @@ public abstract class OrderDetailsPanel extends IPanel implements IdBToolBar.Idb
 
         boolean hasReference = enabled && !selectedOrder.getOrderReference().isEmpty();
         boolean hasTracking = enabled && !selectedOrder.getTrackingNumber().isEmpty();
+        boolean hasWebsite = enabled && selectedOrder.getDistributor() != null && !selectedOrder.getDistributor().getWebsite().isEmpty();
 
         ordersToolBar.setEditActionEnabled(enabled);
         ordersToolBar.setDeleteActionEnabled(enabled);
 
         editDistributorAction.setEnabled(!locked);
+        browseDistributorAction.setEnabled(hasWebsite);
         editReferenceAction.setEnabled(!locked);
         deleteReferenceAction.setEnabled(!locked && hasReference);
         browseReferenceAction.setEnabled(hasReference);
         editTrackingAction.setEnabled(!locked);
         deleteTrackingAction.setEnabled(!locked && hasTracking);
         browseTrackingAction.setEnabled(hasTracking);
+
     }
 
     private void editDistributor() {
@@ -126,6 +130,34 @@ public abstract class OrderDetailsPanel extends IPanel implements IdBToolBar.Idb
         }
     }
 
+    private void browseDistributor() {
+        if (selectedOrder != null) {
+            if (selectedOrder.getDistributor() != null) {
+                String url = selectedOrder.getDistributor().getWebsite();
+
+                if (OpenUtils.isValidUrl(url)) {
+                    try {
+                        OpenUtils.browseLink(url);
+                    } catch (IOException e1) {
+                        JOptionPane.showMessageDialog(
+                                application,
+                                "Could not browse website: " + url,
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                        e1.printStackTrace();
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(
+                            application,
+                            "Not a web url, website: " + url,
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+
+            }
+        }
+    }
+
     private void editReference() {
         if (selectedOrder != null) {
             if (!selectedOrder.isLocked()) {
@@ -136,8 +168,16 @@ public abstract class OrderDetailsPanel extends IPanel implements IdBToolBar.Idb
                         JOptionPane.INFORMATION_MESSAGE
                 );
 
-                selectedOrder.setOrderReference(input);
-                selectedOrder.save();
+                if (input != null) { // Means cancel
+                    selectedOrder.setOrderReference(input);
+                    selectedOrder.save();
+
+                    if (input.isEmpty()) {
+                        browseReferenceAction.setTooltip(null);
+                    } else {
+                        browseReferenceAction.setTooltip(input);
+                    }
+                }
             } else {
                 JOptionPane.showMessageDialog(
                         application,
@@ -152,7 +192,14 @@ public abstract class OrderDetailsPanel extends IPanel implements IdBToolBar.Idb
     private void deleteReference() {
         if (selectedOrder != null) {
             if (!selectedOrder.isLocked()) {
-                if (!selectedOrder.getOrderReference().isEmpty()) {
+                int res = JOptionPane.showConfirmDialog(
+                        application,
+                        "Delete reference '" + selectedOrder.getOrderReference() + "' from order?",
+                        "Delete reference",
+                        JOptionPane.YES_NO_OPTION
+                );
+
+                if (res == JOptionPane.YES_OPTION) {
                     selectedOrder.setOrderReference("");
                     selectedOrder.save();
                 }
@@ -170,24 +217,26 @@ public abstract class OrderDetailsPanel extends IPanel implements IdBToolBar.Idb
     private void browseReference() {
         if (selectedOrder != null) {
             String reference = selectedOrder.getOrderReference();
-            if (!reference.isEmpty()) {
-                if (reference.contains("www") && reference.contains(".")) {
-                    try {
-                        OpenUtils.browseLink(reference);
-                    } catch (IOException e1) {
-                        JOptionPane.showMessageDialog(this,
-                                "Could not browse reference: " + reference,
-                                "Error",
-                                JOptionPane.ERROR_MESSAGE);
-                        e1.printStackTrace();
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(this,
-                            "Reference it not a web url, reference: " + reference,
+
+            if (OpenUtils.isValidUrl(reference)) {
+                try {
+                    OpenUtils.browseLink(reference);
+                } catch (IOException e1) {
+                    JOptionPane.showMessageDialog(
+                            application,
+                            "Could not browse reference: " + reference,
                             "Error",
                             JOptionPane.ERROR_MESSAGE);
+                    e1.printStackTrace();
                 }
+            } else {
+                JOptionPane.showMessageDialog(
+                        application,
+                        "Reference it not a web url, reference: " + reference,
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
             }
+
         }
     }
 
@@ -201,8 +250,16 @@ public abstract class OrderDetailsPanel extends IPanel implements IdBToolBar.Idb
                         JOptionPane.INFORMATION_MESSAGE
                 );
 
-                selectedOrder.setOrderReference(input);
-                selectedOrder.save();
+                if (input != null) { // Means cancel
+                    selectedOrder.setTrackingNumber(input);
+                    selectedOrder.save();
+
+                    if (input.isEmpty()) {
+                        browseTrackingAction.setTooltip(null);
+                    } else {
+                        browseTrackingAction.setTooltip(input);
+                    }
+                }
             } else {
                 JOptionPane.showMessageDialog(
                         application,
@@ -216,19 +273,26 @@ public abstract class OrderDetailsPanel extends IPanel implements IdBToolBar.Idb
 
     private void deleteTracking() {
         if (selectedOrder != null) {
-                if (!selectedOrder.isLocked()) {
-                    if (!selectedOrder.getTrackingNumber().isEmpty()) {
-                        selectedOrder.setTrackingNumber("");
-                        selectedOrder.save();
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(
-                            application,
-                            "Can not delete tracking when the order is locked..",
-                            "Locked",
-                            JOptionPane.WARNING_MESSAGE
-                    );
+            if (!selectedOrder.isLocked()) {
+                int res = JOptionPane.showConfirmDialog(
+                        application,
+                        "Delete tracking link '" + selectedOrder.getOrderReference() + "' from order?",
+                        "Delete reference",
+                        JOptionPane.YES_NO_OPTION
+                );
+
+                if (res == JOptionPane.YES_OPTION) {
+                    selectedOrder.setTrackingNumber("");
+                    selectedOrder.save();
                 }
+            } else {
+                JOptionPane.showMessageDialog(
+                        application,
+                        "Can not delete tracking when the order is locked..",
+                        "Locked",
+                        JOptionPane.WARNING_MESSAGE
+                );
+            }
 
         }
     }
@@ -236,24 +300,26 @@ public abstract class OrderDetailsPanel extends IPanel implements IdBToolBar.Idb
     private void browseTracking() {
         if (selectedOrder != null) {
             String tracking = selectedOrder.getTrackingNumber();
-            if (!tracking.isEmpty()) {
-                if (tracking.contains("www") && tracking.contains(".")) {
-                    try {
-                        OpenUtils.browseLink(tracking);
-                    } catch (IOException e1) {
-                        JOptionPane.showMessageDialog(this,
-                                "Could not browse tracking: " + tracking,
-                                "Error",
-                                JOptionPane.ERROR_MESSAGE);
-                        e1.printStackTrace();
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(this,
-                            "Tracking reference it not a web url, tracking: " + tracking,
+
+            if (OpenUtils.isValidUrl(tracking)) {
+                try {
+                    OpenUtils.browseLink(tracking);
+                } catch (IOException e1) {
+                    JOptionPane.showMessageDialog(
+                            application,
+                            "Could not browse tracking: " + tracking,
                             "Error",
                             JOptionPane.ERROR_MESSAGE);
+                    e1.printStackTrace();
                 }
+            } else {
+                JOptionPane.showMessageDialog(
+                        application,
+                        "Tracking reference it not a web url, tracking: " + tracking,
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
             }
+
         }
     }
 
@@ -302,48 +368,69 @@ public abstract class OrderDetailsPanel extends IPanel implements IdBToolBar.Idb
 
         ordersToolBar = new IdBToolBar(this, false, false, true, true);
 
-        editDistributorAction = new IActions.EditAction() {
+        editDistributorAction = new IActions.EditAction("Edit distributor") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SwingUtilities.invokeLater(() -> editDistributor());
             }
         };
-        editReferenceAction = new IActions.EditAction() {
+
+        browseDistributorAction = new IActions.BrowseWebAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SwingUtilities.invokeLater(() -> browseDistributor());
+            }
+        };
+
+
+        editReferenceAction = new IActions.EditAction("Edit order reference") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SwingUtilities.invokeLater(() -> editReference());
             }
         };
-        deleteReferenceAction = new IActions.DeleteAction() {
+
+
+        deleteReferenceAction = new IActions.DeleteAction("Delete order reference") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SwingUtilities.invokeLater(() -> deleteReference());
             }
         };
+
+
         browseReferenceAction = new IActions.BrowseWebAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SwingUtilities.invokeLater(() -> browseReference());
             }
         };
-        editTrackingAction = new IActions.EditAction() {
+
+
+        editTrackingAction = new IActions.EditAction("Edit tracking link") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SwingUtilities.invokeLater(() -> editTracking());
             }
         };
-        deleteTrackingAction = new IActions.DeleteAction() {
+
+
+        deleteTrackingAction = new IActions.DeleteAction("Delete tracking link") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SwingUtilities.invokeLater(() -> deleteTracking());
             }
         };
+
+
         browseTrackingAction = new IActions.BrowseWebAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SwingUtilities.invokeLater(() -> browseTracking());
             }
         };
+
+
     }
 
     @Override
@@ -353,9 +440,9 @@ public abstract class OrderDetailsPanel extends IPanel implements IdBToolBar.Idb
         JPanel infoPanel = new JPanel();
         GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(infoPanel);
         gbc.addLine("Order name", imageResource.readIcon("Actions.Tag"), orderNameTf);
-        gbc.addLine("Distributor", imageResource.readIcon("Distributors.Menu"), GuiUtils.createComponentWithActions(distributorTf, editDistributorAction)); // TODO label
-        gbc.addLine("Order reference", imageResource.readIcon("Orders.LineReference"), GuiUtils.createComponentWithActions(orderReferenceTf, editReferenceAction, deleteReferenceAction, browseReferenceAction)); // TODO edit/delete
-        gbc.addLine("Tracking reference", imageResource.readIcon("Orders.Table.Ordered"), GuiUtils.createComponentWithActions(trackingLinkTf, editTrackingAction, deleteTrackingAction, browseTrackingAction)); // TODO actions
+        gbc.addLine("Distributor", imageResource.readIcon("Distributors.Menu"), GuiUtils.createComponentWithActions(distributorTf, editDistributorAction, browseDistributorAction));
+        gbc.addLine("Order reference", imageResource.readIcon("Orders.LineReference"), GuiUtils.createComponentWithActions(orderReferenceTf, editReferenceAction, deleteReferenceAction, browseReferenceAction));
+        gbc.addLine("Tracking reference", imageResource.readIcon("Orders.Table.Ordered"), GuiUtils.createComponentWithActions(trackingLinkTf, editTrackingAction, deleteTrackingAction, browseTrackingAction));
 
 
         Box box = Box.createVerticalBox();
@@ -385,6 +472,23 @@ public abstract class OrderDetailsPanel extends IPanel implements IdBToolBar.Idb
             orderReferenceTf.setText(selectedOrder.getOrderReference());
             trackingLinkTf.setText(selectedOrder.getTrackingNumber());
             orderFlowPanel.updateComponents(selectedOrder);
+
+            // Tooltips
+            if (selectedOrder.getDistributor() != null && !selectedOrder.getDistributor().getWebsite().isEmpty()) {
+                browseDistributorAction.setTooltip("Browse " + selectedOrder.getDistributor().getWebsite());
+            } else {
+                browseDistributorAction.setTooltip(null);
+            }
+            if (!selectedOrder.getOrderReference().isEmpty()) {
+                browseReferenceAction.setTooltip("Browse " + selectedOrder.getOrderReference());
+            } else {
+                browseReferenceAction.setTooltip(null);
+            }
+            if (!selectedOrder.getTrackingNumber().isEmpty()) {
+                browseTrackingAction.setTooltip(selectedOrder.getTrackingNumber());
+            } else {
+                browseTrackingAction.setTooltip(null);
+            }
 
             updateEnabledComponents();
 

@@ -32,6 +32,10 @@ public class IActions {
         protected EditAction() {
             super("Edit", imageResource.readIcon("Actions.Edit"));
         }
+        protected EditAction(String tooltip) {
+            this();
+            setTooltip(tooltip);
+        }
     }
 
     public static abstract class DeleteAction extends IAbstractAction {
@@ -40,6 +44,10 @@ public class IActions {
         }
         protected DeleteAction(ImageIcon imageIcon) {
             super("Delete", imageIcon);
+        }
+        protected DeleteAction(String tooltip) {
+            this();
+            setTooltip(tooltip);
         }
     }
 

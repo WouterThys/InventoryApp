@@ -5,26 +5,24 @@ import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.Item;
 import com.waldo.inventory.classes.dbclasses.ItemOrder;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
-import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.dialogs.editordersdialog.EditOrdersDialog;
 import com.waldo.inventory.managers.OrderManager;
 import com.waldo.utils.icomponents.IDialog;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class AddToOrderDialog extends AddToOrderDialogLayout implements CacheChangedListener<ItemOrder> {
 
-    private final Application application;
     private Item itemToOrder;
     private List<Item> itemsToOrderList;
     private boolean orderList;
     private boolean createOnConfirm;
 
-    public AddToOrderDialog(Application parent, String title, Item itemToOrder, boolean createOnConfirm) {
-        super(parent, title, Statics.DistributorType.Items);
-        this.application = parent;
+    public AddToOrderDialog(Window parent, Item itemToOrder, boolean createOnConfirm) {
+        super(parent, "Order " + itemToOrder, Statics.DistributorType.Items);
         this.itemToOrder = itemToOrder;
         this.orderList = false;
         this.createOnConfirm = createOnConfirm;
@@ -36,9 +34,8 @@ public class AddToOrderDialog extends AddToOrderDialogLayout implements CacheCha
         updateComponents();
     }
 
-    public AddToOrderDialog(Application parent, String title, List<Item> itemsToOrder, boolean createOnConfirm) {
-        super(parent, title, Statics.DistributorType.Items);
-        this.application = parent;
+    public AddToOrderDialog(Window parent, List<Item> itemsToOrder, boolean createOnConfirm) {
+        super(parent, "Order " + itemsToOrder.size() + " items", Statics.DistributorType.Items);
         this.itemsToOrderList = itemsToOrder;
         this.orderList = true;
         this.createOnConfirm = createOnConfirm;

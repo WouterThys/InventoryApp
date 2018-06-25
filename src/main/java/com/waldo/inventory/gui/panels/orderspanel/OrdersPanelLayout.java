@@ -1,5 +1,6 @@
 package com.waldo.inventory.gui.panels.orderspanel;
 
+import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.Utils.Statics.OrderStates;
 import com.waldo.inventory.classes.dbclasses.AbstractOrder;
 import com.waldo.inventory.classes.dbclasses.AbstractOrderLine;
@@ -18,6 +19,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.waldo.inventory.managers.CacheManager.cache;
 
 public abstract class OrdersPanelLayout extends IPanel implements IdBToolBar.IdbToolBarListener{
 
@@ -287,7 +290,7 @@ public abstract class OrdersPanelLayout extends IPanel implements IdBToolBar.Idb
         setLayout(new BorderLayout());
 
         JSplitPane centerSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, orderTablePanel, linesTablePanel);
-        centerSplitPane.setResizeWeight(0.3);
+        centerSplitPane.setResizeWeight(0.1);
 
         JPanel treePanel = new JPanel(new BorderLayout());
         JScrollPane pane = new JScrollPane(ordersTree);
@@ -306,6 +309,18 @@ public abstract class OrdersPanelLayout extends IPanel implements IdBToolBar.Idb
 
     @Override
     public void updateComponents(Object... objects) {
+        if (selectedOrder == null) {
+            List<AbstractOrder> allOrders = new ArrayList<>();
+            allOrders.addAll(cache().getItemOrders());
+            allOrders.addAll(cache().getPcbOrders());
+            allOrders.sort(new ComparatorUtils.OrderComparator());
 
+            selectedOrder = allOrders.get(allOrders.size()-1);
+        }
+        if (selectedOrder != null) {
+            SwingUtilities.invokeLater(() -> {
+                treeSelectOrder(selectedOrder);
+            });
+        }
     }
 }

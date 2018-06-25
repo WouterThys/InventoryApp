@@ -113,7 +113,7 @@ public abstract class EditItemDialogLayout<T extends Item> extends iDialog imple
         // Add tabs
         tabbedPane.addTab("Component  ", imageResource.readIcon("EditItem.Tab.Component"), componentPanel, "Component info");
         tabbedPane.addTab("Stock  ", imageResource.readIcon("EditItem.Tab.Stock"), editItemStockPanel, "Stock info");
-        tabbedPane.addTab("ItemOrder  ", imageResource.readIcon("EditItem.Tab.Order"), editItemOrderPanel, "ItemOrder info");
+        tabbedPane.addTab("Order  ", imageResource.readIcon("EditItem.Tab.Order"), editItemOrderPanel, "Order info");
 
         // Add
         JSeparator separator = new JSeparator(JSeparator.HORIZONTAL);

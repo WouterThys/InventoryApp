@@ -34,7 +34,7 @@ public class EditOrdersDialog extends IObjectDialog<ItemOrder> implements Action
     private final DistributorType type;
 
     public EditOrdersDialog(Window window, ItemOrder itemOrder, DistributorType type, boolean showDates) {
-        super(window, "ItemOrder", itemOrder, ItemOrder.class);
+        super(window, "New order", itemOrder, ItemOrder.class);
         this.showDates = showDates;
         this.type = type;
         initializeComponents();
