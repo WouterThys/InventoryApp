@@ -56,7 +56,7 @@ public class OrderSearchItemsDialog extends OrderSearchItemsDialogLayout {
         }
 
 
-        OrderManager.addItemsToOrder(getSelectedItems(), selectedItemOrder);
+        OrderManager.addLinesToOrder(getSelectedItems(), selectedItemOrder);
         super.onOK();
     }
 

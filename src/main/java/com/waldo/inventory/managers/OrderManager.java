@@ -54,12 +54,12 @@ public class OrderManager {
         if (line != null && order != null) {
             ArrayList<T> list = new ArrayList<>();
             list.add(line);
-            addItemsToOrder(list, order);
+            addLinesToOrder(list, order);
         }
     }
 
 
-    public static <T extends Orderable> void addItemsToOrder(List<T> linesToOrder, AbstractOrder<T> order) {
+    public static <T extends Orderable> void addLinesToOrder(List<T> linesToOrder, AbstractOrder<T> order) {
         if (linesToOrder != null && order != null) {
             List<T> list = new ArrayList<>();
             // Update items
@@ -75,6 +75,9 @@ public class OrderManager {
             for (T line : list) {
                 AbstractOrderLine orderLine = line.createOrderLine(order);
                 line.updateOrderState();
+                if (orderLine.getAmount() <= 0) {
+                    orderLine.setAmount(1);
+                }
                 line.save();
                 orderLine.save();
             }
@@ -135,7 +138,7 @@ public class OrderManager {
                 }
 
                 // ItemOrder item
-                addItemsToOrder(itemList, autoItemOrder);
+                addLinesToOrder(itemList, autoItemOrder);
             }
         }
     }

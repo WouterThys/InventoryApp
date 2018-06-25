@@ -9,6 +9,7 @@ import com.waldo.inventory.gui.components.popups.OrderLinePopup;
 import com.waldo.inventory.gui.components.popups.OrderPopup;
 import com.waldo.inventory.gui.dialogs.editdistributorpartlinkdialog.EditDistributorPartLinkDialog;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
+import com.waldo.inventory.gui.dialogs.ordersearchitemdialog.OrderSearchItemsDialog;
 import com.waldo.utils.icomponents.IDialog;
 
 import javax.swing.*;
@@ -159,17 +160,29 @@ public class OrdersPanel extends OrdersPanelLayout {
 
 
     private void onOrderAdded(AbstractOrder order) {
+        treeReload();
         orderTableAdd(order);
-        onOrderSelected(order);
+        SwingUtilities.invokeLater(() -> {
+            selectedOrder = order;
+            treeSelectOrder(order);
+            orderTableSelect(order);
+        });
     }
 
     private void onOrderUpdated(AbstractOrder order) {
         treeReload();
         orderTableUpdate();
-        SwingUtilities.invokeLater(() -> treeSelectOrder(order));
+        SwingUtilities.invokeLater(() -> {
+            selectedOrder = order;
+            treeSelectOrder(order);
+        });
     }
 
     private void onOrderDeleted(AbstractOrder order) {
+        if (order != null) {
+            order.updateLineStates();
+        }
+        treeReload();
         orderTableRemove(order);
         onOrderSelected(null);
     }
@@ -177,21 +190,27 @@ public class OrdersPanel extends OrdersPanelLayout {
 
     private void onLineAdded(AbstractOrderLine line) {
         if (line != null) {
+            line.updateOrderState();
             AbstractOrder order = line.getOrder();
             if (order != null) {
                 order.updateOrderLines();
             }
             onOrderSelected(order);
+            SwingUtilities.invokeLater(() -> lineTableSelect(line));
         }
     }
 
     private void onLineUpdated(AbstractOrderLine line) {
         lineTableUpdate();
         lineDetailsPanel.updateComponents(line);
+        if (line != null) {
+            line.updateOrderState();
+        }
     }
 
     private void onLineDeleted(AbstractOrderLine line) {
         if (line != null) {
+            line.updateOrderState();
             AbstractOrder order = line.getOrder();
             if (order != null) {
                 order.updateOrderLines();
@@ -202,7 +221,8 @@ public class OrdersPanel extends OrdersPanelLayout {
 
 
     private void onAddOrder() {
-
+        OrderSearchItemsDialog dialog = new OrderSearchItemsDialog(application);
+        dialog.showDialog();
     }
 
     private void onEditOrder(AbstractOrder order) {
@@ -311,6 +331,7 @@ public class OrdersPanel extends OrdersPanelLayout {
         selectedOrderLine = null;
         // Select order
         if (order != null) {
+            order.updateOrderLines();
             orderTableSelect(order);
             lineTableInitialize(order);
 
@@ -346,7 +367,7 @@ public class OrdersPanel extends OrdersPanelLayout {
 
     @Override
     void onTreeSelected(Statics.OrderStates states, int year) {
-        selectedOrder = null;
+        //selectedOrder = null;
         orderDetailsPanel.updateComponents();
         lineDetailsPanel.updateComponents();
         orderTableInitialize(states, year);

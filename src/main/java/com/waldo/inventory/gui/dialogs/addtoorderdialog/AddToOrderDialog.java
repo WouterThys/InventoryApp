@@ -11,7 +11,6 @@ import com.waldo.utils.icomponents.IDialog;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public class AddToOrderDialog extends AddToOrderDialogLayout implements CacheChangedListener<ItemOrder> {
@@ -60,11 +59,9 @@ public class AddToOrderDialog extends AddToOrderDialogLayout implements CacheCha
         if (createOnConfirm) {
             // Add item(s) to list
             if (orderList) {
-                OrderManager.addItemsToOrder(itemsToOrderList, (ItemOrder) orderCb.getSelectedItem());
+                OrderManager.addLinesToOrder(itemsToOrderList, (ItemOrder) orderCb.getSelectedItem());
             } else {
-                itemsToOrderList = new ArrayList<>(1);
-                itemsToOrderList.add(itemToOrder);
-                OrderManager.addItemsToOrder(itemsToOrderList, (ItemOrder) orderCb.getSelectedItem());
+                OrderManager.addLineToOrder(itemToOrder, (ItemOrder) orderCb.getSelectedItem());
             }
         }
         super.onOK();
