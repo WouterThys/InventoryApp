@@ -3,6 +3,7 @@ package com.waldo.inventory.classes.dbclasses;
 import com.sun.istack.internal.NotNull;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.Utils.Statics.ImageType;
+import com.waldo.inventory.Utils.resource.ImageResource;
 
 import javax.imageio.ImageIO;
 import javax.sql.rowset.serial.SerialBlob;
@@ -36,6 +37,11 @@ public class DbImage extends DbObject {
     public DbImage(@NotNull ImageType imageType, ImageIcon imageIcon, String name) {
         super(imageType.getFolderName());
         this.imageType = imageType;
+        if (imageIcon != null) {
+            if (imageIcon.getIconWidth() > 255 || imageIcon.getIconHeight() > 255) {
+                imageIcon = ImageResource.scaleImage(imageIcon, new Dimension(255, 255));
+            }
+        }
         this.imageIcon = imageIcon;
         this.name = name;
     }

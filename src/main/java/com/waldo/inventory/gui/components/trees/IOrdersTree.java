@@ -13,6 +13,7 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import java.awt.*;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -24,14 +25,15 @@ import static com.waldo.inventory.managers.CacheManager.cache;
 public class IOrdersTree extends ITree<IOrdersTree.OrderTreeNode> {
 
     public static class OrderTreeNode {
+
         private OrderStates orderState;
         private String name;
-        private int year;
+        private Date date;
         private ImageIcon icon;
 
-        OrderTreeNode(OrderStates orderState, String name, int year, ImageIcon icon) {
+        OrderTreeNode(OrderStates orderState, String name, Date date, ImageIcon icon) {
             this.orderState = orderState;
-            this.year = year;
+            this.date = date;
             this.name = name;
             this.icon = icon;
         }
@@ -41,13 +43,13 @@ public class IOrdersTree extends ITree<IOrdersTree.OrderTreeNode> {
             this.name = "";
             switch (orderState) {
                 case Planned:
-                    year = DateUtils.getYear(order.getDateModified());
+                    date = order.getDateModified();
                     break;
                 case Ordered:
-                    year = DateUtils.getYear(order.getDateOrdered());
+                    date = order.getDateOrdered();
                     break;
                 case Received:
-                    year = DateUtils.getYear(order.getDateReceived());
+                    date = order.getDateReceived();
                     break;
 
                     default:
@@ -70,7 +72,7 @@ public class IOrdersTree extends ITree<IOrdersTree.OrderTreeNode> {
         public String toString() {
             return "OrderTreeNode{" +
                     "orderState=" + orderState +
-                    ", year=" + year +
+                    ", date=" + getYear() +
                     '}';
         }
 
@@ -79,13 +81,13 @@ public class IOrdersTree extends ITree<IOrdersTree.OrderTreeNode> {
             if (this == o) return true;
             if (!(o instanceof OrderTreeNode)) return false;
             OrderTreeNode that = (OrderTreeNode) o;
-            return year == that.year &&
+            return getYear() == that.getYear() &&
                     orderState == that.orderState;
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(orderState, year);
+            return Objects.hash(orderState, getYear());
         }
 
         public OrderStates getOrderState() {
@@ -96,12 +98,23 @@ public class IOrdersTree extends ITree<IOrdersTree.OrderTreeNode> {
             return name;
         }
 
+        public Date getDate() {
+            if (date == null) {
+                return DateUtils.minDate();
+            }
+            return date;
+        }
+
         public int getYear() {
-            return year;
+            if (date == null) {
+                return 0;
+            } else {
+                return DateUtils.getYear(date);
+            }
         }
     }
 
-    public static final OrderTreeNode defaultRoot = new OrderTreeNode(OrderStates.NoOrder, "", 0, null);
+    public static final OrderTreeNode defaultRoot = new OrderTreeNode(OrderStates.NoOrder, "", null, null);
 
     private static final ImageIcon receivedIcon = imageResource.readIcon("Orders.Tree.Received");
     private static final ImageIcon orderedIcon = imageResource.readIcon("Orders.Tree.Ordered");
@@ -124,9 +137,9 @@ public class IOrdersTree extends ITree<IOrdersTree.OrderTreeNode> {
     protected DefaultTreeModel createModel(OrderTreeNode root) {
         rootNode = new DefaultMutableTreeNode(root);
 
-        OrderTreeNode ordered = new OrderTreeNode(OrderStates.Ordered, "Ordered", 0, orderedIcon);
-        OrderTreeNode planned = new OrderTreeNode(OrderStates.Planned, "Planned", 0, plannedIcon);
-        OrderTreeNode received = new OrderTreeNode(OrderStates.Received, "Received", 0, receivedIcon);
+        OrderTreeNode ordered = new OrderTreeNode(OrderStates.Ordered, "Ordered", null, orderedIcon);
+        OrderTreeNode planned = new OrderTreeNode(OrderStates.Planned, "Planned", null, plannedIcon);
+        OrderTreeNode received = new OrderTreeNode(OrderStates.Received, "Received", null, receivedIcon);
 
         orderedNode = new DefaultMutableTreeNode(ordered);
         plannedNode = new DefaultMutableTreeNode(planned);
@@ -189,9 +202,9 @@ public class IOrdersTree extends ITree<IOrdersTree.OrderTreeNode> {
             }
         }
 
-        plannedList.sort(Comparator.comparingInt(o2 -> o2.year));
-        orderedList.sort(Comparator.comparingInt(o2 -> o2.year));
-        receivedList.sort(Comparator.comparingInt(o2 -> o2.year));
+        plannedList.sort(Comparator.comparing(OrderTreeNode::getDate));
+        orderedList.sort(Comparator.comparing(OrderTreeNode::getDate));
+        receivedList.sort(Comparator.comparing(OrderTreeNode::getDate));
 
         plannedNode.removeAllChildren();
         for (OrderTreeNode o : plannedList) {
@@ -305,10 +318,10 @@ public class IOrdersTree extends ITree<IOrdersTree.OrderTreeNode> {
 
                 if (value instanceof DefaultMutableTreeNode) {
                     OrderTreeNode order = (OrderTreeNode) ((DefaultMutableTreeNode) value).getUserObject();
-                    if (order.year < 1) {
+                    if (order.getYear() < 1) {
                         setText(order.name);
                     } else {
-                        setText(String.valueOf(order.year));
+                        setText(String.valueOf(order.getYear()));
                     }
 
                     setIcon(order.icon);

@@ -231,7 +231,10 @@ public class ImageDbAccess {
         protected Integer doInBackground() throws Exception {
             Thread.currentThread().setName(name);
             while (keepRunning) {
-
+                DbErrorObject error = imageNonoList.take();
+                if (error != null) {
+                    System.err.println(error);
+                }
             }
             return 0;
         }

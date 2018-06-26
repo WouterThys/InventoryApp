@@ -20,6 +20,14 @@ public class DbErrorObject extends DbQueueObject {
         this.sql = sql;
     }
 
+    @Override
+    public String toString() {
+        return "DbErrorObject{" +
+                "exception=" + exception +
+                ", sql='" + sql + '\'' +
+                '}';
+    }
+
     public Throwable getException() {
         return exception;
     }
