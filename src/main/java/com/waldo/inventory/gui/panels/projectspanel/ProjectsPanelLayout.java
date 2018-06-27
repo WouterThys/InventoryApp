@@ -188,9 +188,6 @@ public abstract class ProjectsPanelLayout extends JPanel implements
             }
         });
 
-        // Details
-        //detailsPanel = new ProjectDetailsPanel(application);
-
         // Tabs
         tabbedPane = new JTabbedPane();
         tabbedPane.addChangeListener(this);
@@ -231,10 +228,6 @@ public abstract class ProjectsPanelLayout extends JPanel implements
         // Panels
         JPanel westPanel = new JPanel(new BorderLayout());
         JPanel centerPanel = new JPanel(new BorderLayout());
-//        detailsPanel.setBorder(BorderFactory.createCompoundBorder(
-//                BorderFactory.createEmptyBorder(2, 3, 2, 3),
-//                BorderFactory.createLineBorder(Color.GRAY, 1)
-//        ));
 
         projectsTree.setPreferredSize(new Dimension(300,200));
         JScrollPane pane = new JScrollPane(projectsTree);
@@ -244,7 +237,6 @@ public abstract class ProjectsPanelLayout extends JPanel implements
 
         centerPanel.add(tabbedPane, BorderLayout.CENTER);
         centerPanel.add(topToolBar, BorderLayout.PAGE_START);
-        //centerPanel.add(detailsPanel, BorderLayout.SOUTH);
 
         // Add
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, westPanel, centerPanel);
