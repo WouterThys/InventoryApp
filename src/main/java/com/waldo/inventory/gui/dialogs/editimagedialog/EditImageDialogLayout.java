@@ -33,7 +33,7 @@ abstract class EditImageDialogLayout extends iDialog implements ImagesPanel.Imag
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     DbImage selectedImage;
-    private ImageType imageType;
+    ImageType imageType;
 
     /*
      *                  CONSTRUCTOR

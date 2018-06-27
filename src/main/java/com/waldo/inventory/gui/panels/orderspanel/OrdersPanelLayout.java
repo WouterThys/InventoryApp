@@ -18,6 +18,7 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import static com.waldo.inventory.managers.CacheManager.cache;
@@ -98,6 +99,18 @@ public abstract class OrdersPanelLayout extends IPanel implements IdBToolBar.Idb
     //
     void orderTableInitialize(OrderStates orderState, int year) {
         List<AbstractOrder> orderList = SearchManager.sm().findOrdersForStateAndYear(orderState, year);
+        switch (orderState) {
+            default:
+            case Planned:
+                orderList.sort(Comparator.comparing(AbstractOrder::getDateModified));
+                break;
+            case Ordered:
+                orderList.sort(Comparator.comparing(AbstractOrder::getDateOrdered));
+                break;
+            case Received:
+                orderList.sort(Comparator.comparing(AbstractOrder::getDateReceived));
+                break;
+        }
         orderTableModel.setItemList(orderList);
 
         selectedOrderLine = null;
