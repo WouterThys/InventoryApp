@@ -69,7 +69,7 @@ public class OrderManager {
                 }
             }
 
-            LOG.info("Auto ordering " + list.size() + " items for " + order);
+            LOG.info("Auto ordering " + list.size() + " for " + order);
 
             // Add
             for (T line : list) {

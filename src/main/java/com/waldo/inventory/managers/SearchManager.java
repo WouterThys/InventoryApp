@@ -460,7 +460,7 @@ public class SearchManager {
         return orderList;
     }
 
-    public List<ItemOrder> findPlannedOrders() {
+    public List<ItemOrder> findPlannedItemOrders() {
         List<ItemOrder> itemOrders = new ArrayList<>();
         for (ItemOrder o : cache().getItemOrders()) {
             if (!o.isUnknown() && !o.isOrdered()) {
@@ -468,6 +468,16 @@ public class SearchManager {
             }
         }
         return itemOrders;
+    }
+
+    public List<PcbOrder> findPlannedPcbOrders() {
+        List<PcbOrder> pcbOrders = new ArrayList<>();
+        for (PcbOrder o : cache().getPcbOrders()) {
+            if (!o.isUnknown() && !o.isOrdered()) {
+                pcbOrders.add(o);
+            }
+        }
+        return pcbOrders;
     }
 
     public List<ItemOrder> findPlannedOrders(DistributorType distributorType) {

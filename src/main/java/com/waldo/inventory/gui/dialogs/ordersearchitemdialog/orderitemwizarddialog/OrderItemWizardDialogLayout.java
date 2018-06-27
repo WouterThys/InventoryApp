@@ -114,9 +114,9 @@ abstract class OrderItemWizardDialogLayout extends iDialog {
         GridBagHelper gbc = new GridBagHelper(orderPanel);
         if (selectedItemOrder == null) {
             gbc.addLine("ItemOrder: ", GuiUtils.createComponentWithAddAction(orderCb, e -> {
-                EditOrdersDialog dialog = new EditOrdersDialog(OrderItemWizardDialogLayout.this, new ItemOrder(), Statics.DistributorType.Items, false);
+                EditOrdersDialog dialog = new EditOrdersDialog<>(OrderItemWizardDialogLayout.this, new ItemOrder(), Statics.DistributorType.Items, false);
                 if (dialog.showDialog() == IDialog.OK) {
-                    addOrder(dialog.getOrder());
+                    addOrder((ItemOrder) dialog.getOrder());
                 }
             }));
         } else {
@@ -168,7 +168,7 @@ abstract class OrderItemWizardDialogLayout extends iDialog {
         setResizable(true);
 
         // ItemOrder
-        orderCb = new IComboBox<>(SearchManager.sm().findPlannedOrders(), new ComparatorUtils.DbObjectNameComparator<>(), true);
+        orderCb = new IComboBox<>(SearchManager.sm().findPlannedOrders(Statics.DistributorType.Items), new ComparatorUtils.DbObjectNameComparator<>(), true);
         orderCb.addItemListener(e -> editOrder((ItemOrder) orderCb.getSelectedItem()));
         distributorLbl = new ILabel();
         distributorLbl.setEnabled(false);

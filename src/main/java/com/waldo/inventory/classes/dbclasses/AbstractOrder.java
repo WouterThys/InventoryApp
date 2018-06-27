@@ -4,13 +4,11 @@ import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.Price;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.utils.DateUtils;
-import com.waldo.utils.OpenUtils;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
-import java.io.IOException;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -106,18 +104,18 @@ public abstract class AbstractOrder<T extends Orderable> extends DbObject {
         return result;
     }
 
-    //
-    // DatabaseAccess tells the object is updated
-    //
-
     public void copyOrderLinesToClipboard() {
-        String orderText = createOrderText();
-        StringSelection selection = new StringSelection(orderText);
-        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-        clipboard.setContents(selection, selection);
+        try {
+            String orderText = createOrderText();
+            StringSelection selection = new StringSelection(orderText);
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            clipboard.setContents(selection, selection);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    private String createOrderText() {
+    public String createOrderText() {
         StringBuilder builder = new StringBuilder();
         for (AbstractOrderLine<T> orderLine : getOrderLines()) {
             builder.append(orderLine.getDistributorPartLink().getReference());
@@ -126,12 +124,6 @@ public abstract class AbstractOrder<T extends Orderable> extends DbObject {
             builder.append("\n");
         }
         return builder.toString();
-    }
-
-    public void browseOrderPage() throws IOException {
-        if (getDistributorId() > UNKNOWN_ID) {
-            OpenUtils.browseLink(getDistributor().getOrderLink());
-        }
     }
 
     public boolean containsOrderLineFor(T line) {
@@ -337,6 +329,11 @@ public abstract class AbstractOrder<T extends Orderable> extends DbObject {
             return distributor.getDistributorType();
         }
         return null;
+    }
+
+
+    public boolean canCreateOrderFile() {
+        return getDistributorType() != null && getDistributorType().equals(Statics.DistributorType.Items);
     }
 
 

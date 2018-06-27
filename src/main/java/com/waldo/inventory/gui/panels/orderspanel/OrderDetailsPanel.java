@@ -40,6 +40,7 @@ public abstract class OrderDetailsPanel extends IPanel implements IdBToolBar.Idb
     // Actions
     private IActions.EditAction editDistributorAction;
     private IActions.BrowseWebAction browseDistributorAction;
+    private IActions.IAction viewOrderFileAction;
 
     private IActions.EditAction editReferenceAction;
     private IActions.DeleteAction deleteReferenceAction;
@@ -76,6 +77,7 @@ public abstract class OrderDetailsPanel extends IPanel implements IdBToolBar.Idb
         boolean hasReference = enabled && !selectedOrder.getOrderReference().isEmpty();
         boolean hasTracking = enabled && !selectedOrder.getTrackingNumber().isEmpty();
         boolean hasWebsite = enabled && selectedOrder.getDistributor() != null && !selectedOrder.getDistributor().getWebsite().isEmpty();
+        boolean canCreateOrderFile = enabled && selectedOrder.canCreateOrderFile();
 
         ordersToolBar.setEditActionEnabled(enabled);
         ordersToolBar.setDeleteActionEnabled(enabled);
@@ -88,6 +90,8 @@ public abstract class OrderDetailsPanel extends IPanel implements IdBToolBar.Idb
         editTrackingAction.setEnabled(!locked);
         deleteTrackingAction.setEnabled(!locked && hasTracking);
         browseTrackingAction.setEnabled(hasTracking);
+
+        viewOrderFileAction.setEnabled(canCreateOrderFile);
 
     }
 
@@ -323,6 +327,18 @@ public abstract class OrderDetailsPanel extends IPanel implements IdBToolBar.Idb
         }
     }
 
+    private void showOrderFile() {
+        if (selectedOrder != null) {
+            String orderFile = selectedOrder.createOrderText();
+            if (orderFile != null) {
+                JOptionPane.showMessageDialog(
+                        application,
+                        orderFile
+                );
+            }
+        }
+    }
+
     /*
      *                  LISTENERS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -359,6 +375,7 @@ public abstract class OrderDetailsPanel extends IPanel implements IdBToolBar.Idb
                 }
             }
         };
+        orderFlowPanel.setBorder(BorderFactory.createLineBorder(Color.gray.brighter()));
 
         orderNameTf = new ITextField(false);
         distributorTf = new ITextField(false);
@@ -430,12 +447,22 @@ public abstract class OrderDetailsPanel extends IPanel implements IdBToolBar.Idb
             }
         };
 
-
+        viewOrderFileAction = new IActions.IAction("Order file", imageResource.readIcon("Invoice.S")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SwingUtilities.invokeLater(() -> showOrderFile());
+            }
+        };
     }
 
     @Override
     public void initializeLayouts() {
         setLayout(new BorderLayout());
+
+        JToolBar extraTb = GuiUtils.createNewToolbar(viewOrderFileAction);
+        JPanel toolBarPnl = new JPanel(new BorderLayout());
+        toolBarPnl.add(ordersToolBar, BorderLayout.WEST);
+        toolBarPnl.add(extraTb, BorderLayout.EAST);
 
         JPanel infoPanel = new JPanel();
         GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(infoPanel);
@@ -444,12 +471,11 @@ public abstract class OrderDetailsPanel extends IPanel implements IdBToolBar.Idb
         gbc.addLine("Order reference", imageResource.readIcon("Dictionary.SS"), GuiUtils.createComponentWithActions(orderReferenceTf, editReferenceAction, deleteReferenceAction, browseReferenceAction));
         gbc.addLine("Tracking reference", imageResource.readIcon("Truck.SS"), GuiUtils.createComponentWithActions(trackingLinkTf, editTrackingAction, deleteTrackingAction, browseTrackingAction));
 
-
         Box box = Box.createVerticalBox();
         box.add(orderFlowPanel);
         box.add(infoPanel);
 
-        add(ordersToolBar, BorderLayout.PAGE_START);
+        add(toolBarPnl, BorderLayout.PAGE_START);
         add(box, BorderLayout.CENTER);
 
     }

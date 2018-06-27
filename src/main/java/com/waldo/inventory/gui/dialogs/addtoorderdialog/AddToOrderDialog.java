@@ -2,8 +2,7 @@ package com.waldo.inventory.gui.dialogs.addtoorderdialog;
 
 
 import com.waldo.inventory.Utils.Statics;
-import com.waldo.inventory.classes.dbclasses.Item;
-import com.waldo.inventory.classes.dbclasses.ItemOrder;
+import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.dialogs.editordersdialog.EditOrdersDialog;
 import com.waldo.inventory.managers.OrderManager;
@@ -13,45 +12,137 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
-public class AddToOrderDialog extends AddToOrderDialogLayout implements CacheChangedListener<ItemOrder> {
+public class AddToOrderDialog<T extends Orderable> extends AddToOrderDialogLayout<T> {
 
-    private Item itemToOrder;
-    private List<Item> itemsToOrderList;
+    private T orderLine;
+    private List<T> orderLineList;
     private boolean orderList;
     private boolean createOnConfirm;
 
-    public AddToOrderDialog(Window parent, Item itemToOrder, boolean createOnConfirm) {
-        super(parent, "Order " + itemToOrder, Statics.DistributorType.Items);
-        this.itemToOrder = itemToOrder;
+    public AddToOrderDialog(Window parent, T orderLine, boolean createOnConfirm) {
+        super(parent, "Order " + orderLine);
+        this.orderLine = orderLine;
         this.orderList = false;
         this.createOnConfirm = createOnConfirm;
 
-        addCacheListener(ItemOrder.class, this);
+        if (orderLine instanceof Item) {
+            distributorType = Statics.DistributorType.Items;
+            addCacheListener(ItemOrder.class, new CacheChangedListener<ItemOrder>() {
+                @Override
+                public void onInserted(ItemOrder object) {
+                    updateComponents(object);
+                }
+
+                @Override
+                public void onUpdated(ItemOrder object) {
+
+                }
+
+                @Override
+                public void onDeleted(ItemOrder object) {
+
+                }
+
+                @Override
+                public void onCacheCleared() {
+
+                }
+            });
+        } else {
+            distributorType = Statics.DistributorType.Pcbs;
+            addCacheListener(PcbOrder.class, new CacheChangedListener<PcbOrder>() {
+                @Override
+                public void onInserted(PcbOrder object) {
+                    updateComponents(object);
+                }
+
+                @Override
+                public void onUpdated(PcbOrder object) {
+
+                }
+
+                @Override
+                public void onDeleted(PcbOrder object) {
+
+                }
+
+                @Override
+                public void onCacheCleared() {
+
+                }
+            });
+        }
 
         initializeComponents();
         initializeLayouts();
         updateComponents();
     }
 
-    public AddToOrderDialog(Window parent, List<Item> itemsToOrder, boolean createOnConfirm) {
-        super(parent, "Order " + itemsToOrder.size() + " items", Statics.DistributorType.Items);
-        this.itemsToOrderList = itemsToOrder;
+    public AddToOrderDialog(Window parent, List<T> itemsToOrder, boolean createOnConfirm) {
+        super(parent, "Order " + itemsToOrder.size() + " items");
+        this.orderLineList = itemsToOrder;
         this.orderList = true;
         this.createOnConfirm = createOnConfirm;
 
-        addCacheListener(ItemOrder.class, this);
+        if (orderLine instanceof Item) {
+            distributorType = Statics.DistributorType.Items;
+            addCacheListener(ItemOrder.class, new CacheChangedListener<ItemOrder>() {
+                @Override
+                public void onInserted(ItemOrder object) {
+                    updateComponents(object);
+                }
+
+                @Override
+                public void onUpdated(ItemOrder object) {
+
+                }
+
+                @Override
+                public void onDeleted(ItemOrder object) {
+
+                }
+
+                @Override
+                public void onCacheCleared() {
+
+                }
+            });
+        } else {
+            distributorType = Statics.DistributorType.Pcbs;
+            addCacheListener(PcbOrder.class, new CacheChangedListener<PcbOrder>() {
+                @Override
+                public void onInserted(PcbOrder object) {
+                    updateComponents(object);
+                }
+
+                @Override
+                public void onUpdated(PcbOrder object) {
+
+                }
+
+                @Override
+                public void onDeleted(PcbOrder object) {
+
+                }
+
+                @Override
+                public void onCacheCleared() {
+
+                }
+            });
+        }
 
         initializeComponents();
         initializeLayouts();
         updateComponents();
     }
 
-    public ItemOrder getSelectedOrder() {
-        return (ItemOrder) orderCb.getSelectedItem();
+    public AbstractOrder<T> getSelectedOrder() {
+        return (AbstractOrder<T>) orderCb.getSelectedItem();
     }
 
     @Override
-    void addToOrder() {
+    protected void onOK() {
         if (orderCb.getSelectedItem() == null) {
             JOptionPane.showMessageDialog(AddToOrderDialog.this, "Selected an order", "Error", JOptionPane.ERROR_MESSAGE);
             return;
@@ -59,9 +150,9 @@ public class AddToOrderDialog extends AddToOrderDialogLayout implements CacheCha
         if (createOnConfirm) {
             // Add item(s) to list
             if (orderList) {
-                OrderManager.addLinesToOrder(itemsToOrderList, (ItemOrder) orderCb.getSelectedItem());
+                OrderManager.addLinesToOrder(orderLineList, (AbstractOrder<T>) orderCb.getSelectedItem());
             } else {
-                OrderManager.addLineToOrder(itemToOrder, (ItemOrder) orderCb.getSelectedItem());
+                OrderManager.addLineToOrder(orderLine, (AbstractOrder<T>) orderCb.getSelectedItem());
             }
         }
         super.onOK();
@@ -69,28 +160,18 @@ public class AddToOrderDialog extends AddToOrderDialogLayout implements CacheCha
 
     @Override
     void addNewOrder() {
-        EditOrdersDialog dialog = new EditOrdersDialog(this, new ItemOrder(), distributorType,false);
-        if (dialog.showDialog() == IDialog.OK) {
-            ItemOrder newItemOrder = dialog.getOrder();
-            newItemOrder.save();
+
+        AbstractOrder<T> order;
+        if (distributorType.equals(Statics.DistributorType.Items)) {
+            order = (AbstractOrder<T>) new ItemOrder();
+        } else {
+            order = (AbstractOrder<T>) new PcbOrder();
         }
-    }
 
-    @Override
-    public void onInserted(ItemOrder itemOrder) {
-        updateComponents(itemOrder);
-    }
+        EditOrdersDialog dialog = new EditOrdersDialog(this,order, distributorType,false);
+        if (dialog.showDialog() == IDialog.OK) {
+            order.save();
+        }
 
-    @Override
-    public void onUpdated(ItemOrder newItemOrder) {
-    } // Should not happen
-
-    @Override
-    public void onDeleted(ItemOrder itemOrder) {
-    } // Should not happen
-
-    @Override
-    public void onCacheCleared() {
-        updateComponents();
     }
 }
