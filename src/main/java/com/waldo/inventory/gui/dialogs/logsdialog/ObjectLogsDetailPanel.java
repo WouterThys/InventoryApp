@@ -23,7 +23,7 @@ import static com.waldo.inventory.gui.Application.imageResource;
 
 public class ObjectLogsDetailPanel extends JPanel implements GuiUtils.GuiInterface {
 
-    private final ImageIcon objectLogIcon = imageResource.readIcon("Log.Object");
+    private final ImageIcon objectLogIcon = imageResource.readIcon("Database.Unknown.XXL");
 
     /*
      *                  COMPONENTS

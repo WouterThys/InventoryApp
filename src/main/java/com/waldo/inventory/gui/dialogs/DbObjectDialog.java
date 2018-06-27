@@ -96,7 +96,7 @@ public class DbObjectDialog<T extends DbObject> extends IDialog {
         iconPathTextField = new ITextField();
 
         // File chooser
-        browseIconButton = new JButton(imageResource.readIcon("Common.BrowseIcon"));
+        browseIconButton = new JButton(imageResource.readIcon("Browse.Folder.SS"));
         browseIconButton.addActionListener(e -> {
             JFileChooser fileChooser = ImageFileChooser.getFileChooser();
             fileChooser.setCurrentDirectory(new File(initialPath));

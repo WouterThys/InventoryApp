@@ -87,9 +87,9 @@ public abstract class IOrderFlowPanel extends IPanel {
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     @Override
     public void initializeComponents() {
-        plannedIcon = new ILabel(imageResource.readIcon("Orders.Flow.Planned"));
-        orderedIcon = new ILabel(imageResource.readIcon("Orders.Flow.Ordered"));
-        receivedIcon = new ILabel(imageResource.readIcon("Orders.Flow.Received"));
+        plannedIcon = new ILabel(imageResource.readIcon("Calendar.L"));
+        orderedIcon = new ILabel(imageResource.readIcon("Truck.L"));
+        receivedIcon = new ILabel(imageResource.readIcon("Received.L"));
 
         plannedIcon.setToolTipText("Planned");
         orderedIcon.setToolTipText("Ordered");

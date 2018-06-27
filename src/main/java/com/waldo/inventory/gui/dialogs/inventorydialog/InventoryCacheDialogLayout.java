@@ -186,7 +186,7 @@ abstract class InventoryCacheDialogLayout extends ICacheDialog
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     @Override
     public void initializeComponents() {
-        setTitleIcon(imageResource.readIcon("Inventory.Title"));
+        setTitleIcon(imageResource.readIcon("Count.L"));
         setTitleName(getTitle());
         setResizable(true);
 

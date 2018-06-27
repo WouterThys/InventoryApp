@@ -217,8 +217,8 @@ abstract class PcbItemDetailsDialogLayout extends ICacheDialog implements IEdite
         orderPnl.add(orderBtn, BorderLayout.EAST);
 
         GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(panel);
-        gbc.addLine(imageResource.readIcon("Projects.Pcb.Linked"), itemPnl);
-        gbc.addLine(imageResource.readIcon("Projects.Pcb.Ordered"), orderPnl);
+        gbc.addLine(imageResource.readIcon("Link.New.SS"), itemPnl);
+        gbc.addLine(imageResource.readIcon("Order.SS"), orderPnl);
 
         return panel;
     }
@@ -231,7 +231,7 @@ abstract class PcbItemDetailsDialogLayout extends ICacheDialog implements IEdite
         // Dialog
         setResizable(true);
         setModal(false);
-        setTitleIcon(imageResource.readIcon("Projects.Pcb.Title"));
+        setTitleIcon(imageResource.readIcon("Pcb.L"));
         getButtonNeutral().setVisible(true);
         getButtonNeutral().setEnabled(false);
 

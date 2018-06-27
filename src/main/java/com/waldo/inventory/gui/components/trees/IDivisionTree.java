@@ -13,10 +13,10 @@ import static com.waldo.inventory.gui.Application.imageResource;
 
 public class IDivisionTree extends ITree<Division> {
 
-    private final ImageIcon categoryIcon = imageResource.readIcon("Items.Tree.Category");
-    private final ImageIcon productIcon = imageResource.readIcon("Items.Tree.Product");
-    private final ImageIcon typeIcon = imageResource.readIcon("Items.Tree.Type");
-    private final ImageIcon itemIcon = imageResource.readIcon("Items.Tree.Item");
+    private final ImageIcon categoryIcon = imageResource.readIcon("Component.Green.SS");
+    private final ImageIcon productIcon = imageResource.readIcon("Component.Yellow.SS");
+    private final ImageIcon typeIcon = imageResource.readIcon("Component.Red.SS");
+    private final ImageIcon itemIcon = imageResource.readIcon("Component.SS");
 
     public IDivisionTree(Division rootDivision, boolean showRoot) {
         super(rootDivision, showRoot, false);

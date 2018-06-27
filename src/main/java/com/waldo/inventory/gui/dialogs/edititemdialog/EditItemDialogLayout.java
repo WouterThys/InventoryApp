@@ -111,9 +111,9 @@ public abstract class EditItemDialogLayout<T extends Item> extends iDialog imple
         editItemOrderPanel.initializeLayouts();
 
         // Add tabs
-        tabbedPane.addTab("Component  ", imageResource.readIcon("EditItem.Tab.Component"), componentPanel, "Component info");
-        tabbedPane.addTab("Stock  ", imageResource.readIcon("EditItem.Tab.Stock"), editItemStockPanel, "Stock info");
-        tabbedPane.addTab("Order  ", imageResource.readIcon("EditItem.Tab.Order"), editItemOrderPanel, "Order info");
+        tabbedPane.addTab("Component  ", imageResource.readIcon("Tag.S"), componentPanel, "Component info");
+        tabbedPane.addTab("Stock  ", imageResource.readIcon("Stock.S"), editItemStockPanel, "Stock info");
+        tabbedPane.addTab("Order  ", imageResource.readIcon("Order.S"), editItemOrderPanel, "Order info");
 
         // Add
         JSeparator separator = new JSeparator(JSeparator.HORIZONTAL);
@@ -137,7 +137,7 @@ public abstract class EditItemDialogLayout<T extends Item> extends iDialog imple
             setTitleIcon(selectedItem);
 
             if (selectedItem.isSet()) {
-                setInfoIcon(imageResource.readIcon("Sets.Edit.Title"));
+                setInfoIcon(imageResource.readIcon("Components.L"));
             }
             setTitleName(selectedItem.getName().trim());
 

@@ -282,8 +282,8 @@ public class IImagePanel extends IPanel implements ClipboardOwner, ImageChangedL
         };
 
 
-        ImageIcon edit = ImageResource.scaleImage(imageResource.readIcon("Actions.Edit"), new Dimension(10,10));
-        ImageIcon delete = ImageResource.scaleImage(imageResource.readIcon("Actions.Delete"), new Dimension(10,10));
+        ImageIcon edit = ImageResource.scaleImage(imageResource.readIcon("Pen.SS"), new Dimension(10,10));
+        ImageIcon delete = ImageResource.scaleImage(imageResource.readIcon("Delete.SS"), new Dimension(10,10));
         editImageAction.setIcon(edit);
         deleteImageAction.setIcon(delete);
 

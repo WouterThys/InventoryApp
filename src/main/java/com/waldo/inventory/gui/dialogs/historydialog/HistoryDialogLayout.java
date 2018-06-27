@@ -94,7 +94,7 @@ abstract class HistoryDialogLayout extends iDialog implements GuiUtils.GuiInterf
     public void initializeComponents() {
         // Dialog
         setTitleImage(new IImagePanel(null, Statics.ImageType.ItemImage, null, new Dimension(64,64)));
-        setTitleIcon(imageResource.readIcon("History.Title"));
+        setTitleIcon(imageResource.readIcon("History.L"));
         setTitleName(getTitle());
 
         // This

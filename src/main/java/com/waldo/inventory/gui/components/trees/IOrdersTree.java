@@ -116,12 +116,12 @@ public class IOrdersTree extends ITree<IOrdersTree.OrderTreeNode> {
 
     public static final OrderTreeNode defaultRoot = new OrderTreeNode(OrderStates.NoOrder, "", null, null);
 
-    private static final ImageIcon receivedIcon = imageResource.readIcon("Orders.Tree.Received");
-    private static final ImageIcon orderedIcon = imageResource.readIcon("Orders.Tree.Ordered");
-    private static final ImageIcon plannedIcon = imageResource.readIcon("Orders.Tree.Planned");
+    private static final ImageIcon receivedIcon = imageResource.readIcon("Received.S");
+    private static final ImageIcon orderedIcon = imageResource.readIcon("Truck.S");
+    private static final ImageIcon plannedIcon = imageResource.readIcon("Calendar.S");
 
-    private static final ImageIcon itemIcon = imageResource.readIcon("Items.Tree.Set");
-    private static final ImageIcon pcbIcon = imageResource.readIcon("Projects.Details.Pcb");
+    private static final ImageIcon itemIcon = imageResource.readIcon("Components.SS");
+    private static final ImageIcon pcbIcon = imageResource.readIcon("Pcb.SS");
 
     private DefaultMutableTreeNode orderedNode;
     private DefaultMutableTreeNode plannedNode;

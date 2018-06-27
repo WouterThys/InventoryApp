@@ -13,9 +13,9 @@ import static com.waldo.inventory.gui.Application.imageResource;
 
 public abstract class PcbItemPopup extends JPopupMenu {
 
-    private static final ImageIcon linked = imageResource.readIcon("Projects.Pcb.Linked");
-    private static final ImageIcon ordered = imageResource.readIcon("Projects.Pcb.Ordered");
-    private static final ImageIcon used = imageResource.readIcon("Projects.Pcb.Used");
+    private static final ImageIcon linked = imageResource.readIcon("Link.New.SS");
+    private static final ImageIcon ordered = imageResource.readIcon("Order.SS");
+    private static final ImageIcon used = imageResource.readIcon("Used.SS");
 
     protected PcbItemPopup(PcbItemProjectLink itemProjectLink) {
         super();

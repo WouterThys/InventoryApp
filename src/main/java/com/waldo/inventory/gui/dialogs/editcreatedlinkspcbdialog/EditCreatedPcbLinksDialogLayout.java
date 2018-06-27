@@ -25,10 +25,10 @@ import static com.waldo.inventory.gui.Application.imageResource;
 
 abstract class EditCreatedPcbLinksDialogLayout extends ICacheDialog implements IEditedListener {
 
-    private static final ImageIcon receivedIcon = imageResource.readIcon("Actions.Received");
-    private static final ImageIcon inProgressIcon = imageResource.readIcon("Actions.Created");
-    private static final ImageIcon doneIcon = imageResource.readIcon("Actions.Ok");
-    private static final ImageIcon destroyedIcon = imageResource.readIcon("Actions.Destroyed");
+    private static final ImageIcon receivedIcon = imageResource.readIcon("Received.SS");
+    private static final ImageIcon inProgressIcon = imageResource.readIcon("Created.SS");
+    private static final ImageIcon doneIcon = imageResource.readIcon("Check.SS");
+    private static final ImageIcon destroyedIcon = imageResource.readIcon("Garbage.SS");
 
     /*
      *                  COMPONENTS
@@ -345,8 +345,8 @@ abstract class EditCreatedPcbLinksDialogLayout extends ICacheDialog implements I
     private JPanel createLinkInfoPanel() {
         JPanel panel = new JPanel(new BorderLayout());
 
-        ILabel pcbItemLbl = new ILabel("Pcb item: ", imageResource.readIcon("Projects.Details.Pcb"), SwingConstants.CENTER);
-        ILabel linkedItemLbl = new ILabel("Linked item: ", imageResource.readIcon("Projects.Pcb.Linked"), SwingConstants.CENTER);
+        ILabel pcbItemLbl = new ILabel("Pcb item: ", imageResource.readIcon("Pcb.SS"), SwingConstants.CENTER);
+        ILabel linkedItemLbl = new ILabel("Linked item: ", imageResource.readIcon("Link.New.SS"), SwingConstants.CENTER);
 
         JPanel pnl = new JPanel();
         GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(pnl);
@@ -491,43 +491,43 @@ abstract class EditCreatedPcbLinksDialogLayout extends ICacheDialog implements I
         };
 
         // Soldered item actions
-        recreateSolderItemsAction = new IActions.IAction("Recreate", imageResource.readIcon("Actions.M.Rename")) {
+        recreateSolderItemsAction = new IActions.IAction("Recreate", imageResource.readIcon("Refresh.Cloud.S")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 onRecreateSolderItems(selectedLink);
             }
         };
-        searchUsedItemAction = new IActions.SearchAction(imageResource.readIcon("Actions.M.Search")) {
+        searchUsedItemAction = new IActions.SearchAction(imageResource.readIcon("Search.S")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 onSearchUsedItem(selectedLink);
             }
         };
-        deleteUsedItemAction = new IActions.DeleteAction(imageResource.readIcon("Actions.M.Delete")) {
+        deleteUsedItemAction = new IActions.DeleteAction(imageResource.readIcon("Delete.S")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 onDeleteUsedItem();
             }
         };
-        selectAllAction = new IActions.IAction("Select all", imageResource.readIcon("Actions.M.SelectAll")) {
+        selectAllAction = new IActions.IAction("Select all", imageResource.readIcon("Select.S")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 solderItemTable.selectAll();
             }
         };
-        copyLinkAction = new IActions.IAction("Copy link", imageResource.readIcon("Actions.M.CopyLink")) {
+        copyLinkAction = new IActions.IAction("Copy link", imageResource.readIcon("Link.In.S")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 onCopyLink(getSelectedSolderItems(), selectedLink, true, true, false);
             }
         };
-        solderInfoAction = new IActions.IAction("Solder info", imageResource.readIcon("Actions.M.Info")) {
+        solderInfoAction = new IActions.IAction("Solder info", imageResource.readIcon("Info.S")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 onOrderInfo(getSelectedSolderItem());
             }
         };
-        solderWizardAction = new IActions.WizardAction("Solder wizard", imageResource.readIcon("Actions.M.Wizard")) {
+        solderWizardAction = new IActions.WizardAction("Solder wizard", imageResource.readIcon("Wizard.S")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 onSolderWizard(selectedLink);
@@ -559,7 +559,7 @@ abstract class EditCreatedPcbLinksDialogLayout extends ICacheDialog implements I
                 onSetPcbDone(createdPcb);
             }
         };
-        pcbDoneAction.setIcon(imageResource.readIcon("Actions.M.Ok"));
+        pcbDoneAction.setIcon(imageResource.readIcon("Check.S"));
         pcbDoneAction.setTooltip("Set PCB soldered");
 
         destroyPcbAction = new IActions.DeleteAction() {
@@ -568,10 +568,10 @@ abstract class EditCreatedPcbLinksDialogLayout extends ICacheDialog implements I
                 onDestroyPcb(createdPcb);
             }
         };
-        destroyPcbAction.setIcon(imageResource.readIcon("Actions.M.Destroyed"));
+        destroyPcbAction.setIcon(imageResource.readIcon("Garbage.S"));
         destroyPcbAction.setTooltip("Destroy PCB");
 
-        editRemarksAa = new IActions.IAction("Edit remarks", imageResource.readIcon("Actions.EditRemark")) {
+        editRemarksAa = new IActions.IAction("Edit remarks", imageResource.readIcon("Remarks.SS")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 onEditRemark(solderItemTable.getSelectedItem());
@@ -593,7 +593,7 @@ abstract class EditCreatedPcbLinksDialogLayout extends ICacheDialog implements I
             }
         };
         calculatePriceAction.setTooltip("Calculate estimated price");
-        calculatePriceAction.setIcon(imageResource.readIcon("Actions.M.Calculate"));
+        calculatePriceAction.setIcon(imageResource.readIcon("Calculator.S"));
     }
 
     @Override

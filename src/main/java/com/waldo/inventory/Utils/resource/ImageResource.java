@@ -1,5 +1,6 @@
 package com.waldo.inventory.Utils.resource;
 
+import com.waldo.inventory.Utils.Statics.IconSize;
 import com.waldo.inventory.Utils.Statics.ImageType;
 import com.waldo.inventory.classes.dbclasses.DbImage;
 import com.waldo.inventory.classes.dbclasses.DbObject;
@@ -10,9 +11,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.List;
@@ -36,11 +34,16 @@ public class ImageResource extends Resource implements ImageChangedListener {
 
     private static final int DEFAULT = 1;
 
-    // Local images
+    /*
+     *                  VARIABLES
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private final Map<String, ImageIcon> iconImageMap = new HashMap<>();
 
     private final Map<ImageType, Vector<DbImage>> imageMap = new EnumMap<>(ImageType.class);
 
+    /*
+     *                  INITIALIZE
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     public void initIcons(String propertiesUrl, String fileName) throws IOException {
         super.initProperties(propertiesUrl, fileName);
     }
@@ -56,47 +59,67 @@ public class ImageResource extends Resource implements ImageChangedListener {
         }
     }
 
+
+    /*
+     *                  ICONS
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
     public ImageIcon getDefaultImage(ImageType imageType) {
         switch (imageType) {
             case ItemImage:
-                return readIcon("Items.Edit.Title");
+                return readIcon("Component.L");
             case IdeImage:
-                return readIcon("Ides.Title");
+                return readIcon("Toolkit.L");
             case ProjectImage:
-                return readIcon("Projects.Icon");
+                return readIcon("BluePrint.L");
             case DistributorImage:
-                return readIcon("Distributors.Title");
+                return readIcon("Distributor.L");
             case ManufacturerImage:
-                return readIcon("Manufacturers.Title");
+                return readIcon("Factory.L");
             default:
-                return readIcon("Common.UnknownIcon48");
+                return readIcon("Unknown.L");
         }
     }
 
-
-    public void dummy(ImageType type) {
-        switch (type) {
-            case ItemImage:
-                break;
-            case DistributorImage:
-                break;
-            case ManufacturerImage:
-                break;
-            case IdeImage:
-                break;
-            case ProjectImage:
-                break;
-            case Other:
-                break;
-            default:
-                break;
+    public ImageIcon readIcon(String name, IconSize iconSize) {
+        if ((name != null) && (!name.isEmpty())) {
+            if (iconSize == null) {
+                iconSize = IconSize.SS;
+            }
+            String propertiesKey = name + "." + iconSize;
+            return readIcon(propertiesKey);
         }
+        return null;
     }
 
 
-    /**
-     * Make this call on a different thread!!
-     */
+    public ImageIcon readIcon(String key) {
+        if (iconImageMap.containsKey(key)) {
+            return iconImageMap.get(key);
+        }
+
+        ImageIcon icon = getIcon(key);
+        if (icon == null) {
+            icon = iconImageMap.get(DEFAULT);
+        }
+        if (icon != null) {
+            iconImageMap.put(key, icon);
+        }
+
+        return icon;
+    }
+
+    private ImageIcon getIcon(String key) {
+        try (InputStream is = this.getClass().getClassLoader().getResourceAsStream("icons/" + readString(key))) {
+            return new ImageIcon(ImageIO.read(is));
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /*
+     *                  IMAGES
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     public DbImage getImage(ImageType type, long id) {
         DbImage image = null;
         if (type != null) {
@@ -162,40 +185,9 @@ public class ImageResource extends Resource implements ImageChangedListener {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // OLD ->
-
-
-
-
-
-    public ImageIcon fetchImage(String imagePath) {
-        ImageIcon icon = null;
-        Path path = Paths.get(imagePath);
-        try {
-            URL url = path.toUri().toURL();
-            icon = new ImageIcon(ImageIO.read(url));
-        } catch (Exception e) {
-            //
-        }
-        return icon;
-    }
+    /*
+     *                  HELPERS
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
     public static ImageIcon scaleImage(ImageIcon imageIcon, Dimension boundary) {
         if (imageIcon == null || boundary == null) {
@@ -234,33 +226,4 @@ public class ImageResource extends Resource implements ImageChangedListener {
 
         return new Dimension(new_width, new_height);
     }
-
-    public ImageIcon readIcon(String key) {
-        if (iconImageMap.containsKey(key)) {
-            return iconImageMap.get(key);
-        }
-
-        ImageIcon icon = getIcon(key);
-        if (icon == null) {
-            icon = iconImageMap.get(DEFAULT);
-        }
-
-        if (icon != null) {
-            iconImageMap.put(key, icon);
-        }
-
-        return icon;
-    }
-
-    private ImageIcon getIcon(String key) {
-        try (InputStream is = this.getClass().getClassLoader().getResourceAsStream("icons/" + readString(key))) {
-            return new ImageIcon(ImageIO.read(is));
-        } catch (Exception e) {
-            //
-        }
-        //
-        return null;
-    }
-
-
 }

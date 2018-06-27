@@ -114,18 +114,18 @@ public class IStatusStrip extends JPanel implements GuiUtils.GuiInterface {
 
     public void updateConnectionStatus() {
         if (db().isInitialized()) {
-            dbConnectedIcon.setIcon(ImageResource.scaleImage(imageResource.readIcon("Status.dbOk"), new Dimension(16,16)));
+            dbConnectedIcon.setIcon(ImageResource.scaleImage(imageResource.readIcon("Database.Ok.S"), new Dimension(16,16)));
             dbConnectedIcon.setToolTipText("Connected");
         } else {
-            dbConnectedIcon.setIcon(ImageResource.scaleImage(imageResource.readIcon("Status.dbNok"), new Dimension(16,16)));
+            dbConnectedIcon.setIcon(ImageResource.scaleImage(imageResource.readIcon("Database.Forbidden.S"), new Dimension(16,16)));
             dbConnectedIcon.setToolTipText("Not connected..");
         }
 
         if (imDb().isInitialized()) {
-            imageConnectedIcon.setIcon(ImageResource.scaleImage(imageResource.readIcon("Status.serverOk"), new Dimension(16,16)));
+            imageConnectedIcon.setIcon(ImageResource.scaleImage(imageResource.readIcon("Server.Ok.S"), new Dimension(16,16)));
             imageConnectedIcon.setToolTipText("Connected");
         } else {
-            imageConnectedIcon.setIcon(ImageResource.scaleImage(imageResource.readIcon("Status.serverNok"), new Dimension(16,16)));
+            imageConnectedIcon.setIcon(ImageResource.scaleImage(imageResource.readIcon("Server.Forbidden.S"), new Dimension(16,16)));
             imageConnectedIcon.setToolTipText("Not connected..");
         }
     }

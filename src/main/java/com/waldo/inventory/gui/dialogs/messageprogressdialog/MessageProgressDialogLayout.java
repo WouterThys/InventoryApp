@@ -21,8 +21,8 @@ abstract class MessageProgressDialogLayout extends iDialog {
     private final Color errorColor = Color.RED;
 
     private final ImageIcon infoIcon = imageResource.readIcon("");
-    private final ImageIcon warnIcon = ImageResource.scaleImage(imageResource.readIcon("Orders.Table.Warning"), new Dimension(10,10));
-    private final ImageIcon errorIcon = ImageResource.scaleImage(imageResource.readIcon("Orders.Table.Error"), new Dimension(10,10));
+    private final ImageIcon warnIcon = ImageResource.scaleImage(imageResource.readIcon("Warning.SS"), new Dimension(10,10));
+    private final ImageIcon errorIcon = ImageResource.scaleImage(imageResource.readIcon("Error.SS"), new Dimension(10,10));
 
     /*
      *                  COMPONENTS

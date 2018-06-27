@@ -72,7 +72,7 @@ public abstract class DetectionDialogLayout extends IDialog implements ActionLis
         extensionUsingCb = new JComboBox<>(eucb);
         //extensionUsingCb.addActionListener(this);
 
-        openAsFolderHelpLbl = new ILabel(imageResource.readIcon("Common.HelpIcon"));
+        openAsFolderHelpLbl = new ILabel(imageResource.readIcon("Help.SS"));
         openAsFolderHelpLbl.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -83,7 +83,7 @@ public abstract class DetectionDialogLayout extends IDialog implements ActionLis
                         JOptionPane.INFORMATION_MESSAGE);
             }
         });
-        extensionMatchHelpLbl = new ILabel(imageResource.readIcon("Common.HelpIcon"));
+        extensionMatchHelpLbl = new ILabel(imageResource.readIcon("Help.SS"));
         extensionMatchHelpLbl.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -94,7 +94,7 @@ public abstract class DetectionDialogLayout extends IDialog implements ActionLis
                         JOptionPane.INFORMATION_MESSAGE);
             }
         });
-        extensionUsingHelpLbl = new ILabel(imageResource.readIcon("Common.HelpIcon"));
+        extensionUsingHelpLbl = new ILabel(imageResource.readIcon("Help.SS"));
         extensionUsingHelpLbl.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {

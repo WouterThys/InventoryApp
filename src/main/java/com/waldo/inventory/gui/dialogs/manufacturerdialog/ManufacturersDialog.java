@@ -20,7 +20,7 @@ import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class ManufacturersDialog extends IResourceDialog<Manufacturer> {
 
-    private static final ImageIcon icon = imageResource.readIcon("Manufacturers.Title");
+    private static final ImageIcon icon = imageResource.readIcon("Factory.L");
 
     private ITextField detailName;
     private GuiUtils.IBrowseWebPanel browsePanel;

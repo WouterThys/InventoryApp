@@ -191,7 +191,7 @@ abstract class LogsDialogLayout extends IDialog implements
         freeMemoryLbl = new ILabel(String.format("%,8d%n", (r.freeMemory() / KILOBYTE)));
         totalMemoryLbl = new ILabel(String.format("%,8d%n", (r.totalMemory() / KILOBYTE)));
 
-        clearCacheListAa = new AbstractAction("Clear cache", imageResource.readIcon("Cache.Clear")) {
+        clearCacheListAa = new AbstractAction("Clear cache", imageResource.readIcon("Brush.S")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ObjectLog log = cacheLogTable.getSelectedItem();
@@ -239,7 +239,7 @@ abstract class LogsDialogLayout extends IDialog implements
     @Override
     public void initializeComponents() {
         // Title
-        setTitleIcon(imageResource.readIcon("Log.Title"));
+        setTitleIcon(imageResource.readIcon("Log.L"));
         setTitleName(getTitle());
 
         // This

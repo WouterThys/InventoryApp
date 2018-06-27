@@ -316,24 +316,24 @@ abstract class OrderDetailsCacheDialogLayout extends ICacheDialog implements Lis
 
         // File panel
         orderByLbl = new ILabel();
-        fileOkLbl = new ILabel(imageResource.readIcon("Orders.Confirm.Error"));
+        fileOkLbl = new ILabel(imageResource.readIcon("Delete.SS"));
 
         orderFileTableModel = new DefaultTableModel();
         orderFileTable = new JTable(orderFileTableModel);
 
-        parseBtn = new JButton(imageResource.readIcon("Orders.Confirm.Refresh"));
+        parseBtn = new JButton(imageResource.readIcon("Refresh.S"));
         parseBtn.setToolTipText("Parse again");
         parseBtn.addActionListener(this);
-        copyToClipboardBtn = new JButton(imageResource.readIcon("Orders.Confirm.Copy"));
+        copyToClipboardBtn = new JButton(imageResource.readIcon("Copy.S"));
         copyToClipboardBtn.setToolTipText("Copy to clipboard");
         copyToClipboardBtn.addActionListener(this);
-        viewParsedBtn = new JButton(imageResource.readIcon("Orders.Confirm.View"));
+        viewParsedBtn = new JButton(imageResource.readIcon("View.S"));
         viewParsedBtn.setToolTipText("View parsed file");
         viewParsedBtn.addActionListener(this);
-        distributorsBrowseBtn = new JButton(imageResource.readIcon("Orders.Confirm.BrowseDistributor"));
+        distributorsBrowseBtn = new JButton(imageResource.readIcon("Browse.Earth.Distributor.S"));
         distributorsBrowseBtn.setToolTipText("Browse distributor website");
         distributorsBrowseBtn.addActionListener(this);
-        orderUrlBrowseBtn = new JButton(imageResource.readIcon("Orders.Confirm.BrowseOrder"));
+        orderUrlBrowseBtn = new JButton(imageResource.readIcon("Browse.Earth.Order.S"));
         orderUrlBrowseBtn.setToolTipText("Go to itemOrder page");
         orderUrlBrowseBtn.addActionListener(this);
 

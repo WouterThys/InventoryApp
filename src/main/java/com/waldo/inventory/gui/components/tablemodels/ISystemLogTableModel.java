@@ -56,10 +56,10 @@ public class ISystemLogTableModel extends IAbstractTableModel<Log> {
 
     private static class IRenderer extends DefaultTableCellRenderer {
 
-        private static final ImageIcon infoIcon = imageResource.readIcon("Log.InfoS");
-        private static final ImageIcon debugIcon = imageResource.readIcon("Log.DebugS");
-        private static final ImageIcon warnIcon = imageResource.readIcon("Log.WarnS");
-        private static final ImageIcon errorIcon = imageResource.readIcon("Log.ErrorS");
+        private static final ImageIcon infoIcon = imageResource.readIcon("Info.Bug.M");
+        private static final ImageIcon debugIcon = imageResource.readIcon("Debug.M");
+        private static final ImageIcon warnIcon = imageResource.readIcon("Warning.Bug.M");
+        private static final ImageIcon errorIcon = imageResource.readIcon("Error.Bug.M");
         private static final ImageIcon logIcon = imageResource.readIcon("Log.LogS");
 
         private static final ITableLabel label = new ITableLabel(Color.gray, 0, false, infoIcon, "");

@@ -439,10 +439,10 @@ public abstract class OrderDetailsPanel extends IPanel implements IdBToolBar.Idb
 
         JPanel infoPanel = new JPanel();
         GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(infoPanel);
-        gbc.addLine("Order name", imageResource.readIcon("Actions.Tag"), orderNameTf);
-        gbc.addLine("Distributor", imageResource.readIcon("Distributors.Menu"), GuiUtils.createComponentWithActions(distributorTf, editDistributorAction, browseDistributorAction));
-        gbc.addLine("Order reference", imageResource.readIcon("Orders.LineReference"), GuiUtils.createComponentWithActions(orderReferenceTf, editReferenceAction, deleteReferenceAction, browseReferenceAction));
-        gbc.addLine("Tracking reference", imageResource.readIcon("Orders.Table.Ordered"), GuiUtils.createComponentWithActions(trackingLinkTf, editTrackingAction, deleteTrackingAction, browseTrackingAction));
+        gbc.addLine("Order name", imageResource.readIcon("Tag.SS"), orderNameTf);
+        gbc.addLine("Distributor", imageResource.readIcon("Distributor.SS"), GuiUtils.createComponentWithActions(distributorTf, editDistributorAction, browseDistributorAction));
+        gbc.addLine("Order reference", imageResource.readIcon("Dictionary.SS"), GuiUtils.createComponentWithActions(orderReferenceTf, editReferenceAction, deleteReferenceAction, browseReferenceAction));
+        gbc.addLine("Tracking reference", imageResource.readIcon("Truck.SS"), GuiUtils.createComponentWithActions(trackingLinkTf, editTrackingAction, deleteTrackingAction, browseTrackingAction));
 
 
         Box box = Box.createVerticalBox();

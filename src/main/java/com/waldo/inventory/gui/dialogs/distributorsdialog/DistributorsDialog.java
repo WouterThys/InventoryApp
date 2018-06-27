@@ -32,7 +32,7 @@ import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class DistributorsDialog extends IResourceDialog<Distributor> implements IdBToolBar.IdbToolBarListener {
 
-    private static final ImageIcon icon = imageResource.readIcon("Distributors.Title");
+    private static final ImageIcon icon = imageResource.readIcon("Distributor.L");
 
     private ITextField detailName;
     private GuiUtils.IBrowseWebPanel browseDistributorPanel;

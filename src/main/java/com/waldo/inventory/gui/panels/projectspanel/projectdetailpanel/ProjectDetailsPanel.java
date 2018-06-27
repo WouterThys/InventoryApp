@@ -133,9 +133,9 @@ public class ProjectDetailsPanel extends JPanel implements GuiUtils.GuiInterface
         JPanel pcbPanel = new JPanel();
         JPanel otherPanel = new JPanel();
 
-        codePanel.setBorder(GuiUtils.createTitleBorder(imageResource.readIcon("Projects.Details.Code")));
-        pcbPanel.setBorder(GuiUtils.createTitleBorder(imageResource.readIcon("Projects.Details.Pcb")));
-        otherPanel.setBorder(GuiUtils.createTitleBorder(imageResource.readIcon("Projects.Details.Other")));
+        codePanel.setBorder(GuiUtils.createTitleBorder(imageResource.readIcon("Code.SS")));
+        pcbPanel.setBorder(GuiUtils.createTitleBorder(imageResource.readIcon("Pcb.SS")));
+        otherPanel.setBorder(GuiUtils.createTitleBorder(imageResource.readIcon("Other.SS")));
 
         JPanel westPanel;
         JPanel eastPanel;
@@ -218,7 +218,7 @@ public class ProjectDetailsPanel extends JPanel implements GuiUtils.GuiInterface
         remarksTp = new ITextPane();
         remarksTp.setPreferredSize(new Dimension(300, 50));
         remarksTp.setEditable(false);
-        editRemarksAa = new AbstractAction("Edit remarks", imageResource.readIcon("Actions.EditRemark")) {
+        editRemarksAa = new AbstractAction("Edit remarks", imageResource.readIcon("Remarks.SS")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 EditRemarksDialog dialog = new EditRemarksDialog(application, "Edit project remarks", selectedProject.getRemarksFile());

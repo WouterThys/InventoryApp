@@ -210,7 +210,7 @@ abstract class PackageTypeCacheDialogLayout extends ICacheDialog implements
     @Override
     public void initializeComponents() {
         // Title and neutral button
-        setTitleIcon(imageResource.readIcon("Packages.Title"));
+        setTitleIcon(imageResource.readIcon("Chip.L"));
         setTitleName(getTitle());
         getButtonNeutral().setVisible(true);
         getButtonNeutral().setText("Save");

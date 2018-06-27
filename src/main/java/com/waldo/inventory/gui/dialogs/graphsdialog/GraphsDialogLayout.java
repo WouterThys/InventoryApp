@@ -176,7 +176,7 @@ abstract class GraphsDialogLayout extends IDialog {
     @Override
     public void initializeComponents() {
         // Dialog
-        setTitleIcon(imageResource.readIcon("Statistics.Title"));
+        setTitleIcon(imageResource.readIcon("Chart.L"));
         setTitleName(getTitle());
 
         // Combo box

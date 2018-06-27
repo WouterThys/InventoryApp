@@ -157,7 +157,7 @@ abstract class EditEventDialogLayout extends IDialog {
     @Override
     public void initializeComponents() {
         // Dialog
-        setTitleIcon(imageResource.readIcon("Settings.Title.Events"));
+        setTitleIcon(imageResource.readIcon("Flash.L"));
         setResizable(true);
 
         // This

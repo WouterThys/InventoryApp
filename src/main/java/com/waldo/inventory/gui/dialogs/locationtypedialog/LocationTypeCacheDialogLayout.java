@@ -137,7 +137,7 @@ abstract class LocationTypeCacheDialogLayout extends ICacheDialog implements
     public void initializeComponents() {
         // Dialog
         setResizable(true);
-        setTitleIcon(imageResource.readIcon("Locations.Title"));
+        setTitleIcon(imageResource.readIcon("Location.L"));
         setTitleName(getTitle());
         getButtonNeutral().setVisible(true);
         getButtonNeutral().setText("Save");

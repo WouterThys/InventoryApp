@@ -21,9 +21,9 @@ public class IPcbItemModel extends IAbstractTableModel<PcbItemProjectLink> {
     private static final String[] COLUMN_TOOLTIPS = {"Parsed", "PCB part or item", "Value", "PCB Reference", "Is linked", "Is ordered", "Is used"};
     private static final Class[] COLUMN_CLASSES = {ILabel.class, String.class, String.class, String.class, Icon.class, Icon.class, Icon.class};
 
-    private static final ImageIcon linked = imageResource.readIcon("Projects.Pcb.Linked");
-    private static final ImageIcon ordered = imageResource.readIcon("Projects.Pcb.Ordered");
-    private static final ImageIcon used = imageResource.readIcon("Projects.Pcb.Used");
+    private static final ImageIcon linked = imageResource.readIcon("Link.New.SS");
+    private static final ImageIcon ordered = imageResource.readIcon("Order.SS");
+    private static final ImageIcon used = imageResource.readIcon("Used.SS");
     private static final ImageIcon greenBall = imageResource.readIcon("Ball.green");
 
     public IPcbItemModel() {

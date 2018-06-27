@@ -94,9 +94,9 @@ public class IOrderLineTableModel extends IAbstractTableModel<AbstractOrderLine>
 
     static class Renderer extends DefaultTableCellRenderer {
 
-        private static final ImageIcon imageOk = imageResource.readIcon("Orders.Table.Ok");
-        private static final ImageIcon imageWarn = imageResource.readIcon("Orders.Table.Warning");
-        private static final ImageIcon imageError = imageResource.readIcon("Orders.Table.Error");
+        private static final ImageIcon imageOk = imageResource.readIcon("Check.SS");
+        private static final ImageIcon imageWarn = imageResource.readIcon("Warning.SS");
+        private static final ImageIcon imageError = imageResource.readIcon("Error.SS");
 
         private static final ITableLabel label = new ITableLabel(Color.gray, 0, false, imageOk, "");
 

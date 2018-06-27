@@ -53,8 +53,8 @@ public abstract class ProjectPcbPreviewPanel extends ProjectPreviewPanel<Project
 //        itemInfoPnl.add(itemsFromTf);
 
         GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(infoPnl);
-        gbc.addLine("IDE", imageResource.readIcon("Ides.Menu"), pcbIdeTf);
-        gbc.addLine("Last parsed", imageResource.readIcon("Parse.S.Title"), lastParsedTf);
+        gbc.addLine("IDE", imageResource.readIcon("Toolkit.SS"), pcbIdeTf);
+        gbc.addLine("Last parsed", imageResource.readIcon("Parse.SS"), lastParsedTf);
         //gbc.addLine("Items", imageResource.readIcon("Projects.Tab.Pcb"), itemInfoPnl);
 
         return infoPnl;

@@ -110,6 +110,29 @@ public class Statics {
                     "|WHEN|WHERE"+
                     "|WITH|WITHOUT";
 
+    public enum IconSize {
+        SS  (16),
+        S   (24),
+        M   (32),
+        L   (48),
+        XL  (64),
+        XXL (128)
+    ;
+        private final int size;
+        IconSize(int size) {
+            this.size = size;
+        }
+
+        @Override
+        public String toString() {
+            return String.valueOf(size);
+        }
+
+        public int getSize() {
+            return size;
+        }
+    }
+
     public enum ItemAmountTypes {
         Unknown (0),
         Max     (1),
@@ -691,11 +714,11 @@ public class Statics {
 
     public enum CreatedPcbLinkState {
 
-        Ok (imageResource.readIcon("Actions.Ok"), "Ok", Color.BLACK),
-        Warning(imageResource.readIcon("Actions.Warn"), "", Color.ORANGE),
-        Error(imageResource.readIcon("Actions.Error"), "", Color.RED),
-        NotSaved(imageResource.readIcon("Actions.SaveRed"), "Not saved..", Color.GRAY),
-        NotUsed(imageResource.readIcon("Actions.NotUsed"), "Not used..", Color.BLUE)
+        Ok (imageResource.readIcon("Check.SS"), "Ok", Color.BLACK),
+        Warning(imageResource.readIcon("Warning.SS"), "", Color.ORANGE),
+        Error(imageResource.readIcon("Error.SS"), "", Color.RED),
+        NotSaved(imageResource.readIcon("Save.Red.SS"), "Not saved..", Color.GRAY),
+        NotUsed(imageResource.readIcon("Forbidden.SS"), "Not used..", Color.BLUE)
         ;
 
         private final ImageIcon imageIcon;

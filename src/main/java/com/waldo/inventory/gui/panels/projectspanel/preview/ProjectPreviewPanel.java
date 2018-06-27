@@ -223,7 +223,7 @@ public abstract class ProjectPreviewPanel<P extends ProjectObject> extends IPane
         JPanel commonPnl = new JPanel();
         commonPnl.setBorder(BorderFactory.createEmptyBorder(1,1,8,1));
         gbc = new GuiUtils.GridBagHelper(commonPnl, 0);
-        gbc.addLine("Directory", imageResource.readIcon("Actions.BrowseFile"), directoryTf);
+        gbc.addLine("Directory", imageResource.readIcon("Browse.Folder.SS"), directoryTf);
 
         // Specific code/pcb/other
         JPanel infoPnl = createInfoPanel();
@@ -265,7 +265,7 @@ public abstract class ProjectPreviewPanel<P extends ProjectObject> extends IPane
                 runIde(selectedProjectObject);
             }
         };
-        runIdeAction.putValue(Action.SMALL_ICON, imageResource.readIcon("Actions.M.Execute"));
+        runIdeAction.putValue(Action.SMALL_ICON, imageResource.readIcon("Execute.S"));
 
         openProjectFolderAction = new IActions.BrowseFileAction() {
             @Override
@@ -273,7 +273,7 @@ public abstract class ProjectPreviewPanel<P extends ProjectObject> extends IPane
                 browseProjectObject(selectedProjectObject);
             }
         };
-        openProjectFolderAction.putValue(Action.SMALL_ICON, imageResource.readIcon("Actions.M.BrowseFile"));
+        openProjectFolderAction.putValue(Action.SMALL_ICON, imageResource.readIcon("Browse.Folder.S"));
 
         dbToolbar = new IdBToolBar(this, false, false, true, true);
         actionToolBar = GuiUtils.createNewToolbar(openProjectFolderAction, runIdeAction);

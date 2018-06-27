@@ -183,28 +183,28 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
         };
 
         // Actions
-        orderItemsAa = new AbstractAction("Order items", imageResource.readIcon("Items.S.Title")) {
+        orderItemsAa = new AbstractAction("Order items", imageResource.readIcon("Component.SS")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SwingUtilities.invokeLater(() -> onOrderItems());
             }
         };
 
-        orderPcbAa = new AbstractAction("Order PCB", imageResource.readIcon("Projects.Details.Pcb")) {
+        orderPcbAa = new AbstractAction("Order PCB", imageResource.readIcon("Pcb.SS")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SwingUtilities.invokeLater(() -> onOrderPcb());
             }
         };
 
-        createPcbAa = new AbstractAction("Create", imageResource.readIcon("Projects.Pcb.UsedBtn")) {
+        createPcbAa = new AbstractAction("Create", imageResource.readIcon("Used.SS")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SwingUtilities.invokeLater(() -> onSelectForCreation());
             }
         };
 
-        parseAa = new AbstractAction("Parse", imageResource.readIcon("Projects.Pcb.ParseBtn")) {
+        parseAa = new AbstractAction("Parse", imageResource.readIcon("Parse.SS")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SwingUtilities.invokeLater(() -> onParse());
@@ -226,8 +226,8 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
             }
         });
 
-        tabbedPane.addTab("Pcb items ", imageResource.readIcon("Items.S.Title"), pcbItemPanel);
-        tabbedPane.addTab("Created ", imageResource.readIcon("Projects.Details.Pcb"), pcbCreatedPanel);
+        tabbedPane.addTab("Pcb items ", imageResource.readIcon("Component.SS"), pcbItemPanel);
+        tabbedPane.addTab("Created ", imageResource.readIcon("Pcb.SS"), pcbCreatedPanel);
 
         bottomPanel.add(tabbedPane, BorderLayout.CENTER);
     }

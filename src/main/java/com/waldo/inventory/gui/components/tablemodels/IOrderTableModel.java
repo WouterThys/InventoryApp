@@ -68,9 +68,9 @@ public class IOrderTableModel extends IAbstractTableModel<AbstractOrder> {
 
     static class OrderTableRenderer extends DefaultTableCellRenderer {
 
-        private static final ImageIcon planned = imageResource.readIcon("Orders.Table.Planned");
-        private static final ImageIcon ordered = imageResource.readIcon("Orders.Table.Ordered");
-        private static final ImageIcon received = imageResource.readIcon("Orders.Table.Received");
+        private static final ImageIcon planned = imageResource.readIcon("Calendar.SS");
+        private static final ImageIcon ordered = imageResource.readIcon("Truck.SS");
+        private static final ImageIcon received = imageResource.readIcon("Received.SS");
 
         private static final ITableLabel label = new ITableLabel(Color.gray, 0, false, planned, "");
 

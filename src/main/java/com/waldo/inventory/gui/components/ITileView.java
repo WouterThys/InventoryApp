@@ -185,7 +185,7 @@ public class ITileView<IT extends ProjectObject> extends JPanel implements GuiUt
                 e.printStackTrace();
             }
         } else {
-            iconBtn.setIcon(imageResource.readIcon("Common.UnknownIcon48"));
+            iconBtn.setIcon(imageResource.readIcon("Unknown.L"));
         }
     }
 

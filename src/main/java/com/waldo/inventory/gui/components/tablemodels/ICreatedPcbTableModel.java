@@ -61,10 +61,10 @@ public class ICreatedPcbTableModel extends IAbstractTableModel<CreatedPcb> {
     static class CreatedPcbCellRenderer extends DefaultTableCellRenderer {
 
         private static final ImageIcon redBall = imageResource.readIcon("Ball.red");;
-        private static final ImageIcon receivedIcon = imageResource.readIcon("Actions.Received");
-        private static final ImageIcon inProgressIcon = imageResource.readIcon("Actions.Created");
-        private static final ImageIcon doneIcon = imageResource.readIcon("Actions.Ok");
-        private static final ImageIcon destroyedIcon = imageResource.readIcon("Actions.Destroyed");
+        private static final ImageIcon receivedIcon = imageResource.readIcon("Received.SS");
+        private static final ImageIcon inProgressIcon = imageResource.readIcon("Created.SS");
+        private static final ImageIcon doneIcon = imageResource.readIcon("Check.SS");
+        private static final ImageIcon destroyedIcon = imageResource.readIcon("Garbage.SS");
 
         private static final ITableLabel stateLabel = new ITableLabel(Color.gray, 0, false, receivedIcon);
 

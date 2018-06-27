@@ -204,9 +204,9 @@ public class OrderLineDetailsPanel extends IPanel implements ItemDetailListener 
 
         JPanel infoPanel = new JPanel();
         GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(infoPanel);
-        gbc.addLine("Amount", imageResource.readIcon("Preview.Amount"), GuiUtils.createComponentWithActions(amountTf, plusOneAction, minOneAction));
-        gbc.addLine("Price", imageResource.readIcon("Preview.Price"), GuiUtils.createComponentWithActions(priceTf, editPriceAction));
-        gbc.addLine("Distributor reference", imageResource.readIcon("Orders.LineReference"), GuiUtils.createComponentWithActions(referenceTf, editReferenceAction));
+        gbc.addLine("Amount", imageResource.readIcon("Amount.S"), GuiUtils.createComponentWithActions(amountTf, plusOneAction, minOneAction));
+        gbc.addLine("Price", imageResource.readIcon("Value.S"), GuiUtils.createComponentWithActions(priceTf, editPriceAction));
+        gbc.addLine("Distributor reference", imageResource.readIcon("Dictionary.SS"), GuiUtils.createComponentWithActions(referenceTf, editReferenceAction));
 
         add(previewPanel, BorderLayout.NORTH);
         add(infoPanel, BorderLayout.CENTER);

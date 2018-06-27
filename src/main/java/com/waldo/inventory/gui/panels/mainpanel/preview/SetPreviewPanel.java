@@ -132,7 +132,7 @@ public class SetPreviewPanel extends IPanel implements IdBToolBar.IdbToolBarList
 
         JPanel totalItemsPnl = new JPanel();
         gbc = new GuiUtils.GridBagHelper(totalItemsPnl);
-        gbc.addLine("Total items", imageResource.readIcon("Preview.Amount"), totalItemsTf);
+        gbc.addLine("Total items", imageResource.readIcon("Amount.S"), totalItemsTf);
 
         JPanel centerPnl = new JPanel(new BorderLayout());
         JPanel southPnl = new JPanel(new BorderLayout());

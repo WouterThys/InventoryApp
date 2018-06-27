@@ -14,10 +14,10 @@ import static com.waldo.inventory.gui.Application.imageResource;
 
 public class IDivisionPanel extends IPanel {
 
-    private final ImageIcon level0Icon = imageResource.readIcon("Items.Tree.Category");
-    private final ImageIcon level1Icon = imageResource.readIcon("Items.Tree.Product");
-    private final ImageIcon level2Icon = imageResource.readIcon("Items.Tree.Type");
-    private final ImageIcon levelXIcon = imageResource.readIcon("Items.Tree.Item");
+    private final ImageIcon level0Icon = imageResource.readIcon("Component.Green.SS");
+    private final ImageIcon level1Icon = imageResource.readIcon("Component.Yellow.SS");
+    private final ImageIcon level2Icon = imageResource.readIcon("Component.Red.SS");
+    private final ImageIcon levelXIcon = imageResource.readIcon("Component.SS");
 
     private Division division;
     private boolean showParents;

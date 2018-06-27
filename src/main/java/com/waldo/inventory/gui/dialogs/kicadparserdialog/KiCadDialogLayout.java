@@ -110,7 +110,7 @@ abstract class KiCadDialogLayout extends IDialog implements ActionListener, List
         // Stuff
         parseBtn = new JButton("Parse");
         parseBtn.addActionListener(this);
-        selectFileBtn = new JButton(imageResource.readIcon("Common.BrowseIcon"));
+        selectFileBtn = new JButton(imageResource.readIcon("Browse.Folder.SS"));
         selectFileBtn.addActionListener(this);
         fileLbl = new ILabel();
 

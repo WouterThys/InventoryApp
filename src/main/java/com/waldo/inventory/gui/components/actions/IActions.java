@@ -24,13 +24,13 @@ public class IActions {
 
     public static abstract class AddAction extends IAbstractAction {
         protected AddAction() {
-            super("Add", imageResource.readIcon("Actions.Add"));
+            super("Add", imageResource.readIcon("Add.SS"));
         }
     }
 
     public static abstract class EditAction extends IAbstractAction {
         protected EditAction() {
-            super("Edit", imageResource.readIcon("Actions.Edit"));
+            super("Edit", imageResource.readIcon("Pen.SS"));
         }
         protected EditAction(String tooltip) {
             this();
@@ -40,7 +40,7 @@ public class IActions {
 
     public static abstract class DeleteAction extends IAbstractAction {
         protected DeleteAction() {
-            super("Delete", imageResource.readIcon("Actions.Delete"));
+            super("Delete", imageResource.readIcon("Delete.SS"));
         }
         protected DeleteAction(ImageIcon imageIcon) {
             super("Delete", imageIcon);
@@ -53,7 +53,7 @@ public class IActions {
 
     public static abstract class SaveAction extends IAbstractAction {
         protected SaveAction() {
-            super("Save", imageResource.readIcon("Actions.Save"));
+            super("Save", imageResource.readIcon("Save.SS"));
             setTooltip("Save");
         }
         protected SaveAction(ImageIcon icon) {
@@ -64,7 +64,7 @@ public class IActions {
 
     public static abstract class SearchAction extends IAbstractAction {
         protected SearchAction() {
-            super("Search", imageResource.readIcon("Actions.Search"));
+            super("Search", imageResource.readIcon("Search.SS"));
             setTooltip("Search");
         }
         protected SearchAction(ImageIcon imageIcon) {
@@ -76,13 +76,13 @@ public class IActions {
 
     public static abstract class CopyAction extends IAbstractAction {
         protected CopyAction() {
-            super("Copy", imageResource.readIcon("TextEdit.Copy"));
+            super("Copy", imageResource.readIcon("Copy.SS"));
         }
     }
 
     public static abstract class PasteAction extends IAbstractAction {
         protected PasteAction() {
-            super("Paste", imageResource.readIcon("TextEdit.Paste"));
+            super("Paste", imageResource.readIcon("Paste.SS"));
         }
     }
 
@@ -91,7 +91,7 @@ public class IActions {
         private final Set set;
 
         protected AddItemToSetAction(Set set) {
-            super(set.toString(), imageResource.readIcon("Sets.Small"));
+            super(set.toString(), imageResource.readIcon("Components.SS"));
             this.set = set;
         }
 
@@ -105,54 +105,54 @@ public class IActions {
 
     public static abstract class AutoCalculateUsedAction extends IAbstractAction {
         protected AutoCalculateUsedAction() {
-            super("Auto set used count", imageResource.readIcon("Actions.AutoSetUsed"));
+            super("Auto set used count", imageResource.readIcon("Used.SS"));
             setTooltip("Auto set used count");
         }
     }
 
     public static abstract class BackToOrderedAction extends IAbstractAction {
         protected BackToOrderedAction() {
-            super("Back to ordered", imageResource.readIcon("Actions.OrderBackToOrdered"));
+            super("Back to ordered", imageResource.readIcon("OrderStates.TruckOut.SS"));
             setTooltip("Back to ordered");
         }
     }
 
     public static abstract class BackToPlannedAction extends IAbstractAction {
         protected BackToPlannedAction() {
-            super("Back to planned", imageResource.readIcon("Actions.OrderBackToPlanned"));
+            super("Back to planned", imageResource.readIcon("OrderStates.CalendarOut.SS"));
             setTooltip("Back to planned");
         }
     }
 
     public static abstract class MoveToOrderedAction extends IAbstractAction {
         protected MoveToOrderedAction() {
-            super("To ordered", imageResource.readIcon("Actions.OrderMoveToOrdered"));
+            super("To ordered", imageResource.readIcon("OrderStates.TruckIn.SS"));
         }
     }
 
     public static abstract class MoveToReceivedAction extends IAbstractAction {
         protected MoveToReceivedAction() {
-            super("To received", imageResource.readIcon("Actions.OrderMoveToReceived"));
+            super("To received", imageResource.readIcon("OrderStates.BoxIn.SS"));
         }
     }
 
     public static abstract class OrderDetailsAction extends IAbstractAction {
         protected OrderDetailsAction() {
-            super("ItemOrder details", imageResource.readIcon("Actions.OrderDetails"));
+            super("ItemOrder details", imageResource.readIcon("Gears.SS"));
             setTooltip("ItemOrder details");
         }
     }
 
     public static abstract class OrderItemAction extends IAbstractAction {
         protected OrderItemAction() {
-            super("ItemOrder item", imageResource.readIcon("Actions.ItemOrder"));
+            super("ItemOrder item", imageResource.readIcon("Order.SS"));
             setTooltip("ItemOrder item");
         }
     }
 
     public static abstract class LockAction extends IAbstractAction {
-        private static final ImageIcon lockedIcon = imageResource.readIcon("Actions.Locked");
-        private static final ImageIcon unlockedIcon = imageResource.readIcon("Actions.Unlocked");
+        private static final ImageIcon lockedIcon = imageResource.readIcon("Lock.SS");
+        private static final ImageIcon unlockedIcon = imageResource.readIcon("Lock.Open.SS");
 
         private boolean locked;
         protected LockAction(boolean locked) {
@@ -184,107 +184,107 @@ public class IActions {
 
     public static abstract class OpenItemDataSheetLocalAction extends IAbstractAction {
         protected OpenItemDataSheetLocalAction() {
-            super("Local data sheet", imageResource.readIcon("Actions.ItemDataSheetLocal"));
+            super("Local data sheet", imageResource.readIcon("Folder.SS"));
         }
     }
 
     public static abstract class OpenItemDataSheetOnlineAction extends IAbstractAction {
         protected OpenItemDataSheetOnlineAction() {
-            super("Online data sheet", imageResource.readIcon("Actions.ItemDataSheetOnline"));
+            super("Online data sheet", imageResource.readIcon("Earth.SS"));
         }
     }
 
 
     public static abstract class BrowseFileAction extends IAbstractAction {
         protected BrowseFileAction() {
-            super("Open", imageResource.readIcon("Actions.BrowseFile"));
+            super("Open", imageResource.readIcon("Browse.Folder.SS"));
         }
     }
 
     public static abstract class BrowseWebAction extends IAbstractAction {
         protected BrowseWebAction() {
-            super("Browse", imageResource.readIcon("Actions.BrowseWeb"));
+            super("Browse", imageResource.readIcon("Earth.SS"));
         }
     }
 
     public static abstract class CheckItOutAction extends IAbstractAction {
         protected CheckItOutAction() {
-            super("Check it out", imageResource.readIcon("Actions.M.CheckItOut"));
+            super("Check it out", imageResource.readIcon("View.S"));
         }
     }
 
     public static abstract class CreateSetItemSeriesAction extends IAbstractAction {
         public CreateSetItemSeriesAction() {
-            super("Create series", imageResource.readIcon("Actions.SetItemCreateSeries"));
+            super("Create series", imageResource.readIcon("Wizard.S"));
             setTooltip("Create series");
         }
     }
 
     public static abstract class DoItAction extends IAbstractAction {
         public DoItAction() {
-            super("", imageResource.readIcon("Actions.SetItemCreateSeries"));
+            super("", imageResource.readIcon("Wizard.S"));
         }
     }
 
     public static abstract class GoAction extends IAbstractAction {
         public GoAction() {
-            super("Go", imageResource.readIcon("Actions.M.Go"));
+            super("Go", imageResource.readIcon("Go.S"));
         }
     }
 
     public static abstract class EditReferenceAction extends IAbstractAction {
         protected EditReferenceAction() {
-            super("Edit reference", imageResource.readIcon("Actions.OrderReference"));
+            super("Edit reference", imageResource.readIcon("Distributor.SS"));
             setTooltip("Edit reference");
         }
     }
 
     public static abstract class RenameAction extends IAbstractAction {
         protected RenameAction() {
-            super("Rename", imageResource.readIcon("Actions.M.Rename"));
+            super("Rename", imageResource.readIcon("Refresh.Cloud.S"));
             setTooltip("Rename");
         }
     }
 
     public static abstract class ReplaceAction extends IAbstractAction {
         protected ReplaceAction() {
-            super("Replace", imageResource.readIcon("Actions.M.Replace"));
+            super("Replace", imageResource.readIcon("Replace.S"));
             setTooltip("Replace");
         }
     }
 
     public static abstract class ShowItemHistoryAction extends IAbstractAction {
         protected ShowItemHistoryAction() {
-            super("Show history", imageResource.readIcon("Actions.ItemHistory"));
+            super("Show history", imageResource.readIcon("History.SS"));
         }
     }
 
     public static abstract class TableOptionsAction extends IAbstractAction {
         protected TableOptionsAction() {
-            super("Table options", imageResource.readIcon("Toolbar.Table.ApplySort"));
+            super("Table options", imageResource.readIcon("Sort.Descending.S"));
             setTooltip("Table options");
         }
     }
 
     public static abstract class UpdateSetItemLocationsAction extends IAbstractAction {
         public UpdateSetItemLocationsAction() {
-            super("Create series", imageResource.readIcon("Actions.SetItemUpdateLocations"));
+            super("Create series", imageResource.readIcon("Location.S"));
         }
     }
 
     public static abstract class ViewAllLinksAction extends IAbstractAction {
         protected ViewAllLinksAction() {
-            super("All links", imageResource.readIcon("Actions.ViewAllLinks"));
+            super("All links", imageResource.readIcon("Link.SS"));
             setTooltip("All links");
         }
     }
 
     public static abstract class WizardAction  extends IAbstractAction {
         protected WizardAction() {
-            this("Wizard", imageResource.readIcon("Actions.Wizard"));
+            this("Wizard", imageResource.readIcon("Wizard.SS"));
         }
         protected WizardAction(String name) {
-            this(name, imageResource.readIcon("Actions.Wizard"));
+            this(name, imageResource.readIcon("Wizard.SS"));
         }
         protected WizardAction(String name, ImageIcon imageIcon) {
             super(name, imageIcon);
@@ -294,19 +294,19 @@ public class IActions {
 
     public static abstract class PlusOneAction extends IAbstractAction {
         protected PlusOneAction() {
-            super("Plus one", imageResource.readIcon("Actions.AddOne"));
+            super("Plus one", imageResource.readIcon("PlusOne.SS"));
         }
     }
 
     public static abstract class MinOneAction  extends IAbstractAction {
         protected MinOneAction() {
-            super("Minus one", imageResource.readIcon("Actions.RemOne"));
+            super("Minus one", imageResource.readIcon("MinOne.SS"));
         }
     }
 
     public static abstract class UseAction extends IAbstractAction {
         protected UseAction() {
-            super("Use this", imageResource.readIcon("Actions.Use"));
+            super("Use this", imageResource.readIcon("Arrow.Down.SS"));
         }
         protected UseAction(ImageIcon icon) {
             super("Use this", icon);
@@ -316,7 +316,7 @@ public class IActions {
 
     public static abstract class NotUsedAction extends IAbstractAction {
         protected NotUsedAction() {
-            this(imageResource.readIcon("Actions.M.NotUsed"));
+            this(imageResource.readIcon("Forbidden.S"));
         }
         protected NotUsedAction(ImageIcon icon) {
             super("Not used", icon);
@@ -335,7 +335,7 @@ public class IActions {
     }
     public static abstract class AddToPendingOrderAction extends IAbstractAction {
         protected AddToPendingOrderAction() {
-            super("AddPending", imageResource.readIcon("Actions.M.PendingOrder"));
+            super("AddPending", imageResource.readIcon("Order.Add.S"));
         }
         protected AddToPendingOrderAction(ImageIcon icon) {
             super("Add to pending", icon);
@@ -345,7 +345,7 @@ public class IActions {
 
     public static abstract class RemoveAllAction extends IAbstractAction {
         protected RemoveAllAction() {
-            super("Remove all", imageResource.readIcon("Actions.M.RemoveAll"));
+            super("Remove all", imageResource.readIcon("Arrow.Sort.S"));
         }
         protected RemoveAllAction(ImageIcon icon) {
             super("Remove all", icon);
@@ -355,77 +355,77 @@ public class IActions {
 
     public static abstract class NextAction extends IAbstractAction {
         protected NextAction() {
-            super("Next", imageResource.readIcon("Actions.L.Right"));
+            super("Next", imageResource.readIcon("Arrow.Right.XXL"));
             setTooltip("Next");
         }
     }
 
     public static abstract class PreviousAction extends IAbstractAction {
         protected PreviousAction() {
-            super("Previous", imageResource.readIcon("Actions.L.Left"));
+            super("Previous", imageResource.readIcon("Arrow.Left.XXL"));
             setTooltip("Previous");
         }
     }
 
     public static abstract class InventoryAction extends IAbstractAction {
         protected InventoryAction() {
-            super("Inventory", imageResource.readIcon("Actions.M.Count"));
+            super("Inventory", imageResource.readIcon("Count.S"));
             setTooltip("Inventory");
         }
     }
 
     public static abstract class NavigateUpAction extends IAbstractAction {
         protected NavigateUpAction() {
-            super("Up", imageResource.readIcon("Actions.M.Up"));
+            super("Up", imageResource.readIcon("Arrow.Up.S"));
             setTooltip("Up");
         }
     }
 
     public static abstract class NavigateDownAction extends IAbstractAction {
         protected NavigateDownAction() {
-            super("Down", imageResource.readIcon("Actions.M.Down"));
+            super("Down", imageResource.readIcon("Arrow.Down.S"));
             setTooltip("Down");
         }
     }
 
     public static abstract class ConnectAction extends IAbstractAction {
         protected ConnectAction() {
-            super("Connect", imageResource.readIcon("Actions.M.Connect"));
+            super("Connect", imageResource.readIcon("Plug.Add.S"));
             setTooltip("Connect");
         }
     }
 
     public static abstract class DisconnectAction extends IAbstractAction {
         protected DisconnectAction() {
-            super("Disconnect", imageResource.readIcon("Actions.M.Disconnect"));
+            super("Disconnect", imageResource.readIcon("Plug.Delete.S"));
             setTooltip("Disconnect");
         }
     }
 
     public static abstract class SendContentAction extends IAbstractAction {
         protected SendContentAction() {
-            super("Send content", imageResource.readIcon("Actions.M.SendFolder"));
+            super("Send content", imageResource.readIcon("Folder.Network.S"));
             setTooltip("Send content");
         }
     }
 
     public static abstract class PrintAction extends IAbstractAction {
         protected PrintAction() {
-            super("Print", imageResource.readIcon("Actions.Print"));
+            super("Print", imageResource.readIcon("Printer.SS"));
             //setTooltip("Send content");
         }
     }
 
     public static abstract class SolderedAction extends IAbstractAction {
         protected SolderedAction() {
-            super("Set soldered", imageResource.readIcon("Actions.M.Soldered"));
+            super("Set soldered", imageResource.readIcon("Solder.S"));
             setTooltip("Set soldered");
         }
     }
 
     public static abstract class DesolderedAction extends IAbstractAction {
         protected DesolderedAction() {
-            super("Desolder", imageResource.readIcon("Actions.M.Desoldered"));
+            super("Desolder", imageResource.readIcon("Solder.Out.S"));
             setTooltip("Desoldered");
         }
     }
