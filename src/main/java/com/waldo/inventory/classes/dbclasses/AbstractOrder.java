@@ -26,6 +26,7 @@ public abstract class AbstractOrder<T extends Orderable> extends DbObject {
 
     protected long distributorId;
     protected Distributor distributor;
+    protected double VAT;
 
     protected String orderReference;
     protected String trackingNumber;
@@ -59,6 +60,7 @@ public abstract class AbstractOrder<T extends Orderable> extends DbObject {
             statement.setDate(ndx++, null);
         }
         statement.setLong(ndx++, getDistributorId());
+        statement.setDouble(ndx++, getVAT());
         statement.setString(ndx++, getOrderReference());
         statement.setString(ndx++, getTrackingNumber());
         statement.setBoolean(ndx++, isAutoOrder());
@@ -95,6 +97,7 @@ public abstract class AbstractOrder<T extends Orderable> extends DbObject {
                 if (!compareIfEqual(ref.getDateReceived(), getDateReceived())) return false;
                 if (!(ref.getOrderLines().size() == (getOrderLines().size()))) return false;
                 if (!(ref.getDistributorId() == (getDistributorId()))) return false;
+                if (!(ref.getVAT() == (getVAT()))) return false;
                 if (!(ref.getOrderReference().equals(getOrderReference()))) return false;
                 if (!(ref.getTrackingNumber().equals(getTrackingNumber()))) return false;
                 if (!(ref.isAutoOrder() == isAutoOrder())) return false;
@@ -171,13 +174,22 @@ public abstract class AbstractOrder<T extends Orderable> extends DbObject {
         }
     }
 
-    public Price getTotalPrice() {
+    public Price getTotalPriceExc() {
         Price total = new Price(0, Statics.PriceUnits.Euro);
         for (AbstractOrderLine<T> oi : getOrderLines()) {
             total = Price.add(total, oi.getTotalPrice());
         }
         return total;
     }
+
+    public Price getTotalPriceInc() {
+        Price inc = getTotalPriceExc();
+        if (getVAT() > 0) {
+            inc = Price.multiply(inc, getVAT());
+        }
+        return inc;
+    }
+
 
     public void updateLineStates() {
         for (AbstractOrderLine<T> oi : getOrderLines()) {
@@ -276,6 +288,14 @@ public abstract class AbstractOrder<T extends Orderable> extends DbObject {
             }
         }
         this.distributorId = id;
+    }
+
+    public double getVAT() {
+        return VAT;
+    }
+
+    public void setVAT(double VAT) {
+        this.VAT = VAT;
     }
 
     public boolean isOrdered() {

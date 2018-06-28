@@ -1,6 +1,7 @@
 package com.waldo.inventory.classes.dbclasses;
 
 import com.sun.istack.internal.NotNull;
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.Price;
 
 import java.sql.PreparedStatement;
@@ -8,11 +9,12 @@ import java.sql.SQLException;
 
 public abstract class AbstractOrderLine<T extends Orderable> extends DbObject {
 
-
     // Variables
     protected long orderId;
     protected AbstractOrder<T> order;
     protected boolean isPending;
+    protected int amount;
+    protected Price correctedPrice;
 
     // Order element
     protected long lineId;
@@ -20,7 +22,6 @@ public abstract class AbstractOrderLine<T extends Orderable> extends DbObject {
 
     protected DistributorPartLink distributorPartLink;
 
-    protected int amount;
 
     public AbstractOrderLine(String tableName) {
         super(tableName);
@@ -50,6 +51,8 @@ public abstract class AbstractOrderLine<T extends Orderable> extends DbObject {
         statement.setLong(ndx++, getOrderId());
         statement.setLong(ndx++, getLineId());
         statement.setBoolean(ndx++, isPending());
+        statement.setDouble(ndx++, getCorrectedPrice().getValue());
+        statement.setInt(ndx++, getCorrectedPrice().getPriceUnits().getIntValue());
 
         return ndx;
     }
@@ -62,6 +65,9 @@ public abstract class AbstractOrderLine<T extends Orderable> extends DbObject {
     }
 
     public Price getTotalPrice() {
+        if (getCorrectedPrice() != null && getCorrectedPrice().getValue() > 0) {
+            return getCorrectedPrice();
+        }
         return Price.multiply(getPrice(), getAmount());
     }
 
@@ -162,5 +168,25 @@ public abstract class AbstractOrderLine<T extends Orderable> extends DbObject {
 
     public void setPending(boolean pending) {
         isPending = pending;
+    }
+
+
+    public Price getCorrectedPrice() {
+        if (correctedPrice == null) {
+            correctedPrice = new Price();
+        }
+        return correctedPrice;
+    }
+
+    public void setCorrectedPrice(double price) {
+        setCorrectedPrice(price, Statics.PriceUnits.Euro);
+    }
+
+    public void setCorrectedPrice(double price, Statics.PriceUnits priceUnits) {
+        this.correctedPrice = new Price(price, priceUnits);
+    }
+
+    public void setCorrectedPrice(double price, int priceUnits) {
+        this.correctedPrice = new Price(price, Statics.PriceUnits.fromInt(priceUnits));
     }
 }

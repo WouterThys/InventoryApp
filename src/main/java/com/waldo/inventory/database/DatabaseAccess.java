@@ -749,6 +749,7 @@ public class DatabaseAccess {
                         o.setDateReceived(DateUtils.sqLiteToDate(rs.getString("dateReceived")));
                     }
                     o.setDistributorId(rs.getLong("distributorId"));
+                    o.setVAT(rs.getDouble("VAT"));
                     o.setOrderReference(rs.getString("orderReference"));
                     o.setTrackingNumber(rs.getString("trackingNumber"));
                     o.setLocked(o.getOrderState() != Statics.OrderStates.Planned);
@@ -793,6 +794,7 @@ public class DatabaseAccess {
                     o.setAmount(rs.getInt("amount"));
                     o.setLineId(rs.getLong("itemId"));
                     o.setPending(rs.getBoolean("isPending"));
+                    o.setCorrectedPrice(rs.getDouble("correctedPrice"), rs.getInt("priceUnits"));
 
                     o.setInserted(true);
                     if (o.getId() != DbObject.UNKNOWN_ID) {
@@ -838,6 +840,7 @@ public class DatabaseAccess {
                         o.setDateReceived(DateUtils.sqLiteToDate(rs.getString("dateReceived")));
                     }
                     o.setDistributorId(rs.getLong("distributorId"));
+                    o.setVAT(rs.getDouble("VAT"));
                     o.setOrderReference(rs.getString("orderReference"));
                     o.setTrackingNumber(rs.getString("trackingNumber"));
                     o.setLocked(o.getOrderState() != Statics.OrderStates.Planned);
@@ -880,6 +883,7 @@ public class DatabaseAccess {
                     o.setAmount(rs.getInt("amount"));
                     o.setLineId(rs.getLong("pcbId"));
                     o.setPending(rs.getBoolean("isPending"));
+                    o.setCorrectedPrice(rs.getDouble("correctedPrice"), rs.getInt("priceUnits"));
 
                     o.setInserted(true);
                     if (o.getId() != DbObject.UNKNOWN_ID) {

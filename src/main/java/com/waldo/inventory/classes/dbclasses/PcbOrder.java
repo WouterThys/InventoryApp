@@ -28,6 +28,7 @@ public class PcbOrder extends AbstractOrder<ProjectPcb> {
         cpy.setDateModified(getDateModified());
         cpy.setDateReceived(getDateReceived());
         cpy.setDistributorId(getDistributorId());
+        cpy.setVAT(getVAT());
         cpy.setOrderReference(getOrderReference());
         cpy.setTrackingNumber(getTrackingNumber());
         cpy.setAutoOrder(isAutoOrder());

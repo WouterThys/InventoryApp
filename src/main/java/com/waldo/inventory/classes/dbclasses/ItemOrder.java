@@ -34,6 +34,7 @@ public class ItemOrder extends AbstractOrder<Item> {
         itemOrder.setDateModified(getDateModified());
         itemOrder.setDateReceived(getDateReceived());
         itemOrder.setDistributorId(getDistributorId());
+        itemOrder.setVAT(getVAT());
         itemOrder.setOrderReference(getOrderReference());
         itemOrder.setTrackingNumber(getTrackingNumber());
         itemOrder.setAutoOrder(isAutoOrder());
