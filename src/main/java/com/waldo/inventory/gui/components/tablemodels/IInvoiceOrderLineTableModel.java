@@ -2,7 +2,6 @@ package com.waldo.inventory.gui.components.tablemodels;
 
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.utils.icomponents.IAbstractTableModel;
-import com.waldo.utils.icomponents.ILabel;
 import com.waldo.utils.icomponents.ITableLabel;
 
 import javax.swing.*;
@@ -12,21 +11,13 @@ import java.awt.*;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
-public class IOrderLinesTableModel extends IAbstractTableModel<AbstractOrderLine> {
+public class IInvoiceOrderLineTableModel extends IAbstractTableModel<AbstractOrderLine> {
 
-    private static final String[] COLUMN_NAMES = {"", "#", "Name", "Reference", "Price", "Total"};
-    private static final Class[] COLUMN_CLASSES = {ILabel.class, Integer.class, String.class, String.class, String.class, String.class};
+    private static final String[] COLUMN_NAMES = {"#", "Name", "Price", "Corrected"};
+    private static final Class[] COLUMN_CLASSES = {Integer.class, String.class, Double.class, Double.class};
 
-    private boolean isEditable = false;
-
-    public IOrderLinesTableModel() {
+    public IInvoiceOrderLineTableModel() {
         super(COLUMN_NAMES, COLUMN_CLASSES);
-    }
-
-    @Override
-    public void clearItemList() {
-        super.clearItemList();
-        isEditable = false;
     }
 
     @Override
