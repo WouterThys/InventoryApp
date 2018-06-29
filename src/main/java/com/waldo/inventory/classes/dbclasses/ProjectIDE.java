@@ -53,6 +53,7 @@ public class ProjectIDE extends DbObject {
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
         int ndx = addBaseParameters(statement);
+        statement.setLong(ndx++, getImageId());
         statement.setString(ndx++, getProjectType().toString());
         statement.setString(ndx++, getExtension());
         statement.setBoolean(ndx++, isOpenAsFolder());

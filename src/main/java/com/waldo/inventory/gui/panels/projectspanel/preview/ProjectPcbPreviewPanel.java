@@ -5,7 +5,6 @@ import com.waldo.inventory.classes.dbclasses.ProjectPcb;
 import com.waldo.inventory.gui.Application;
 import com.waldo.utils.DateUtils;
 import com.waldo.utils.GuiUtils;
-import com.waldo.utils.icomponents.ILabel;
 import com.waldo.utils.icomponents.ITextField;
 
 import javax.swing.*;
@@ -22,6 +21,10 @@ public abstract class ProjectPcbPreviewPanel extends ProjectPreviewPanel<Project
 
     public ProjectPcbPreviewPanel(Application application) {
         super(application);
+    }
+
+    public ProjectPcbPreviewPanel(Application application, boolean simple) {
+        super(application, simple);
     }
 
     private void updateEnabledComponents() {
@@ -43,15 +46,15 @@ public abstract class ProjectPcbPreviewPanel extends ProjectPreviewPanel<Project
     JPanel createInfoPanel() {
         JPanel infoPnl = new JPanel();
 
-        JPanel itemInfoPnl = new JPanel();
-        itemInfoPnl.setLayout(new BoxLayout(itemInfoPnl, BoxLayout.X_AXIS));
-        itemInfoPnl.add(numberOfItemsTf);
-        itemInfoPnl.add(new ILabel(" items from "));
-        itemInfoPnl.add(itemsFromTf);
+//        JPanel itemInfoPnl = new JPanel();
+//        itemInfoPnl.setLayout(new BoxLayout(itemInfoPnl, BoxLayout.X_AXIS));
+//        itemInfoPnl.add(numberOfItemsTf);
+//        itemInfoPnl.add(new ILabel(" items from "));
+//        itemInfoPnl.add(itemsFromTf);
 
         GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(infoPnl);
-        gbc.addLine("IDE", imageResource.readIcon("Ides.Menu"), pcbIdeTf);
-        gbc.addLine("Last parsed", imageResource.readIcon("Parse.S.Title"), lastParsedTf);
+        gbc.addLine("IDE", imageResource.readIcon("Toolkit.SS"), pcbIdeTf);
+        gbc.addLine("Last parsed", imageResource.readIcon("Parse.SS"), lastParsedTf);
         //gbc.addLine("Items", imageResource.readIcon("Projects.Tab.Pcb"), itemInfoPnl);
 
         return infoPnl;

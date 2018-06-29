@@ -5,10 +5,12 @@ import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.Utils.Statics.ItemAmountTypes;
 import com.waldo.inventory.classes.Value;
 import com.waldo.inventory.classes.search.SearchMatch;
+import com.waldo.inventory.managers.OrderManager;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.utils.FileUtils;
 
 import javax.sql.rowset.serial.SerialBlob;
+import javax.swing.*;
 import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -21,7 +23,7 @@ import java.util.Objects;
 import static com.waldo.inventory.managers.CacheManager.cache;
 import static com.waldo.inventory.managers.SearchManager.sm;
 
-public class Item extends DbObject {
+public class Item extends DbObject implements Orderable {
 
     public static final String TABLE_NAME = "items";
 
@@ -43,8 +45,8 @@ public class Item extends DbObject {
     protected Location location;
 
     protected int amount = 0;
-    protected int minimum = 0;
-    protected int maximum = 1;
+    private int minimum = 0;
+    private int maximum = 1;
 
     private ItemAmountTypes amountType = ItemAmountTypes.Unknown;
     private Statics.OrderStates orderState = null;
@@ -54,8 +56,19 @@ public class Item extends DbObject {
     protected int pins;
 
     private float rating;
-    private boolean discourageOrder;
     private String remarksFile;
+
+    // ItemOrder rules
+    private boolean discourageOrder;
+    private boolean autoOrder;
+
+    private long autoOrderById;
+    private Distributor autoOrderBy;
+
+    private long relatedItemId;
+    private Item relatedItem;
+    private long replacementItemId;
+    private Item replacementItem;
 
     public Item() {
         this("");
@@ -104,6 +117,7 @@ public class Item extends DbObject {
         statement.setString(ndx++, getLocalDataSheet());
         statement.setString(ndx++, getOnlineDataSheet());
         statement.setString(ndx++, getIconPath());
+        statement.setLong(ndx++, getImageId());
         statement.setLong(ndx++, getManufacturerId());
         statement.setLong(ndx++, getLocationId());
         statement.setInt(ndx++, getAmount());
@@ -115,6 +129,7 @@ public class Item extends DbObject {
         statement.setInt(ndx++, getPins());
         statement.setFloat(ndx++, getRating());
         statement.setBoolean(ndx++, isDiscourageOrder());
+        statement.setBoolean(ndx++, isAutoOrder());
         // Remarks
         SerialBlob blob = FileUtils.fileToBlob(getRemarksFile());
         if (blob != null) {
@@ -137,6 +152,11 @@ public class Item extends DbObject {
         statement.setString(ndx++, getAud().getUpdatedBy());
         statement.setTimestamp(ndx++, new Timestamp(getAud().getUpdatedDate().getTime()), Calendar.getInstance());
 
+        // Linked items
+        statement.setLong(ndx++, getRelatedItemId());
+        statement.setLong(ndx++, getReplacementItemId());
+        statement.setLong(ndx++, getAutoOrderById());
+
         return ndx;
     }
 
@@ -157,13 +177,16 @@ public class Item extends DbObject {
         item.setMinimum(getMinimum());
         item.setMaximum(getMaximum());
         item.setAmountType(getAmountType());
-        //item.setOrderState(getOrderState());
         item.setPackageTypeId(getPackageTypeId());
         item.setPins(getPins());
         item.setRating(getRating());
         item.setDiscourageOrder(isDiscourageOrder());
+        item.setAutoOrder(isAutoOrder());
         item.setRemarksFile(getRemarksFile());
         item.setIsSet(isSet());
+        item.setRelatedItemId(getRelatedItemId());
+        item.setReplacementItemId(getReplacementItemId());
+        item.setAutoOrderById(getAutoOrderById());
 
         return item;
     }
@@ -192,13 +215,17 @@ public class Item extends DbObject {
                 getPins() == item.getPins() &&
                 Float.compare(item.getRating(), getRating()) == 0 &&
                 isDiscourageOrder() == item.isDiscourageOrder() &&
+                isAutoOrder() == item.isAutoOrder() &&
                 Objects.equals(getAlias(), item.getAlias()) &&
                 Objects.equals(getValue(), item.getValue()) &&
                 Objects.equals(getDescription(), item.getDescription()) &&
                 Objects.equals(getLocalDataSheet(), item.getLocalDataSheet()) &&
                 Objects.equals(getOnlineDataSheet(), item.getOnlineDataSheet()) &&
                 getAmountType() == item.getAmountType() &&
-                getOrderState() == item.getOrderState() &&
+                //getOrderState() == item.getOrderState() &&
+                getReplacementItemId() == item.getReplacementItemId() &&
+                getRelatedItemId() == item.getRelatedItemId() &&
+                getAutoOrderById() == item.getAutoOrderById() &&
                 Objects.equals(getRemarksFile(), item.getRemarksFile());
     }
 
@@ -261,7 +288,7 @@ public class Item extends DbObject {
 //                    return false;
 //                }
 //                if (!(ref.getOrderState() == getOrderState())) {
-//                    if (Main.DEBUG_MODE) System.out.println("Order st: " + ref.getOrderState() + " != " + getOrderState());
+//                    if (Main.DEBUG_MODE) System.out.println("ItemOrder st: " + ref.getOrderState() + " != " + getOrderState());
 //                    return false;
 //                }
 //                if (!(ref.getPackageTypeId() == getPackageTypeId())) {
@@ -388,10 +415,20 @@ public class Item extends DbObject {
     @Override
     public void tableChanged(Statics.QueryType changedHow) {
         switch (changedHow) {
-            case Insert: {
+            case Insert:
                 cache().add(this);
                 break;
-            }
+
+            case Update:
+                if (isAutoOrder()) {
+                    if (getAmount() < getMinimum()) {
+                        SwingUtilities.invokeLater(() -> {
+                            OrderManager.autoOrderItem(this);
+                        });
+                    }
+                }
+                break;
+
             case Delete: {
                 cache().remove(this);
                 break;
@@ -417,6 +454,7 @@ public class Item extends DbObject {
         return result;
     }
 
+
     public String getAlias() {
         if (alias == null) {
             alias = "";
@@ -428,6 +466,7 @@ public class Item extends DbObject {
         this.alias = alias;
     }
 
+
     public String getDescription() {
         if (description == null) {
             setDescription("");
@@ -438,6 +477,7 @@ public class Item extends DbObject {
     public void setDescription(String description) {
         this.description = description;
     }
+
 
     public long getDivisionId() {
         if (divisionId < UNKNOWN_ID) {
@@ -459,6 +499,7 @@ public class Item extends DbObject {
         }
         this.divisionId = divisionId;
     }
+
 
     public String getLocalDataSheet() {
         if (localDataSheet == null) {
@@ -482,6 +523,7 @@ public class Item extends DbObject {
         this.onlineDataSheet = onlineDataSheet;
     }
 
+
     public long getManufacturerId() {
         if (manufacturerId < UNKNOWN_ID) {
             manufacturerId = UNKNOWN_ID;
@@ -502,6 +544,7 @@ public class Item extends DbObject {
         }
         this.manufacturerId = manufacturerId;
     }
+
 
     public long getLocationId() {
         if (locationId < UNKNOWN_ID) {
@@ -528,6 +571,7 @@ public class Item extends DbObject {
         }
         return location;
     }
+
 
     public int getAmount() {
         return amount;
@@ -574,15 +618,20 @@ public class Item extends DbObject {
         this.amountType = ItemAmountTypes.fromInt(amountType);
     }
 
+
+    public void setOrderState(Statics.OrderStates orderState) {
+        this.orderState = orderState;
+    }
+
     public Statics.OrderStates getOrderState() {
         if (orderState == null) {
-            List<Order> orders = SearchManager.sm().findOrdersForItem(getId());
+            List<ItemOrder> itemOrders = SearchManager.sm().findOrdersForItem(getId());
             orderState = Statics.OrderStates.NoOrder;
 
             int inPlanned = 0;
             int inOrdered = 0;
 
-            for (Order o : orders) {
+            for (ItemOrder o : itemOrders) {
                 if (o.isPlanned()) {
                     inPlanned++;
                 }
@@ -598,6 +647,7 @@ public class Item extends DbObject {
         return orderState;
     }
 
+
     public float getRating() {
         return rating;
     }
@@ -606,20 +656,6 @@ public class Item extends DbObject {
         this.rating = rating;
     }
 
-    public boolean isDiscourageOrder() {
-        return discourageOrder;
-    }
-
-    public void setDiscourageOrder(boolean discourageOrder) {
-        this.discourageOrder = discourageOrder;
-    }
-
-    private String getRemarksFileName() {
-        if (remarksFile == null) {
-            return "";
-        }
-        return remarksFile;
-    }
 
     public File getRemarksFile() {
         if (remarksFile != null && !remarksFile.isEmpty()) {
@@ -635,6 +671,7 @@ public class Item extends DbObject {
             this.remarksFile = null;
         }
     }
+
 
     public long getPackageTypeId() {
         if (packageTypeId < UNKNOWN_ID) {
@@ -676,6 +713,7 @@ public class Item extends DbObject {
         return packageType;
     }
 
+
     public boolean isSetItem() {
         return SearchManager.sm().findSetsByItemId(getId()).size() > 0;
     }
@@ -687,6 +725,7 @@ public class Item extends DbObject {
     public void setIsSet(boolean isSet) {
         this.isSet = isSet;
     }
+
 
     public Value getValue() {
         if (value == null) {
@@ -704,4 +743,91 @@ public class Item extends DbObject {
     }
 
 
+    public boolean isDiscourageOrder() {
+        return discourageOrder;
+    }
+
+    public void setDiscourageOrder(boolean discourageOrder) {
+        this.discourageOrder = discourageOrder;
+    }
+
+    public boolean isAutoOrder() {
+        return autoOrder;
+    }
+
+    public void setAutoOrder(boolean autoOrder) {
+        this.autoOrder = autoOrder;
+    }
+
+
+    public long getReplacementItemId() {
+        if (replacementItemId < UNKNOWN_ID) {
+            replacementItemId = UNKNOWN_ID;
+        }
+        return replacementItemId;
+    }
+
+    public Item getReplacementItem() {
+        if (replacementItem == null && replacementItemId > UNKNOWN_ID) {
+            replacementItem = sm().findItemById(replacementItemId);
+        }
+        return replacementItem;
+    }
+
+    public void setReplacementItemId(long replacementItemId) {
+        if (replacementItem != null && replacementItem.getId() != replacementItemId) {
+            replacementItem = null;
+        }
+        this.replacementItemId = replacementItemId;
+    }
+
+
+    public long getRelatedItemId() {
+        if (relatedItemId < UNKNOWN_ID) {
+            relatedItemId = UNKNOWN_ID;
+        }
+        return relatedItemId;
+    }
+
+    public Item getRelatedItem() {
+        if (relatedItem == null && relatedItemId > UNKNOWN_ID) {
+            relatedItem = sm().findItemById(relatedItemId);
+        }
+        return relatedItem;
+    }
+
+    public void setRelatedItemId(long relatedItemId) {
+        if (relatedItem != null && relatedItem.getId() != relatedItemId) {
+            relatedItem = null;
+        }
+        this.relatedItemId = relatedItemId;
+    }
+
+
+    public long getAutoOrderById() {
+        if (autoOrderById < UNKNOWN_ID) {
+            autoOrderById = UNKNOWN_ID;
+        }
+        return autoOrderById;
+    }
+
+    public Distributor getAutoOrderBy() {
+        if (autoOrderBy == null && autoOrderById > UNKNOWN_ID) {
+            autoOrderBy = sm().findDistributorById(autoOrderById);
+        }
+        return autoOrderBy;
+    }
+
+    public void setAutoOrderById(long autoOrderById) {
+        if (autoOrderBy != null && autoOrderBy.getId() != autoOrderById) {
+            autoOrderBy = null;
+        }
+        this.autoOrderById = autoOrderById;
+    }
+
+
+    @Override
+    public ItemOrderLine createOrderLine(AbstractOrder order) {
+        return new ItemOrderLine((ItemOrder) order, this, Math.max(0, getMaximum() - getAmount()));
+    }
 }

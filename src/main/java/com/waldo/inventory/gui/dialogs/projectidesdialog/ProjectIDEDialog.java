@@ -11,7 +11,6 @@ import com.waldo.inventory.gui.dialogs.projectidesdialog.detectiondialog.Detecti
 import com.waldo.inventory.gui.dialogs.projectidesdialog.launcherdialog.LauncherDialog;
 import com.waldo.inventory.gui.dialogs.projectidesdialog.parserdialog.ParserDialog;
 import com.waldo.inventory.managers.SearchManager;
-import com.waldo.test.ImageSocketServer.ImageType;
 import com.waldo.utils.icomponents.IDialog;
 
 import javax.swing.*;
@@ -20,7 +19,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
-import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class ProjectIDEDialog extends ProjectIDEDialogLayout implements CacheChangedListener<ProjectIDE> {
@@ -80,7 +78,6 @@ public class ProjectIDEDialog extends ProjectIDEDialogLayout implements CacheCha
         if (selectedProjectIDE != null) {
             detailName.setText(selectedProjectIDE.getName());
             projectTypeCb.setSelectedItem(selectedProjectIDE.getProjectType());
-            detailLogo.setImage(selectedProjectIDE.getIconPath());
 
             detailProjectModel.removeAllElements();
             for (Project project : SearchManager.sm().findProjectsWithIde(selectedProjectIDE.getId())) {
@@ -88,14 +85,14 @@ public class ProjectIDEDialog extends ProjectIDEDialogLayout implements CacheCha
             }
         } else {
             detailName.setText("");
-            detailLogo.setImage(imageResource.getDefaultImage(ImageType.IdeImage));
         }
+        detailLogo.updateComponents(selectedProjectIDE);
     }
 
     private void clearDetails() {
         detailName.setText("");
         projectTypeCb.setSelectedItem(null);
-        detailLogo.setImage(imageResource.getDefaultImage(ImageType.IdeImage));
+        detailLogo.updateComponents((DbObject) null);
         detailProjectModel.removeAllElements();
     }
 

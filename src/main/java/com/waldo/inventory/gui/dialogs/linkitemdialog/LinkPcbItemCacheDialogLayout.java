@@ -79,7 +79,7 @@ abstract class LinkPcbItemCacheDialogLayout extends ICacheDialog implements
     public void initializeComponents() {
         // Dialog
         setResizable(true);
-        setTitleIcon(imageResource.readIcon("Projects.Link.Title"));
+        setTitleIcon(imageResource.readIcon("Link.Edit.L"));
         setTitleName(getTitle());
         getButtonNeutral().setVisible(true);
         getButtonNeutral().setText("Save");
@@ -92,12 +92,12 @@ abstract class LinkPcbItemCacheDialogLayout extends ICacheDialog implements
         //itemPanel.addSearchListener(this);
 
         // Buttons
-        linkBtn = new JButton(imageResource.readIcon("Projects.Link.AddLinkBtn"));
+        linkBtn = new JButton(imageResource.readIcon("Link.New.M"));
         linkBtn.setToolTipText("Link to item");
         linkBtn.setEnabled(false);
         linkBtn.addActionListener(this);
 
-        matchBtn = new JButton(imageResource.readIcon("Projects.Link.ParseBtn"));
+        matchBtn = new JButton(imageResource.readIcon("Parse.M"));
         matchBtn.setToolTipText("Find match");
         matchBtn.setEnabled(false);
         matchBtn.addActionListener(this);

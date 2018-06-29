@@ -34,7 +34,7 @@ class EditFlowDialog extends IObjectDialog<DistributorOrderFlow> {
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
     public EditFlowDialog(Window parent, DistributorOrderFlow originalObject) {
-        super(parent, "Order flow", originalObject, DistributorOrderFlow.class);
+        super(parent, "ItemOrder flow", originalObject, DistributorOrderFlow.class);
 
         initializeComponents();
         initializeLayouts();

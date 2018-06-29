@@ -63,7 +63,7 @@ public abstract class LauncherDialogLayout extends IDialog {
         launcherPathTf = new ITextField("Launcher");
         launcherPathTf.setEnabled(false);
 
-        launcherFileBtn = new JButton(imageResource.readIcon("Common.BrowseIcon"));
+        launcherFileBtn = new JButton(imageResource.readIcon("Browse.Folder.SS"));
         launcherFileBtn.addActionListener(e -> {
             JFileChooser fileChooser = ShellFileChooser.getFileChooser();
             fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);

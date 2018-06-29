@@ -101,14 +101,22 @@ public class DbQueue<T extends DbQueueObject> {
     }
 
     private void logAdd(T element) {
-        SwingUtilities.invokeLater(() -> System.out.println("DB QUEUE -> ADD TO QUEUE: " +
-                element.getObject().getClass().getSimpleName() +
-                " ID=" + element.getObject().getId()));
+        if (element != null && element.getObject() != null) {
+            SwingUtilities.invokeLater(() -> System.out.println("DB QUEUE -> ADD TO QUEUE: " +
+                    element.getObject().getClass().getSimpleName() +
+                    " ID=" + element.getObject().getId()));
+        } else {
+            SwingUtilities.invokeLater(() -> System.out.println("DB QUEUE -> ADD ERROR - NULL IN QUEUE"));
+        }
     }
 
-    private void logRemove(T item) {
-        SwingUtilities.invokeLater(() -> System.out.println("DB QUEUE -> REMOVE FROM QUEUE: " +
-                item.getObject().getClass().getSimpleName() +
-                " ID=" + item.getObject().getId()));
+    private void logRemove(T element) {
+        if (element != null && element.getObject() != null) {
+            SwingUtilities.invokeLater(() -> System.out.println("DB QUEUE -> REMOVE FROM QUEUE: " +
+                    element.getObject().getClass().getSimpleName() +
+                    " ID=" + element.getObject().getId()));
+        } else {
+            SwingUtilities.invokeLater(() -> System.out.println("DB QUEUE -> REMOVE ERROR - NULL IN QUEUE"));
+        }
     }
 }

@@ -110,6 +110,29 @@ public class Statics {
                     "|WHEN|WHERE"+
                     "|WITH|WITHOUT";
 
+    public enum IconSize {
+        SS  (16),
+        S   (24),
+        M   (32),
+        L   (48),
+        XL  (64),
+        XXL (128)
+    ;
+        private final int size;
+        IconSize(int size) {
+            this.size = size;
+        }
+
+        @Override
+        public String toString() {
+            return String.valueOf(size);
+        }
+
+        public int getSize() {
+            return size;
+        }
+    }
+
     public enum ItemAmountTypes {
         Unknown (0),
         Max     (1),
@@ -356,6 +379,34 @@ public class Statics {
                     case "Code": return Code;
                     case "Pcb": return Pcb;
                     case "Other": return Other;
+                }
+            }
+            return Unknown;
+        }
+    }
+
+    public enum ImageServerTypes {
+        Unknown  (""),
+        Server   ("Server"),
+        Database ("Database");
+
+        private final String string;
+        ImageServerTypes(String string) {
+            this.string = string;
+        }
+
+        @Override
+        public String toString() {
+            return string;
+        }
+
+        public static ImageServerTypes fromString(String type) {
+            if (type != null) {
+                switch (type) {
+                    default:
+                    case "": return Unknown;
+                    case "Server": return Server;
+                    case "Database": return Database;
                 }
             }
             return Unknown;
@@ -663,11 +714,11 @@ public class Statics {
 
     public enum CreatedPcbLinkState {
 
-        Ok (imageResource.readIcon("Actions.Ok"), "Ok", Color.BLACK),
-        Warning(imageResource.readIcon("Actions.Warn"), "", Color.ORANGE),
-        Error(imageResource.readIcon("Actions.Error"), "", Color.RED),
-        NotSaved(imageResource.readIcon("Actions.SaveRed"), "Not saved..", Color.GRAY),
-        NotUsed(imageResource.readIcon("Actions.NotUsed"), "Not used..", Color.BLUE)
+        Ok (imageResource.readIcon("Check.SS"), "Ok", Color.BLACK),
+        Warning(imageResource.readIcon("Warning.SS"), "", Color.ORANGE),
+        Error(imageResource.readIcon("Error.SS"), "", Color.RED),
+        NotSaved(imageResource.readIcon("Save.Red.SS"), "Not saved..", Color.GRAY),
+        NotUsed(imageResource.readIcon("Forbidden.SS"), "Not used..", Color.BLUE)
         ;
 
         private final ImageIcon imageIcon;
@@ -815,6 +866,66 @@ public class Statics {
                 case 1: return Soldered;
                 case 2: return Desoldered;
                 case 3: return NotUsed;
+            }
+        }
+    }
+
+    public enum ImageType {
+        Other(0, new Dimension(512, 512), "Others"),
+        ItemImage(1, new Dimension(256, 256), "ItemImages"),
+        DistributorImage(2, new Dimension(256, 256), "DistributorImage"),
+        DivisionImage(3, new Dimension(256, 256), "DivisionImage"),
+        IdeImage(4, new Dimension(256, 256), "IdeImage"),
+        ManufacturerImage(5, new Dimension(256, 256), "ManufacturerImage"),
+        ProjectImage(6, new Dimension(256, 256), "ProjectImage");
+
+        private final int id;
+        private final Dimension dimension;
+        private final String folderName;
+        private boolean allFetched = false;
+
+        ImageType(int id, Dimension dimension, String folderName) {
+            this.id = id;
+            this.dimension = dimension;
+            this.folderName = folderName;
+        }
+
+        public Dimension getDimension() {
+            return this.dimension;
+        }
+
+        public int getId() {
+            return this.id;
+        }
+
+        public String getFolderName() {
+            return this.folderName;
+        }
+
+        public boolean isAllFetched() {
+            return allFetched;
+        }
+
+        public void setAllFetched(boolean allFetched) {
+            this.allFetched = allFetched;
+        }
+
+        public static ImageType fromInt(int id) {
+            switch(id) {
+                case 1:
+                    return ItemImage;
+                case 2:
+                    return DistributorImage;
+                case 3:
+                    return DivisionImage;
+                case 4:
+                    return IdeImage;
+                case 5:
+                    return ManufacturerImage;
+                case 6:
+                    return ProjectImage;
+                default:
+                    return Other;
             }
         }
     }

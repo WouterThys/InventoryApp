@@ -1,109 +1,131 @@
 package com.waldo.inventory.gui.components.popups;
 
+import com.waldo.inventory.classes.dbclasses.AbstractOrderLine;
 import com.waldo.inventory.classes.dbclasses.Item;
-import com.waldo.inventory.classes.dbclasses.OrderLine;
 import com.waldo.inventory.gui.components.actions.IActions;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.util.List;
 
 public abstract class OrderLinePopup extends JPopupMenu {
 
-    protected OrderLinePopup(OrderLine orderItem) {
+    protected OrderLinePopup(List<AbstractOrderLine> orderLineList) {
         super();
 
-        init(orderItem);
+        init(orderLineList);
     }
 
-    public abstract void onDeleteOrderItem(OrderLine orderItem);
-    public abstract void onEditReference(OrderLine orderItem);
+    // Order line
+    public abstract void onDeleteOrderLines(List<AbstractOrderLine> orderLineList);
 
-    public abstract void onEditItem(Item item);
+    public abstract void onOrderOrderLines(List<AbstractOrderLine> orderLineList);
+
+    public abstract void onEditReference(AbstractOrderLine orderLine);
+
+    // Ordered line
+    public abstract void onEditLine(AbstractOrderLine orderLine);
+
+    // When item order
     public abstract void onOpenLocalDataSheet(Item item);
+
     public abstract void onOpenOnlineDataSheet(Item item);
-    public abstract void onOrderItem(Item item);
+
     public abstract void onShowHistory(Item item);
 
-    private void init(OrderLine orderLine) {
-        // Order item
-        IActions.DeleteAction deleteOrderItemAction = new IActions.DeleteAction() {
+    private void init(List<AbstractOrderLine> orderLineList) {
+        // Delete
+        IActions.DeleteAction deleteAction = new IActions.DeleteAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                OrderLinePopup.this.onDeleteOrderItem(orderLine);
+                SwingUtilities.invokeLater(() -> onDeleteOrderLines(orderLineList));
             }
         };
-        deleteOrderItemAction.setName("Delete order item");
+        if (orderLineList.size() > 1) {
+            deleteAction.setName("Delete order lines");
+        } else {
+            deleteAction.setName("Delete order line");
+        }
+        add(deleteAction);
 
-        IActions.EditReferenceAction editReferenceAction = new IActions.EditReferenceAction() {
+        // Order again
+        IActions.OrderItemAction orderAction = new IActions.OrderItemAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                OrderLinePopup.this.onEditReference(orderLine);
+                SwingUtilities.invokeLater(() -> onOrderOrderLines(orderLineList));
             }
         };
-
-        deleteOrderItemAction.setEnabled(!orderLine.isLocked());
-        editReferenceAction.setEnabled(!orderLine.isLocked());
-        add(deleteOrderItemAction);
-        add(editReferenceAction);
-
-        Item item = orderLine.getItem();
+        orderAction.setName("Order again");
+        add(orderAction);
 
         IActions.EditAction editAction = new IActions.EditAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                OrderLinePopup.this.onEditItem(item);
+                SwingUtilities.invokeLater(() -> onEditLine(orderLineList.get(0)));
             }
         };
-        editAction.setName("Edit order item");
+        editAction.setName("Edit " + orderLineList.get(0).getLine());
+        add(editAction);
 
-        IActions.OpenItemDataSheetLocalAction openItemDataSheetLocalAction = new IActions.OpenItemDataSheetLocalAction() {
+
+        IActions.EditReferenceAction editReferenceAction = new IActions.EditReferenceAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                onOpenLocalDataSheet(item);
+                SwingUtilities.invokeLater(() -> onEditReference(orderLineList.get(0)));
             }
         };
+        add(editReferenceAction);
 
-        IActions.OpenItemDataSheetOnlineAction openItemDataSheetOnlineAction = new IActions.OpenItemDataSheetOnlineAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                onOpenOnlineDataSheet(item);
+        boolean multiple = orderLineList.size() > 1;
+        boolean locked = orderLineList.get(0).isLocked();
+
+        editReferenceAction.setEnabled(!locked && !multiple);
+        editAction.setEnabled(!multiple);
+
+        if (orderLineList.size() == 1 && orderLineList.get(0).getLine() instanceof Item) {
+
+            Item item = (Item) orderLineList.get(0).getLine();
+
+            IActions.OpenItemDataSheetLocalAction openItemDataSheetLocalAction = new IActions.OpenItemDataSheetLocalAction() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    SwingUtilities.invokeLater(() -> onOpenLocalDataSheet(item));
+                }
+            };
+
+            IActions.OpenItemDataSheetOnlineAction openItemDataSheetOnlineAction = new IActions.OpenItemDataSheetOnlineAction() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    SwingUtilities.invokeLater(() -> onOpenOnlineDataSheet(item));
+                }
+            };
+
+            IActions.ShowItemHistoryAction showItemHistoryAction = new IActions.ShowItemHistoryAction() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    SwingUtilities.invokeLater(() -> onShowHistory(item));
+                }
+            };
+
+
+            JMenu dsMenu = new JMenu("Open data sheet");
+            dsMenu.add(new JMenuItem(openItemDataSheetOnlineAction));
+            dsMenu.add(new JMenuItem(openItemDataSheetLocalAction));
+
+            openItemDataSheetOnlineAction.setEnabled(item != null && !item.getOnlineDataSheet().isEmpty());
+            openItemDataSheetLocalAction.setEnabled(item != null && !item.getLocalDataSheet().isEmpty());
+            showItemHistoryAction.setEnabled(item != null);
+
+
+            if (item != null) {
+                addSeparator();
+                add(showItemHistoryAction);
+                add(dsMenu);
             }
-        };
-
-        IActions.OrderItemAction orderItemAction = new IActions.OrderItemAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                onOrderItem(item);
-            }
-        };
-
-        IActions.ShowItemHistoryAction showItemHistoryAction = new IActions.ShowItemHistoryAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                onShowHistory(item);
-            }
-        };
-
-
-        JMenu dsMenu = new JMenu("Open data sheet");
-        dsMenu.add(new JMenuItem(openItemDataSheetOnlineAction));
-        dsMenu.add(new JMenuItem(openItemDataSheetLocalAction));
-
-        openItemDataSheetOnlineAction.setEnabled(item != null && !item.getOnlineDataSheet().isEmpty());
-        openItemDataSheetLocalAction.setEnabled(item != null && !item.getLocalDataSheet().isEmpty());
-        editAction.setEnabled(item != null);
-        showItemHistoryAction.setEnabled(item != null);
-        orderItemAction.setEnabled(item != null);
-
-        if (item != null)
-            addSeparator();
-            add(editAction);
-            add(showItemHistoryAction);
-            add(dsMenu);
-            addSeparator();
-            add(orderItemAction);
         }
     }
+
+}
 
 
 

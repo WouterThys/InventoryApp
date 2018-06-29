@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.components;
 
 import com.waldo.inventory.Utils.Statics;
-import com.waldo.inventory.classes.database.DbTable;
+import com.waldo.inventory.database.classes.DbTable;
 import com.waldo.inventory.managers.TableManager;
 
 import javax.swing.*;

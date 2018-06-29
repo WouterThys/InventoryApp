@@ -2,7 +2,7 @@ package com.waldo.inventory.gui.panels.mainpanel.preview.itemdetailpanel;
 
 import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.classes.dbclasses.Item;
-import com.waldo.inventory.classes.dbclasses.OrderLine;
+import com.waldo.inventory.classes.dbclasses.ItemOrderLine;
 import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.panels.mainpanel.AbstractDetailPanel;
 import com.waldo.inventory.gui.panels.mainpanel.ItemDetailListener;
@@ -21,7 +21,7 @@ public abstract class ItemDetailPanelLayout extends AbstractDetailPanel {
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
    // Item
-    ILabel iconLbl;
+    private ILabel iconLbl;
     ITextField nameTf;
     ITextField descriptionTa;
     private ITextField categoryTf;
@@ -34,7 +34,7 @@ public abstract class ItemDetailPanelLayout extends AbstractDetailPanel {
     ICheckBox discourageOrderCb;
     ITextPane remarksTp;
 
-    // Order
+    // ItemOrder
     ITextField amountTf;
     ITextField priceTf;
     ITextField referenceTf;
@@ -53,7 +53,7 @@ public abstract class ItemDetailPanelLayout extends AbstractDetailPanel {
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     Item selectedItem;
-    OrderLine selectedOrderLine;
+    ItemOrderLine selectedItemOrderLine;
 
     private final ItemDetailListener itemDetailListener;
     private final OrderDetailListener orderDetailListener;
@@ -103,9 +103,9 @@ public abstract class ItemDetailPanelLayout extends AbstractDetailPanel {
     private JPanel createItemDetailPanel() {
         JPanel divisionPanel = new JPanel();
         GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(divisionPanel, 0);
-        gbc.addLine("Category", imageResource.readIcon("Items.Tree.Category"), categoryTf);
-        gbc.addLine("Product", imageResource.readIcon("Items.Tree.Product"), productTf);
-        gbc.addLine("Type", imageResource.readIcon("Items.Tree.Type"), typeTf);
+        gbc.addLine("Category", imageResource.readIcon("Component.Green.SS"), categoryTf);
+        gbc.addLine("Product", imageResource.readIcon("Component.Yellow.SS"), productTf);
+        gbc.addLine("Type", imageResource.readIcon("Component.Red.SS"), typeTf);
 
         return divisionPanel;
     }
@@ -118,9 +118,9 @@ public abstract class ItemDetailPanelLayout extends AbstractDetailPanel {
         JPanel pricePnl = GuiUtils.createComponentWithActions(priceTf, editPriceAction);
 
         GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(infoPnl);
-        gbc.addLine("Amount", imageResource.readIcon("Preview.Amount"), amountPnl);
-        gbc.addLine("Price", imageResource.readIcon("Preview.Price"), pricePnl);
-        gbc.addLine("Reference", imageResource.readIcon("Actions.OrderReference"), refPnl);
+        gbc.addLine("Amount", imageResource.readIcon("Amount.S"), amountPnl);
+        gbc.addLine("Price", imageResource.readIcon("Value.S"), pricePnl);
+        gbc.addLine("Reference", imageResource.readIcon("Distributor.SS"), refPnl);
 
         return infoPnl;
     }
@@ -132,9 +132,9 @@ public abstract class ItemDetailPanelLayout extends AbstractDetailPanel {
         GuiUtils.GridBagHelper gbc;
         JPanel sharePnl = new JPanel();
         gbc = new GuiUtils.GridBagHelper(sharePnl);
-        gbc.addLine("Manufacturers", imageResource.readIcon("Manufacturers.Menu"), manufacturerTf);
-        gbc.addLine("Footprint", imageResource.readIcon("Packages.Menu"), footprintTf);
-        gbc.addLine("Location", imageResource.readIcon("Locations.Menu"), locationTf);
+        gbc.addLine("Manufacturers", imageResource.readIcon("Factory.SS"), manufacturerTf);
+        gbc.addLine("Footprint", imageResource.readIcon("Chip.SS"), footprintTf);
+        gbc.addLine("Location", imageResource.readIcon("Location.SS"), locationTf);
 
         JPanel infoPnl;
         if (isOrderType) {
@@ -225,57 +225,57 @@ public abstract class ItemDetailPanelLayout extends AbstractDetailPanel {
         discourageOrderCb.setHorizontalAlignment(SwingConstants.RIGHT);
         remarksTp = new ITextPane();
         remarksTp.setEditable(false);
-        remarksTp.setEnabled(false);
+        //remarksTp.setEnabled(false);
 
         plusOneAction = new IActions.PlusOneAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (selectedOrderLine != null && orderDetailListener != null) {
-                    int currentAmount = selectedOrderLine.getAmount();
-                    orderDetailListener.onSetOrderItemAmount(selectedOrderLine, currentAmount + 1);
-                    updateComponents(selectedOrderLine);
+                if (selectedItemOrderLine != null && orderDetailListener != null) {
+                    int currentAmount = selectedItemOrderLine.getAmount();
+                    orderDetailListener.onSetOrderItemAmount(selectedItemOrderLine, currentAmount + 1);
+                    updateComponents(selectedItemOrderLine);
                 }
             }
         };
         minOneAction = new IActions.MinOneAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (selectedOrderLine != null && orderDetailListener != null) {
-                    int currentAmount = selectedOrderLine.getAmount();
-                    orderDetailListener.onSetOrderItemAmount(selectedOrderLine, currentAmount - 1);
-                    updateComponents(selectedOrderLine);
+                if (selectedItemOrderLine != null && orderDetailListener != null) {
+                    int currentAmount = selectedItemOrderLine.getAmount();
+                    orderDetailListener.onSetOrderItemAmount(selectedItemOrderLine, currentAmount - 1);
+                    updateComponents(selectedItemOrderLine);
                 }
             }
         };
         editReferenceAction = new IActions.EditAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (selectedOrderLine != null && orderDetailListener != null) {
-                    orderDetailListener.onEditReference(selectedOrderLine);
-                    updateComponents(selectedOrderLine);
+                if (selectedItemOrderLine != null && orderDetailListener != null) {
+                    orderDetailListener.onEditReference(selectedItemOrderLine);
+                    updateComponents(selectedItemOrderLine);
                 }
             }
         };
         editPriceAction = new IActions.EditAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (selectedOrderLine != null && orderDetailListener != null) {
-                    orderDetailListener.onEditPrice(selectedOrderLine);
-                    updateComponents(selectedOrderLine);
+                if (selectedItemOrderLine != null && orderDetailListener != null) {
+                    orderDetailListener.onEditPrice(selectedItemOrderLine);
+                    updateComponents(selectedItemOrderLine);
                 }
             }
         };
 
-        dataSheetBtn = new JButton(imageResource.readIcon("Items.Buttons.Datasheet"));
-        orderBtn = new JButton(imageResource.readIcon("Items.Buttons.Order"));
-        historyBtn = new JButton(imageResource.readIcon("Items.Buttons.History"));
+        dataSheetBtn = new JButton(imageResource.readIcon("Datasheet.M"));
+        orderBtn = new JButton(imageResource.readIcon("Order.M"));
+        historyBtn = new JButton(imageResource.readIcon("History.M"));
 
         dataSheetBtn.addActionListener(e -> itemDetailListener.onShowDataSheet(selectedItem));
         orderBtn.addActionListener(e -> itemDetailListener.onOrderItem(selectedItem));
         historyBtn.addActionListener(e -> itemDetailListener.onShowHistory(selectedItem));
 
         dataSheetBtn.setToolTipText("Data sheets");
-        orderBtn.setToolTipText("Order");
+        orderBtn.setToolTipText("ItemOrder");
         historyBtn.setToolTipText("History");
 
         remarksPnl = new JPanel(new BorderLayout());

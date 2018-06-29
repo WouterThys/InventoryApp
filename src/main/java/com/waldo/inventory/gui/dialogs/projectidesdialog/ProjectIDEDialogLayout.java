@@ -2,6 +2,7 @@ package com.waldo.inventory.gui.dialogs.projectidesdialog;
 
 import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.Utils.GuiUtils;
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.Utils.Statics.ProjectTypes;
 import com.waldo.inventory.classes.dbclasses.Project;
 import com.waldo.inventory.classes.dbclasses.ProjectIDE;
@@ -9,8 +10,10 @@ import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IImagePanel;
 import com.waldo.inventory.gui.components.IObjectSearchPanel;
 import com.waldo.inventory.gui.components.IdBToolBar;
-import com.waldo.test.ImageSocketServer.ImageType;
-import com.waldo.utils.icomponents.*;
+import com.waldo.utils.icomponents.IComboBox;
+import com.waldo.utils.icomponents.IDialog;
+import com.waldo.utils.icomponents.IEditedListener;
+import com.waldo.utils.icomponents.ITextField;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -168,7 +171,7 @@ abstract class ProjectIDEDialogLayout extends IDialog implements
     @Override
     public void initializeComponents() {
         // Title
-        setTitleIcon(imageResource.readIcon("Ides.Title"));
+        setTitleIcon(imageResource.readIcon("Toolkit.L"));
         setTitleName(getTitle());
         getButtonNeutral().setVisible(true);
         getButtonNeutral().setText("Save");
@@ -188,7 +191,7 @@ abstract class ProjectIDEDialogLayout extends IDialog implements
         // Details
         detailName = new ITextField("Name");
         detailName.setEnabled(false);
-        detailLogo = new IImagePanel(this, ImageType.IdeImage, "", this, new Dimension(128, 128));
+        detailLogo = new IImagePanel(this, Statics.ImageType.IdeImage, null, new Dimension(128, 128), this);
 
         List<ProjectTypes> types = Arrays.asList(ProjectTypes.values());
         projectTypeCb = new IComboBox<>(types, null, true);

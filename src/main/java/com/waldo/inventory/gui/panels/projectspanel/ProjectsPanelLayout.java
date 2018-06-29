@@ -44,7 +44,6 @@ public abstract class ProjectsPanelLayout extends JPanel implements
 
     TopToolBar topToolBar;
     IdBToolBar projectsToolBar;
-    //private ProjectDetailsPanel detailsPanel;
 
     JTabbedPane tabbedPane;
     private ProjectCodePanel projectCodePanel;
@@ -60,7 +59,6 @@ public abstract class ProjectsPanelLayout extends JPanel implements
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     final Application application;
     Project selectedProject;
-    private Project rootProject;
 
 
     /*
@@ -177,7 +175,7 @@ public abstract class ProjectsPanelLayout extends JPanel implements
     @Override
     public void initializeComponents() {
         // Project tree
-        rootProject = new Project("All");
+        Project rootProject = new Project("All");
         rootProject.setCanBeSaved(false);
 
         projectsTree = new IProjectTree(rootProject, false, false);
@@ -190,9 +188,6 @@ public abstract class ProjectsPanelLayout extends JPanel implements
             }
         });
 
-        // Details
-        //detailsPanel = new ProjectDetailsPanel(application);
-
         // Tabs
         tabbedPane = new JTabbedPane();
         tabbedPane.addChangeListener(this);
@@ -201,9 +196,9 @@ public abstract class ProjectsPanelLayout extends JPanel implements
         projectPcbPanel = new ProjectPcbPanel(application, this);
         projectOtherPanel = new ProjectOtherPanel(application, this);
 
-        tabbedPane.addTab("Code ", imageResource.readIcon("Projects.Tab.Code"), projectCodePanel);
-        tabbedPane.addTab("Pcbs ", imageResource.readIcon("Projects.Tab.Pcb"), projectPcbPanel);
-        tabbedPane.addTab("Other ", imageResource.readIcon("Projects.Tab.Other"), projectOtherPanel);
+        tabbedPane.addTab("Code ", imageResource.readIcon("Code.SS"), projectCodePanel);
+        tabbedPane.addTab("Pcbs ", imageResource.readIcon("Pcb.SS"), projectPcbPanel);
+        tabbedPane.addTab("Other ", imageResource.readIcon("Other.SS"), projectOtherPanel);
 
         // Tree toolbar
         projectsToolBar = new IdBToolBar(this);
@@ -233,10 +228,6 @@ public abstract class ProjectsPanelLayout extends JPanel implements
         // Panels
         JPanel westPanel = new JPanel(new BorderLayout());
         JPanel centerPanel = new JPanel(new BorderLayout());
-//        detailsPanel.setBorder(BorderFactory.createCompoundBorder(
-//                BorderFactory.createEmptyBorder(2, 3, 2, 3),
-//                BorderFactory.createLineBorder(Color.GRAY, 1)
-//        ));
 
         projectsTree.setPreferredSize(new Dimension(300,200));
         JScrollPane pane = new JScrollPane(projectsTree);
@@ -246,7 +237,6 @@ public abstract class ProjectsPanelLayout extends JPanel implements
 
         centerPanel.add(tabbedPane, BorderLayout.CENTER);
         centerPanel.add(topToolBar, BorderLayout.PAGE_START);
-        //centerPanel.add(detailsPanel, BorderLayout.SOUTH);
 
         // Add
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, westPanel, centerPanel);

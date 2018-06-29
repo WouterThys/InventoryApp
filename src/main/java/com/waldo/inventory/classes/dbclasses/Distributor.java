@@ -31,6 +31,7 @@ public class Distributor extends DbObject {
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
         int ndx = addBaseParameters(statement);
+        statement.setLong(ndx++, getImageId());
         statement.setString(ndx++, getWebsite());
         statement.setString(ndx++, getOrderLink());
         if (orderFileFormatId < UNKNOWN_ID) {
@@ -138,6 +139,14 @@ public class Distributor extends DbObject {
                 break;
             }
         }
+    }
+
+    public static Distributor getUnknownDistributor() {
+        Distributor d = new Distributor();
+        d.setName("");
+        d.setId(UNKNOWN_ID);
+        d.setCanBeSaved(false);
+        return d;
     }
 
     //

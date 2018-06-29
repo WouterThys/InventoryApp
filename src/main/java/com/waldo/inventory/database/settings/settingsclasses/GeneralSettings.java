@@ -10,6 +10,7 @@ public class GeneralSettings extends DbSettingsObject {
     private Statics.GuiDetailsView guiDetailsView;
     private String guiLookAndFeel;
     private boolean guiStartUpFullScreen;
+    private boolean autoOrderEnabled;
 
 
     public GeneralSettings() {
@@ -29,6 +30,7 @@ public class GeneralSettings extends DbSettingsObject {
                 GeneralSettings ref = (GeneralSettings) obj;
                 if ((ref.getGuiDetailsView().equals(getGuiDetailsView())) &&
                         (ref.getGuiLookAndFeel().equals(getGuiLookAndFeel())) &&
+                        (ref.isAutoOrderEnabled() == (isAutoOrderEnabled())) &&
                         (ref.isGuiStartUpFullScreen() == (isGuiStartUpFullScreen())) ) {
                     return true;
                 }
@@ -45,6 +47,7 @@ public class GeneralSettings extends DbSettingsObject {
         copy.setGuiDetailsView(getGuiDetailsView());
         copy.setGuiLookAndFeel(getGuiLookAndFeel());
         copy.setGuiStartUpFullScreen(isGuiStartUpFullScreen());
+        copy.setAutoOrderEnabled(isAutoOrderEnabled());
 
         return copy;
     }
@@ -91,5 +94,13 @@ public class GeneralSettings extends DbSettingsObject {
 
     public void setGuiStartUpFullScreen(boolean guiStartUpFullScreen) {
         this.guiStartUpFullScreen = guiStartUpFullScreen;
+    }
+
+    public boolean isAutoOrderEnabled() {
+        return autoOrderEnabled;
+    }
+
+    public void setAutoOrderEnabled(boolean autoOrderEnabled) {
+        this.autoOrderEnabled = autoOrderEnabled;
     }
 }

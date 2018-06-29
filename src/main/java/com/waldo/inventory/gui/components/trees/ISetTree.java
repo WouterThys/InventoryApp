@@ -16,7 +16,7 @@ public class ISetTree extends ITree<Set> {
     public ISetTree(Set rootSet, boolean showRoot, boolean allowMultiSelect) {
         super(rootSet, showRoot, allowMultiSelect);
         DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
-        renderer.setLeafIcon(imageResource.readIcon("Items.Tree.Set"));
+        renderer.setLeafIcon(imageResource.readIcon("Components.SS"));
         setCellRenderer(renderer);
     }
 

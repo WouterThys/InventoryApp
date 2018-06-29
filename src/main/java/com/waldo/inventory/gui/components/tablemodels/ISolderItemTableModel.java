@@ -69,10 +69,10 @@ public class ISolderItemTableModel extends IAbstractTableModel<SolderItem> {
 
     private static class IRenderer extends DefaultTableCellRenderer {
 
-        private static final ImageIcon noneIcon = imageResource.readIcon("SolderState.None");
-        private static final ImageIcon solderedIcon = imageResource.readIcon("SolderState.Soldered");
-        private static final ImageIcon desolderedIcon = imageResource.readIcon("SolderState.Desoldered");
-        private static final ImageIcon noUseIcon = imageResource.readIcon("SolderState.NoUsed");
+        private static final ImageIcon noneIcon = imageResource.readIcon("Check.Unchecked.SS");
+        private static final ImageIcon solderedIcon = imageResource.readIcon("Check.Checked.SS");
+        private static final ImageIcon desolderedIcon = imageResource.readIcon("Check.Delete.SS");
+        private static final ImageIcon noUseIcon = imageResource.readIcon("Forbidden.SS");
 
         private static final ImageIcon greenBall = imageResource.readIcon("Ball.green");
         private static final ImageIcon redBall = imageResource.readIcon("Ball.red");

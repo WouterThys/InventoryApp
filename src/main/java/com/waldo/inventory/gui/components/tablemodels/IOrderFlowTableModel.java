@@ -58,9 +58,9 @@ public class IOrderFlowTableModel extends IAbstractTableModel<DistributorOrderFl
     private static class IRenderer extends DefaultTableCellRenderer {
 
         private static final ImageIcon greenBall = imageResource.readIcon("Ball.green");
-        private static final ImageIcon receivedLbl = imageResource.readIcon("Orders.Table.Received");
-        private static final ImageIcon orderedLbl = imageResource.readIcon("Orders.Table.Ordered");
-        private static final ImageIcon plannedLbl = imageResource.readIcon("Orders.Table.Planned");
+        private static final ImageIcon receivedLbl = imageResource.readIcon("Received.SS");
+        private static final ImageIcon orderedLbl = imageResource.readIcon("Truck.SS");
+        private static final ImageIcon plannedLbl = imageResource.readIcon("Calendar.SS");
 
         private static final ITableLabel sequenceLbl = new ITableLabel(Color.gray, 0, false, greenBall, "");
         private static final ITableLabel stateLbl = new ITableLabel(Color.gray, 0, false, plannedLbl, "");

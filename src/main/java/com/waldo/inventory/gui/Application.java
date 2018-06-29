@@ -6,15 +6,14 @@ import com.waldo.inventory.Utils.GuiUtils;
 import com.waldo.inventory.Utils.resource.ImageResource;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Item;
-import com.waldo.inventory.classes.dbclasses.Order;
 import com.waldo.inventory.database.DatabaseAccess;
 import com.waldo.inventory.database.interfaces.DbErrorListener;
 import com.waldo.inventory.gui.dialogs.SelectDataSheetDialog;
-import com.waldo.inventory.gui.dialogs.addtoorderdialog.AddToOrderCacheDialog;
+import com.waldo.inventory.gui.dialogs.addtoorderdialog.AddToOrderDialog;
 import com.waldo.inventory.gui.dialogs.historydialog.HistoryDialog;
 import com.waldo.inventory.gui.dialogs.settingsdialog.SettingsCacheDialog;
 import com.waldo.inventory.gui.panels.mainpanel.MainPanel;
-import com.waldo.inventory.gui.panels.orderpanel.OrderPanel;
+import com.waldo.inventory.gui.panels.orderspanel.OrdersPanel;
 import com.waldo.inventory.gui.panels.projectspanel.ProjectsPanel;
 import com.waldo.inventory.managers.ErrorManager;
 import com.waldo.inventory.managers.LogManager;
@@ -30,7 +29,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.gui.components.IStatusStrip.Status;
@@ -44,12 +42,10 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
 
     public static String startUpPath;
     public static ImageResource imageResource;
-    //public static ResourceManager imageResource;
     public static ResourceManager scriptResource;
     public static ResourceManager colorResource;
 
     private JTabbedPane tabbedPane;
-    private OrderPanel orderPanel;
 
     public Application(String startUpPath) {
         Application.startUpPath = startUpPath;
@@ -145,50 +141,65 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
         // Main view
         // - Create components
         MainPanel mainPanel = new MainPanel(this);
-        orderPanel = new OrderPanel(this);
+        OrdersPanel ordersPanel = new OrdersPanel(this);
         ProjectsPanel projectPanel = new ProjectsPanel(this);
 
         tabbedPane = new JTabbedPane();
         tabbedPane.addChangeListener(this);
         //  - Add tabs
-        tabbedPane.addTab("Components ", imageResource.readIcon("MainTab.Components"), mainPanel, "Components");
-        tabbedPane.addTab("Orders ", imageResource.readIcon("MainTab.Orders"), orderPanel, "Orders");
-        tabbedPane.addTab("Projects ", imageResource.readIcon("MainTab.Projects"), projectPanel, "Projects");
+        tabbedPane.addTab("Components ", imageResource.readIcon("Tag.S"), mainPanel, "Components");
+        tabbedPane.addTab("Orders ", imageResource.readIcon("Order.S"), ordersPanel, "Orders");
+        tabbedPane.addTab("Projects ", imageResource.readIcon("BluePrint.S"), projectPanel, "Projects");
         // - Add to main view
         add(tabbedPane, BorderLayout.CENTER);
 
         Status().setMessage("Ready");
         Status().updateConnectionStatus();
-    }
 
-    public void addItemsToOrder(List<Item> itemsToOrder, Order order) {
-        Application.beginWait(Application.this);
-        try {
-            // Switch tab
-            setSelectedTab(TAB_ORDERS);
-            // Update items
-            for (Item item : itemsToOrder) {
-                item.updateOrderState();
-                //item.save();
-            }
-        } finally {
-            endWait(this);
-        }
-        // Add
-        Map<String, Item> failedItems = order.addItemsToOrder(itemsToOrder);//orderPanel.addItemsToOrder(itemsToOrder, order);
-        if (failedItems != null && failedItems.size() > 0) {
-            StringBuilder builder = new StringBuilder();
-            for (String er : failedItems.keySet()) {
-                builder.append(er).append("\n");
-            }
 
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Failed to order: \n " + builder.toString(),
-                    "Order error",
-                    JOptionPane.ERROR_MESSAGE
-            );
-        }
+        //////////
+
+//        new Thread(() -> {
+//
+//            Map<String, List<ProjectIDE>> map = new TreeMap<>();
+//
+//            for (ProjectIDE item : cache().getProjectIDES()) {
+//                String path = item.getIconPath();
+//                if (path != null && !path.isEmpty()) {
+//                    if (!map.containsKey(path)) {
+//                        map.put(path, new ArrayList<>());
+//                    }
+//                    map.get(path).add(item);
+//                }
+//            }
+//
+//
+//            for (String path : map.keySet()) {
+//                if (path != null && !path.isEmpty()) {
+//                    imageResource.requestImage(new ImageResource.ImageRequester() {
+//                        @Override
+//                        public ImageType getImageType() {
+//                            return ImageType.IdeImage;
+//                        }
+//
+//                        @Override
+//                        public String getImageName() {
+//                            return path;
+//                        }
+//
+//                        @Override
+//                        public void setImage(ImageIcon image) {
+//                            DbImage dbImage = new DbImage(ImageType.IdeImage, image, path);
+//                            dbImage.setDbObjects(map.get(path));
+//                            dbImage.save();
+//                        }
+//                    });
+//                }
+//            }
+//
+//
+//        }).start();
+
     }
 
     public static boolean isUpdating(Component component) {
@@ -351,6 +362,8 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
 
     public void orderItem(Item item) {
         int result = JOptionPane.YES_OPTION;
+
+        // Check if discouraged
         if (item.isDiscourageOrder()) {
             result = JOptionPane.showConfirmDialog(
                     this,
@@ -360,18 +373,36 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
                     JOptionPane.WARNING_MESSAGE
             );
         }
+
+        // Check if item is replaced
+        if (item.getReplacementItemId() > DbObject.UNKNOWN_ID) {
+            int res = JOptionPane.showConfirmDialog(
+                    this,
+                    "This item is replaced with item '" + item.getReplacementItem() + "'. Do you want to order the replacement in stead?",
+                    "Replaced with item",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE
+            );
+            if (res == JOptionPane.YES_OPTION) {
+                item = item.getReplacementItem();
+            }
+        }
+
+        // ItemOrder
         if (result == JOptionPane.YES_OPTION) {
-            AddToOrderCacheDialog dialog = new AddToOrderCacheDialog(this, "Order " + item.getName(), item, true, true);
+            AddToOrderDialog dialog = new AddToOrderDialog(this, item, true);
             dialog.showDialog();
         }
     }
 
     public void orderItems(List<Item> itemList) {
+
+        // Check discourage
         for (Item item : new ArrayList<>(itemList)) {
             if (item.isDiscourageOrder()) {
                 int result = JOptionPane.showConfirmDialog(
                         this,
-                        "This item is marked to discourage new orders, \n do you really want to order it?",
+                        item + " is marked to discourage new orders, \n do you really want to order it?",
                         "Discouraged to order",
                         JOptionPane.YES_NO_OPTION,
                         JOptionPane.WARNING_MESSAGE
@@ -381,8 +412,28 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
                 }
             }
         }
+
+        // Check replacements
+        for (int i = 0; i < itemList.size(); i++) {
+            Item item = itemList.get(i);
+            if (item.getReplacementItemId() > DbObject.UNKNOWN_ID) {
+                int res = JOptionPane.showConfirmDialog(
+                        this,
+                        item + "is replaced with '" + item.getReplacementItem() + "'. Do you want to order the replacement in stead?",
+                        "Replaced with item",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.WARNING_MESSAGE
+                );
+                if (res == JOptionPane.YES_OPTION) {
+                    itemList.set(i, item.getReplacementItem());
+                }
+            }
+        }
+
+
+        // ItemOrder
         if (itemList.size() > 0) {
-            AddToOrderCacheDialog dialog = new AddToOrderCacheDialog(this, "Order items", itemList, true, true);
+            AddToOrderDialog dialog = new AddToOrderDialog(this, itemList, true);
             dialog.showDialog();
         }
     }

@@ -16,10 +16,10 @@ import static com.waldo.inventory.gui.Application.imageResource;
 
 public class SystemLogsDetailPanel extends JPanel implements GuiUtils.GuiInterface {
 
-    private final ImageIcon infoIcon = imageResource.readIcon("Log.InfoL");
-    private final ImageIcon debugIcon = imageResource.readIcon("Log.DebugL");
-    private final ImageIcon warnIcon = imageResource.readIcon("Log.WarnL");
-    private final ImageIcon errorIcon = imageResource.readIcon("Log.ErrorL");
+    private final ImageIcon infoIcon = imageResource.readIcon("Info.Bug.XXL");
+    private final ImageIcon debugIcon = imageResource.readIcon("Debug.XXL");
+    private final ImageIcon warnIcon = imageResource.readIcon("Warning.Bug.XXL");
+    private final ImageIcon errorIcon = imageResource.readIcon("Error.Bug.XXL");
 
    private Log selectedLog;
 

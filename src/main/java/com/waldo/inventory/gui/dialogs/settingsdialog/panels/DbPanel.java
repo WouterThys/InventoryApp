@@ -267,7 +267,7 @@ public class DbPanel extends SettingsPnl<DbSettings> {
         userNameTf.addEditedListener(this, "dbUserName");
         userPwTf.addEditedListener(this, "dbUserPw");
 
-        testAction = new IActions.TestAction(imageResource.readIcon("Actions.M.Test")) {
+        testAction = new IActions.TestAction(imageResource.readIcon("Test.S")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 testDatabaseValues();

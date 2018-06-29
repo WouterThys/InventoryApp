@@ -15,7 +15,6 @@ import java.util.List;
 
 public abstract class IResourceDialog<R extends DbObject> extends IObjectDialog<R> implements
         ListSelectionListener,
-        IdBToolBar.IdbToolBarListener,
         IObjectSearchPanel.SearchListener<R>  {
 
     private DefaultListModel<R> resourceListModel;
@@ -156,7 +155,7 @@ public abstract class IResourceDialog<R extends DbObject> extends IObjectDialog<
        resourceList = new JList<>(resourceListModel);
        resourceList.addListSelectionListener(this);
 
-       resourceTb = new IdBToolBar(this);
+       resourceTb = new IdBToolBar(createToolBarListener());
 
        initializeDetailComponents();
     }
@@ -222,7 +221,7 @@ public abstract class IResourceDialog<R extends DbObject> extends IObjectDialog<
 
     @Override
     public void onUpdated(R object) {
-        super.onInserted(object);
+        super.onUpdated(object);
         beginWait();
         try {
             setResourceList(getAllResources());
@@ -241,7 +240,9 @@ public abstract class IResourceDialog<R extends DbObject> extends IObjectDialog<
         } finally {
             endWait();
         }
-        resourceList.setSelectedValue(object, true);
+        clearDetails();
+        resourceList.setSelectedIndex(0);
+
     }
 
     @Override
@@ -262,16 +263,7 @@ public abstract class IResourceDialog<R extends DbObject> extends IObjectDialog<
         }
     }
 
-    //
-    // Tool bar
-    //
-    @Override
-    public void onToolBarRefresh(IdBToolBar source) {
-        updateComponents(getObject());
-    }
-
-    @Override
-    public void onToolBarAdd(IdBToolBar source) {
+    protected void onTbAddResource() {
         DbObjectDialog<R> dialog = new DbObjectDialog<>(IResourceDialog.this, "New", getNewResource());
         if (dialog.showDialog() == DbObjectDialog.OK) {
             R r = dialog.getDbObject();
@@ -279,23 +271,48 @@ public abstract class IResourceDialog<R extends DbObject> extends IObjectDialog<
         }
     }
 
-    @Override
-    public void onToolBarDelete(IdBToolBar source) {
+    protected void onTbEditResource() {
         if (getObject() != null) {
-            int res = JOptionPane.showConfirmDialog(IResourceDialog.this, "Are you sure you want to delete \"" + getObject().getName() + "\"?");
-            if (res == JOptionPane.OK_OPTION) {
-                getObject().delete();
+            DbObjectDialog<R> dialog = new DbObjectDialog<>(IResourceDialog.this, "Update " + getObject().getName(), getObject());
+            if (dialog.showDialog() == DbObjectDialog.OK) {
+                doSave();
             }
         }
     }
 
-    @Override
-    public void onToolBarEdit(IdBToolBar source) {
+    protected void onTbDeleteResource() {
         if (getObject() != null) {
-            DbObjectDialog<R> dialog = new DbObjectDialog<>(IResourceDialog.this, "Update " + getObject().getName(), getObject());
-            if (dialog.showDialog() == DbObjectDialog.OK) {
-                getObject().save();
+            int res = JOptionPane.showConfirmDialog(IResourceDialog.this, "Are you sure you want to delete \"" + getObject().getName() + "\"?");
+            if (res == JOptionPane.OK_OPTION) {
+                doDelete();
             }
         }
+    }
+
+    //
+    // Tool bar
+    //
+    private IdBToolBar.IdbToolBarListener createToolBarListener() {
+        return new IdBToolBar.IdbToolBarListener() {
+            @Override
+            public void onToolBarRefresh(IdBToolBar source) {
+                updateComponents(getObject());
+            }
+
+            @Override
+            public void onToolBarAdd(IdBToolBar source) {
+                onTbAddResource();
+            }
+
+            @Override
+            public void onToolBarDelete(IdBToolBar source) {
+                onTbDeleteResource();
+            }
+
+            @Override
+            public void onToolBarEdit(IdBToolBar source) {
+                onTbEditResource();
+            }
+        };
     }
 }

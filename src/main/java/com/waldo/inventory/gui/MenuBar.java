@@ -31,13 +31,13 @@ public class MenuBar extends JMenuBar {
         // File menu
         JMenu fileMenu = new JMenu("Inventory");
 
-        JMenuItem settingsItem = new JMenuItem("Settings", imageResource.readIcon("Settings.Menu"));
+        JMenuItem settingsItem = new JMenuItem("Settings", imageResource.readIcon("Gears.SS"));
         settingsItem.addActionListener(settingsSelected());
-        JMenuItem logItem = new JMenuItem("Logs", imageResource.readIcon("Log.Menu"));
+        JMenuItem logItem = new JMenuItem("Logs", imageResource.readIcon("Log.SS"));
         logItem.addActionListener(logSelected());
-        JMenuItem dbHistoryItem = new JMenuItem("Statistics", imageResource.readIcon("Statistics.Menu"));
+        JMenuItem dbHistoryItem = new JMenuItem("Statistics", imageResource.readIcon("Chart.SS"));
         dbHistoryItem.addActionListener(dbHistorySelected());
-        JMenuItem closeItem = new JMenuItem("Exit", imageResource.readIcon("MainMenu.Quit"));
+        JMenuItem closeItem = new JMenuItem("Exit", imageResource.readIcon("Quit.SS"));
         closeItem.addActionListener(e -> Main.closeApplication(1));
 
         fileMenu.add(settingsItem);
@@ -50,19 +50,19 @@ public class MenuBar extends JMenuBar {
         // Database menu
         JMenu dbMenu = new JMenu("Resources");
 
-        JMenuItem manufacturers = new JMenuItem("Manufacturers", imageResource.readIcon("Manufacturers.Menu"));
+        JMenuItem manufacturers = new JMenuItem("Manufacturers", imageResource.readIcon("Factory.SS"));
         manufacturers.addActionListener(manufacturersSelected());
 
-        JMenuItem distributors = new JMenuItem("Distributors", imageResource.readIcon("Distributors.Menu"));
+        JMenuItem distributors = new JMenuItem("Distributors", imageResource.readIcon("Distributor.SS"));
         distributors.addActionListener(distributorsSelected());
 
-        JMenuItem packages = new JMenuItem("Packages", imageResource.readIcon("Packages.Menu"));
+        JMenuItem packages = new JMenuItem("Packages", imageResource.readIcon("Chip.SS"));
         packages.addActionListener(packagesSelected());
 
-        JMenuItem projectTypes = new JMenuItem("Project IDEs", imageResource.readIcon("Ides.Menu"));
+        JMenuItem projectTypes = new JMenuItem("Project IDEs", imageResource.readIcon("Toolkit.SS"));
         projectTypes.addActionListener(projectTypesSelected());
 
-        JMenuItem locationTypes = new JMenuItem("Locations", imageResource.readIcon("Locations.Menu"));
+        JMenuItem locationTypes = new JMenuItem("Locations", imageResource.readIcon("Location.SS"));
         locationTypes.addActionListener(locationTypesSelected());
 
         dbMenu.add(locationTypes);

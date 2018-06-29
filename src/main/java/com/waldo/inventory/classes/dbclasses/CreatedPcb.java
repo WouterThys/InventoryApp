@@ -1,6 +1,7 @@
 package com.waldo.inventory.classes.dbclasses;
 
 import com.waldo.inventory.Utils.Statics;
+import com.waldo.inventory.Utils.Statics.SolderItemState;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.utils.DateUtils;
 
@@ -11,6 +12,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.waldo.inventory.Utils.Statics.SolderItemState.*;
 import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class CreatedPcb extends DbObject {
@@ -20,30 +22,34 @@ public class CreatedPcb extends DbObject {
     private long projectPcbId;
     private ProjectPcb projectPcb;
 
-    private long orderId; // Was created when this order was received
-    private Order order;
+    private long orderId; // Was created when this pcbOrder was received
+    private PcbOrder pcbOrder;
 
     private Date dateCreated;
     private Date dateSoldered;
     private Date dateDestroyed;
 
+    // Not in db
     private List<CreatedPcbLink> createdPcbLinks;
+    private int amountOfSolderItems = -1;
+    private int amountSoldered = - 1; // Solder items soldered
+    private int amountNotUsed = -1; // Solder items not used
 
     public CreatedPcb() {
         super(TABLE_NAME);
     }
 
-    public CreatedPcb(String name, ProjectPcb projectPcb, Order order) {
+    public CreatedPcb(String name, ProjectPcb projectPcb, PcbOrder pcbOrder) {
         this();
         setName(name);
         this.projectPcb = projectPcb;
-        this.order = order;
+        this.pcbOrder = pcbOrder;
 
         if (projectPcb != null) {
             this.projectPcbId = projectPcb.getId();
         }
-        if (order != null) {
-            this.orderId = order.getId();
+        if (pcbOrder != null) {
+            this.orderId = pcbOrder.getId();
         }
     }
 
@@ -120,6 +126,7 @@ public class CreatedPcb extends DbObject {
         return false;
     }
 
+
     public boolean isCreated() {
         return dateCreated != null && !dateCreated.equals(DateUtils.minDate());
     }
@@ -130,6 +137,10 @@ public class CreatedPcb extends DbObject {
 
     public boolean isDestroyed() {
         return dateDestroyed != null && !dateDestroyed.equals(DateUtils.minDate());
+    }
+
+    public boolean isDone() {
+        return getAmountDone() >= getAmountOfSolderItems();
     }
 
 
@@ -164,17 +175,17 @@ public class CreatedPcb extends DbObject {
     }
 
     public void setOrderId(long orderId) {
-        if (order != null && order.getId() != orderId) {
-            order = null;
+        if (pcbOrder != null && pcbOrder.getId() != orderId) {
+            pcbOrder = null;
         }
         this.orderId = orderId;
     }
 
-    public Order getOrder() {
-        if (order == null && getOrderId() > DbObject.UNKNOWN_ID) {
-            order = SearchManager.sm().findOrderById(orderId);
+    public PcbOrder getPcbOrder() {
+        if (pcbOrder == null && getOrderId() > DbObject.UNKNOWN_ID) {
+            pcbOrder = SearchManager.sm().findPcbOrderById(orderId);
         }
-        return order;
+        return pcbOrder;
     }
 
     public Date getDateCreated() {
@@ -270,5 +281,55 @@ public class CreatedPcb extends DbObject {
             }
         }
         return null;
+    }
+
+
+    public int getAmountOfSolderItems() {
+        if (amountOfSolderItems < 0) {
+            amountOfSolderItems = 0;
+            for (CreatedPcbLink pcbLink : getCreatedPcbLinks()) {
+                amountOfSolderItems += pcbLink.getSolderItems().size();
+            }
+        }
+        return amountOfSolderItems;
+    }
+
+    public int getAmountDone() {
+        return getAmountSoldered() + getAmountNotUsed();
+    }
+
+    public int getAmountSoldered() {
+        if (amountSoldered < 0) {
+            amountSoldered = 0;
+            for (CreatedPcbLink pcbLink : getCreatedPcbLinks()) {
+                for (SolderItem solderItem : pcbLink.getSolderItems()) {
+                    SolderItemState state = solderItem.getState();
+                    if (state.equals(Soldered)) {
+                        amountSoldered++;
+                    }
+                }
+            }
+        }
+        return amountSoldered;
+    }
+
+    public int getAmountNotUsed() {
+        if (amountNotUsed < 0) {
+            amountNotUsed = 0;
+            for (CreatedPcbLink pcbLink : getCreatedPcbLinks()) {
+                for (SolderItem solderItem : pcbLink.getSolderItems()) {
+                    SolderItemState state = solderItem.getState();
+                    if (state.equals(NotUsed)) {
+                        amountNotUsed++;
+                    }
+                }
+            }
+        }
+        return amountNotUsed;
+    }
+
+    public void updateAmountSoldered() {
+        this.amountSoldered = -1;
+        this.amountNotUsed = -1;
     }
 }

@@ -1,7 +1,7 @@
 package com.waldo.inventory.gui.dialogs.imagedialogs.selectimagedialog;
 
 import com.waldo.inventory.Utils.GuiUtils;
-import com.waldo.test.ImageSocketServer.ImageType;
+import com.waldo.inventory.Utils.Statics.ImageType;
 import com.waldo.utils.icomponents.IComboBox;
 import com.waldo.utils.icomponents.IDialog;
 import com.waldo.utils.icomponents.ITextField;

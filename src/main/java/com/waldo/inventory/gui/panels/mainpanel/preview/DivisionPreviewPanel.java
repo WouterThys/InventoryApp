@@ -132,11 +132,11 @@ public class DivisionPreviewPanel extends IPanel implements IdbToolBarListener {
 
         JPanel totalItemsPnl = new JPanel();
         gbc = new GuiUtils.GridBagHelper(totalItemsPnl);
-        gbc.addLine("Total items", imageResource.readIcon("Preview.Amount"), totalItemsTf);
+        gbc.addLine("Total items", imageResource.readIcon("Amount.S"), totalItemsTf);
 
         JPanel totalPricePnl = new JPanel();
         gbc = new GuiUtils.GridBagHelper(totalPricePnl);
-        gbc.addLine("Total price", imageResource.readIcon("Preview.Price"), totalPriceTf);
+        gbc.addLine("Total price", imageResource.readIcon("Value.S"), totalPriceTf);
 
         JPanel infoPnl = new JPanel();
         infoPnl.setLayout(new BoxLayout(infoPnl, BoxLayout.X_AXIS));

@@ -1,11 +1,11 @@
 package com.waldo.inventory.gui.dialogs.pcbitemdetails;
 
 import com.waldo.inventory.Utils.GuiUtils;
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.gui.components.ICacheDialog;
 import com.waldo.inventory.gui.components.IImagePanel;
 import com.waldo.inventory.gui.components.actions.IActions;
-import com.waldo.test.ImageSocketServer.ImageType;
 import com.waldo.utils.icomponents.IEditedListener;
 import com.waldo.utils.icomponents.ILabel;
 import com.waldo.utils.icomponents.ITableLabel;
@@ -88,12 +88,11 @@ abstract class PcbItemDetailsDialogLayout extends ICacheDialog implements IEdite
         if (pcbProject != null) {
             Project project = pcbProject.getProject();
             if (project != null) {
-                projectIconLbl.setImage(project.getIconPath());
                 projectTf.setText(project.toString());
             } else {
-                projectIconLbl.setImage(imageResource.getDefaultImage(ImageType.ProjectImage));
                 projectTf.setText("");
             }
+            projectIconLbl.updateComponents(project);
             pcbProjectTf.setText(pcbProject.toString());
         }
     }
@@ -121,7 +120,7 @@ abstract class PcbItemDetailsDialogLayout extends ICacheDialog implements IEdite
                 updateMatchedItemPanel(itemLink.getLinkedItemName(), itemLink.getLinkedItemAmount());
             }
             if (pcbItem.getOrderItem() != null) {
-                orderTf.setText(pcbItem.getOrderItem().getOrder().toString());
+               // orderTf.setText(pcbItem.getOrderItem().getPcbOrder().toString());
             }
         }
     }
@@ -135,7 +134,7 @@ abstract class PcbItemDetailsDialogLayout extends ICacheDialog implements IEdite
         // TODO: what if already changed?
         //..
         matchedItemLbl.setText("");
-        matchedItemLbl.setIcon((ImageIcon)null);
+        matchedItemLbl.setIcon(null);
         matchedItemTf.setText("");
 
     }
@@ -212,14 +211,14 @@ abstract class PcbItemDetailsDialogLayout extends ICacheDialog implements IEdite
 
         JPanel orderPnl = new JPanel(new BorderLayout());
         JButton orderBtn = new JButton(orderItemAction);
-        orderBtn.setText("Order ");
+        orderBtn.setText("ItemOrder ");
         orderPnl.add(orderLbl, BorderLayout.WEST);
         orderPnl.add(orderTf, BorderLayout.CENTER);
         orderPnl.add(orderBtn, BorderLayout.EAST);
 
         GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(panel);
-        gbc.addLine(imageResource.readIcon("Projects.Pcb.Linked"), itemPnl);
-        gbc.addLine(imageResource.readIcon("Projects.Pcb.Ordered"), orderPnl);
+        gbc.addLine(imageResource.readIcon("Link.New.SS"), itemPnl);
+        gbc.addLine(imageResource.readIcon("Order.SS"), orderPnl);
 
         return panel;
     }
@@ -232,13 +231,13 @@ abstract class PcbItemDetailsDialogLayout extends ICacheDialog implements IEdite
         // Dialog
         setResizable(true);
         setModal(false);
-        setTitleIcon(imageResource.readIcon("Projects.Pcb.Title"));
+        setTitleIcon(imageResource.readIcon("Pcb.L"));
         getButtonNeutral().setVisible(true);
         getButtonNeutral().setEnabled(false);
 
         // This
         // Project
-        projectIconLbl = new IImagePanel(ImageType.ProjectImage, new Dimension(64,64));
+        projectIconLbl = new IImagePanel(null, Statics.ImageType.ProjectImage, null, new Dimension(64,64));
         projectTf = new ITextField(false);
         pcbProjectTf = new ITextField(false);
 

@@ -8,8 +8,8 @@ import static com.waldo.inventory.gui.Application.imageResource;
 public abstract class TableOptionsPopup extends JPopupMenu {
 
     private final JMenu sortMenu = new JMenu("Sort");
-    private final JCheckBoxMenuItem showSetsMenu = new JCheckBoxMenuItem("Show sets", imageResource.readIcon("Sets.Small"), true);
-    private final JCheckBoxMenuItem showSetItemsMenu =  new JCheckBoxMenuItem("Show set items", imageResource.readIcon("Items.Tree.Item"), false);
+    private final JCheckBoxMenuItem showSetsMenu = new JCheckBoxMenuItem("Show sets", imageResource.readIcon("Components.SS"), true);
+    private final JCheckBoxMenuItem showSetItemsMenu =  new JCheckBoxMenuItem("Show set items", imageResource.readIcon("Component.SS"), false);
 
     public interface TableOptionsListener {
         void onShowSetsInTable(boolean show);

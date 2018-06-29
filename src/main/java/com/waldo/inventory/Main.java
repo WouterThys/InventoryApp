@@ -51,8 +51,8 @@ public class Main {
             app = new Application(startUpPath);
             app.setTitle("Inventory");
             app.setLocationByPlatform(true);
-            app.setPreferredSize(new Dimension(1600, 800));
-            app.setMinimumSize(new Dimension(800, 400));
+            app.setPreferredSize(new Dimension(1800, 900));
+            app.setMinimumSize(new Dimension(1000, 600));
             if (FULL_SCREEN || settings().getGeneralSettings().isGuiStartUpFullScreen()) {
                 app.setExtendedState(JFrame.MAXIMIZED_BOTH);
             }
@@ -60,7 +60,6 @@ public class Main {
             setLookAndFeel(settings().getGeneralSettings().getGuiLookAndFeel());
             app.initComponents();
             app.pack();
-
             app.setVisible(true);
         });
     }
@@ -107,10 +106,12 @@ public class Main {
                     UIDefaults defaults = super.getDefaults();
 
                     defaults.put("defaultFont", new Font(Font.SANS_SERIF, Font.PLAIN, 15));
+                    defaults.put("nimbusOrange", new Color(10, 180, 0)); //defaults.get("nimbusFocus")
 
                     return defaults;
                 }
             });
+
         } catch (UnsupportedLookAndFeelException e) {
             LOG.error("Error settings look and feel.", e);
         }
@@ -151,6 +152,7 @@ public class Main {
 
                 SwingUtilities.updateComponentTreeUI(app);
                 UIManager.getLookAndFeelDefaults().put("defaultFont", new Font(Font.SANS_SERIF, Font.PLAIN, 15));
+                UIManager.getLookAndFeelDefaults().put("nimbusOrange", new Color(10, 180, 0)); //defaults.get("nimbusFocus")
                 app.pack();
 
             } catch (UnsupportedLookAndFeelException e) {

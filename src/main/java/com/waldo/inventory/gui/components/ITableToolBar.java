@@ -95,10 +95,10 @@ public class ITableToolBar<T extends DbObject> extends JToolBar implements GuiUt
         };
 
         // Filter
-        filterAa = new AbstractAction("Filter", imageResource.readIcon("Toolbar.Table.ApplyFilter")) {
+        filterAa = new AbstractAction("Filter", imageResource.readIcon("Filter.S")) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                filterAa.putValue(AbstractAction.SMALL_ICON, imageResource.readIcon("Toolbar.Table.ApplyFilter"));
+                filterAa.putValue(AbstractAction.SMALL_ICON, imageResource.readIcon("Filter.S"));
                 filterTf.setText("");
                 hasFilter = false;
             }
@@ -110,7 +110,7 @@ public class ITableToolBar<T extends DbObject> extends JToolBar implements GuiUt
                 if (table != null) {
                     applyTableFilter(table);
                     if (!hasFilter) {
-                        filterAa.putValue(AbstractAction.SMALL_ICON, imageResource.readIcon("Toolbar.Table.RemoveFilter"));
+                        filterAa.putValue(AbstractAction.SMALL_ICON, imageResource.readIcon("Filter.Remove.S"));
                         hasFilter = true;
                     }
                 }
@@ -121,7 +121,7 @@ public class ITableToolBar<T extends DbObject> extends JToolBar implements GuiUt
                 if (table != null) {
                     applyTableFilter(table);
                     if (!hasFilter) {
-                        filterAa.putValue(AbstractAction.SMALL_ICON, imageResource.readIcon("Toolbar.Table.RemoveFilter"));
+                        filterAa.putValue(AbstractAction.SMALL_ICON, imageResource.readIcon("Filter.Remove.S"));
                         hasFilter = true;
                     }
                 }
@@ -132,7 +132,7 @@ public class ITableToolBar<T extends DbObject> extends JToolBar implements GuiUt
                 if (table != null) {
                     applyTableFilter(table);
                     if (!hasFilter) {
-                        filterAa.putValue(AbstractAction.SMALL_ICON, imageResource.readIcon("Toolbar.Table.RemoveFilter"));
+                        filterAa.putValue(AbstractAction.SMALL_ICON, imageResource.readIcon("Filter.Remove.S"));
                         hasFilter = true;
                     }
                 }

@@ -1,11 +1,11 @@
 package com.waldo.inventory.gui.components.tablemodels;
 
-import com.waldo.inventory.classes.dbclasses.OrderLine;
+import com.waldo.inventory.classes.dbclasses.ItemOrderLine;
 import com.waldo.utils.icomponents.IAbstractTableModel;
 
-public class IPcbItemOrderTableModel extends IAbstractTableModel<OrderLine> {
+public class IPcbItemOrderTableModel extends IAbstractTableModel<ItemOrderLine> {
 
-    private static final String[] COLUMN_NAME = {"Order", "Item", "#"};
+    private static final String[] COLUMN_NAME = {"ItemOrder", "Item", "#"};
     private static final Class[] COLUMN_CLASSES = {String.class, String.class, Integer.class};
 
     public IPcbItemOrderTableModel() {
@@ -14,17 +14,17 @@ public class IPcbItemOrderTableModel extends IAbstractTableModel<OrderLine> {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        OrderLine orderItem = getItemAt(rowIndex);
+        ItemOrderLine orderItem = getItemAt(rowIndex);
         if (orderItem != null) {
             switch (columnIndex) {
-                case -1: // Reference to object itself
-                    return orderItem;
-                case 0: // Order name
-                    return orderItem.getOrder().getName();
-                case 1: // Item name
-                    return orderItem.getItem().toString();
-                case 2: // Amount
-                    return orderItem.getAmount();
+//                case -1: // Reference to object itself
+//                    return orderItem;
+//                case 0: // ItemOrder name
+//                    return orderItem.getPcbOrder().getName();
+//                case 1: // Item name
+//                    return orderItem.getItem().toString();
+//                case 2: // Amount
+//                    return orderItem.getAmount();
             }
         }
         return null;

@@ -72,7 +72,7 @@ public class Set extends Item {
                 if (!(ref.getLocationId() == getLocationId())) { System.out.println("Location differs"); return false; }
                 if (!(ref.getAmount() == getAmount())) { System.out.println("Amount differs"); return false; }
                 if (!(ref.getAmountType() == getAmountType())) { System.out.println("Amount type differs"); return false; }
-                if (!(ref.getOrderState() == getOrderState())) { System.out.println("Order state differs"); return false; }
+                if (!(ref.getOrderState() == getOrderState())) { System.out.println("ItemOrder state differs"); return false; }
                 if (!(ref.getPackageTypeId() == getPackageTypeId())) {
                     System.out.println("Package type differs: " + ref.getPackageTypeId() + "<->" + getPackageTypeId());
                     return false; }

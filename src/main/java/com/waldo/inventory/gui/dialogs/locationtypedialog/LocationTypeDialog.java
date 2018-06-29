@@ -22,7 +22,7 @@ import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class LocationTypeDialog extends IResourceDialog<LocationType> {
 
-    private static final ImageIcon icon = imageResource.readIcon("Locations.Title");
+    private static final ImageIcon icon = imageResource.readIcon("Location.L");
 
     private ITextField detailName;
     private IActions.EditAction editAction;

@@ -19,7 +19,7 @@ import java.util.List;
 
 import static com.waldo.inventory.managers.CacheManager.cache;
 
-public class ProjectPcb extends ProjectObject {
+public class ProjectPcb extends ProjectObject implements Orderable {
 
     public static final String TABLE_NAME = "projectpcbs";
 
@@ -204,22 +204,22 @@ public class ProjectPcb extends ProjectObject {
 
     private void findKnownOrders(List<PcbItemProjectLink> projectLinks) {
         if (projectLinks != null && projectLinks.size() > 0) {
-            List<Order> planned = SearchManager.sm().findPlannedOrders(Statics.DistributorType.Items);
-            if (planned.size() > 0) {
-                for (Order order : planned) {
-                    for (OrderLine oi : order.getOrderLines()) {
-                        for (PcbItemProjectLink link : projectLinks) {
-                            if (link.getPcbItemItemLinkId() > UNKNOWN_ID) {
-                                if (oi.getItemId() == link.getPcbItemItemLink().getItemId()) {
-                                    link.getPcbItem().setOrderLine(oi);
-                                    link.getPcbItem().setOrderAmount(oi.getAmount());
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+//            List<PcbOrder> planned = SearchManager.sm().findPlannedOrders(Statics.DistributorType.Items);
+//            if (planned.size() > 0) {
+//                for (ItemOrder itemOrder : planned) {
+//                    for (ItemOrderLine oi : itemOrder.getItemOrderLines()) {
+//                        for (PcbItemProjectLink link : projectLinks) {
+//                            if (link.getPcbItemItemLinkId() > UNKNOWN_ID) {
+//                                if (oi.getItemId() == link.getPcbItemItemLink().getItemId()) {
+//                                    link.getPcbItem().setOrderLine(oi);
+//                                    link.getPcbItem().setOrderAmount(oi.getAmount());
+//                                    break;
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            } TODO
         }
     }
 
@@ -304,5 +304,10 @@ public class ProjectPcb extends ProjectObject {
 
     public void updateCreatedPcbs() {
         createdPcbs = null;
+    }
+
+    @Override
+    public PcbOrderLine createOrderLine(AbstractOrder order) {
+        return new PcbOrderLine((PcbOrder) order, this, 1);
     }
 }

@@ -61,6 +61,7 @@ public class Project extends DbObject {
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
         int ndx = addBaseParameters(statement);
+        statement.setLong(ndx++, getImageId());
         statement.setString(ndx++, getMainDirectory());
         return ndx;
     }

@@ -133,7 +133,7 @@ abstract class EditProjectCacheDialogLayout extends ICacheDialog implements
     public void initializeComponents() {
         // Dialog
         setTitleName(getTitle());
-        setTitleIcon(imageResource.readIcon("Projects.Edit.Title"));
+        setTitleIcon(imageResource.readIcon("BluePrint.L"));
         setResizable(true);
 
         // This

@@ -2,7 +2,7 @@ package com.waldo.inventory.database;
 
 import com.waldo.inventory.Main;
 import com.waldo.inventory.Utils.Statics;
-import com.waldo.inventory.classes.database.DbEvent;
+import com.waldo.inventory.database.classes.DbEvent;
 import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.classes.dbclasses.Package;
 import com.waldo.inventory.database.classes.DbErrorObject;
@@ -35,18 +35,19 @@ public class DatabaseAccess {
     private static final String QUEUE_WORKER = "Queue worker";
     private static final String ERROR_WORKER = "Error worker";
 
-    // Db
+    // Singleton
     private static final DatabaseAccess INSTANCE = new DatabaseAccess();
-
     public static DatabaseAccess db() {
         return INSTANCE;
     }
 
-    private BasicDataSource dataSource;//MysqlDataSource dataSource;//BasicDataSource dataSource;
+    private BasicDataSource mainDataSource;
+
     private boolean initialized = false;
     private String loggedUser = "";
     private long cacheOnlyFakedId = 2;
 
+    // Main objects
     private DbQueue<DbQueueObject> workList;
     private DbQueue<DbErrorObject> nonoList;
     private DbQueueWorker dbQueueWorker;
@@ -76,10 +77,10 @@ public class DatabaseAccess {
                 }
 
                 // Test
-                initialized = testConnection(dataSource);
+                initialized = testConnection(mainDataSource);
                 switch (s.getDbType()) {
                     case Online:
-                        TableManager.dbTm().init(dataSource, s);
+                        TableManager.dbTm().init(mainDataSource, s);
                         Status().setDbConnectionText(initialized, s.getDbIp(), s.getDbName(), s.getDbUserName());
                         break;
                     case Local:
@@ -92,28 +93,29 @@ public class DatabaseAccess {
         }
     }
 
+
     private void initMySql(DbSettings settings) {
-        dataSource = new BasicDataSource(); // new MySqlDataSource
-        dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-        dataSource.setUrl(settings.createMySqlUrl() + "?zeroDateTimeBehavior=convertToNull&connectTimeout=5000&socketTimeout=30000");
-        dataSource.setUsername(settings.getDbUserName());
-        dataSource.setPassword(settings.getDbUserPw());
+        mainDataSource = new BasicDataSource(); // new MySqlDataSource
+        mainDataSource.setDriverClassName("com.mysql.jdbc.Driver");
+        mainDataSource.setUrl(settings.createMySqlUrl() + "?zeroDateTimeBehavior=convertToNull&connectTimeout=5000&socketTimeout=30000");
+        mainDataSource.setUsername(settings.getDbUserName());
+        mainDataSource.setPassword(settings.getDbUserPw());
         LOG.info("Database initialized with connection: " + settings.createMySqlUrl());
     }
 
     private void initSqLite(DbSettings settings) {
-        dataSource = new BasicDataSource();
-        dataSource.setDriverClassName("net.sf.log4jdbc.DriverSpy");
-        dataSource.setUrl("jdbc:log4jdbc:sqlite:" + settings.getDbName());
-        dataSource.setUsername(settings.getDbUserName());
-        dataSource.setPassword("");
-        dataSource.setMaxIdle(10);
-        dataSource.setPoolPreparedStatements(true);
-        dataSource.setLogAbandoned(false);
-        dataSource.setInitialSize(5);
-        dataSource.setRemoveAbandonedTimeout(60);
+        mainDataSource = new BasicDataSource();
+        mainDataSource.setDriverClassName("org.sqlite.JDBC");
+        mainDataSource.setUrl("jdbc:sqlite:" + settings.getDbName());
+        mainDataSource.setUsername(settings.getDbUserName());
+        mainDataSource.setPassword("");
+        mainDataSource.setMaxIdle(10);
+        mainDataSource.setPoolPreparedStatements(true);
+        mainDataSource.setLogAbandoned(false);
+        mainDataSource.setInitialSize(5);
+        mainDataSource.setRemoveAbandonedTimeout(60);
 
-        String sql = "PRAGMA foreign_keys=ON;";
+        String sql = "PRAGMA foreign_keys=OFF;";
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                 stmt.execute();
@@ -129,7 +131,7 @@ public class DatabaseAccess {
         if (s != null) {
             if (!Main.CACHE_ONLY) {
                 // Test
-                initialized = testConnection(dataSource);
+                initialized = testConnection(mainDataSource);
                 Status().setDbConnectionText(initialized, s.getDbIp(), s.getDbName(), s.getDbUserName());
                 if (initialized) {
                     cache().clearCache();
@@ -156,7 +158,7 @@ public class DatabaseAccess {
         try (Connection connection = dataSource.getConnection()) {
             for (int i = 0; i < numberOfTables; i++) {
                 try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                    //String schemaName = dataSource.get();
+                    //String schemaName = mainDataSource.get();
 //                    stmt.setString(1, schemaName);
 //                    String tableName = scriptResource.readString("test.tableNames." + i);
 //                    stmt.setString(2, tableName);
@@ -216,7 +218,7 @@ public class DatabaseAccess {
 
 
     public void close() {
-        if (dataSource != null) {
+        if (mainDataSource != null) {
             Status().setMessage("Closing down");
             if (dbQueueWorker != null) {
                 dbQueueWorker.keepRunning = false;
@@ -239,8 +241,8 @@ public class DatabaseAccess {
     private void workerDone(String workerName) {
         System.out.println(workerName + " :thread done");
 //        try {
-//            if (dataSource != null) {
-//                dataSource.close();
+//            if (mainDataSource != null) {
+//                mainDataSource.close();
 //            }
 //        } catch (SQLException e) {
 //            e.printStackTrace();
@@ -423,12 +425,12 @@ public class DatabaseAccess {
      *                  GETTERS - SETTERS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-    private BasicDataSource getDataSource() {
-        return dataSource;
+    private BasicDataSource getMainDataSource() {
+        return mainDataSource;
     }
 
     public static Connection getConnection() throws SQLException {
-        return db().getDataSource().getConnection();
+        return db().getMainDataSource().getConnection();
     }
 
     public boolean isInitialized() {
@@ -436,6 +438,9 @@ public class DatabaseAccess {
     }
 
 
+    /*
+     *                  METHODS
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     public void insert(final DbObject object) {
         object.getAud().setInserted(loggedUser);
         if (!Main.CACHE_ONLY) {
@@ -502,7 +507,10 @@ public class DatabaseAccess {
     }
 
 
-    public List<Item> updateItems() {
+    /*
+     *                  FETCH DATA
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    public List<Item> fetchItems() {
         List<Item> items = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return items;
@@ -520,6 +528,7 @@ public class DatabaseAccess {
                     if (i.getId() > DbObject.UNKNOWN_ID) {
                         i.setName(rs.getString("name"));
                         i.setIconPath(rs.getString("iconPath"));
+                        i.setImageId(rs.getLong("imageId"));
                         i.setAlias(rs.getString("alias"));
                         i.setDescription(rs.getString("description"));
                         i.setDivisionId(rs.getLong("divisionId"));
@@ -535,8 +544,12 @@ public class DatabaseAccess {
                         i.setPins(rs.getInt("pins"));
                         i.setRating(rs.getFloat("rating"));
                         i.setDiscourageOrder(rs.getBoolean("discourageOrder"));
+                        i.setAutoOrder(rs.getBoolean("autoOrder"));
                         i.setValue(rs.getDouble("value"), rs.getInt("multiplier"), rs.getString("unit"));
                         i.setIsSet(rs.getBoolean("isSet"));
+                        i.setReplacementItemId(rs.getLong("replacementItemId"));
+                        i.setRelatedItemId(rs.getLong("relatedItemId"));
+                        i.setAutoOrderById(rs.getLong("autoOrderById")); // MUST BE AFTER setAmount() to disable auto ordering while fetching from DB
 
                         if (settings().getDbSettings().getDbType().equals(Statics.DbTypes.Online)) {
                             i.getAud().setInserted(rs.getString("insertedBy"), rs.getTimestamp("insertedDate"));
@@ -563,7 +576,7 @@ public class DatabaseAccess {
         return items;
     }
 
-    public List<Division> updateDivisions() {
+    public List<Division> fetchDivisions() {
         List<Division> divisions = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return divisions;
@@ -600,7 +613,7 @@ public class DatabaseAccess {
         return divisions;
     }
 
-    public List<Manufacturer> updateManufacturers() {
+    public List<Manufacturer> fetchManufacturers() {
         List<Manufacturer> manufacturers = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return manufacturers;
@@ -618,6 +631,7 @@ public class DatabaseAccess {
                     m.setName(rs.getString("name"));
                     m.setWebsite(rs.getString("website"));
                     m.setIconPath(rs.getString("iconpath"));
+                    m.setImageId(rs.getLong("imageId"));
 
                     m.setInserted(true);
                     manufacturers.add(m);
@@ -634,7 +648,7 @@ public class DatabaseAccess {
         return manufacturers;
     }
 
-    public List<Location> updateLocations() {
+    public List<Location> fetchLocations() {
         List<Location> locations = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return locations;
@@ -673,7 +687,7 @@ public class DatabaseAccess {
         return locations;
     }
 
-    public List<LocationType> updateLocationTypes() {
+    public List<LocationType> fetchLocationTypes() {
         List<LocationType> locationTypes = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return locationTypes;
@@ -708,20 +722,20 @@ public class DatabaseAccess {
         return locationTypes;
     }
 
-    public List<Order> updateOrders() {
-        List<Order> orders = new ArrayList<>();
+    public List<ItemOrder> fetchItemOrders() {
+        List<ItemOrder> itemOrders = new ArrayList<>();
         if (Main.CACHE_ONLY) {
-            return orders;
+            return itemOrders;
         }
-        Status().setMessage("Fetching orders from DB");
-        Order o = null;
-        String sql = scriptResource.readString(Order.TABLE_NAME + DbObject.SQL_SELECT_ALL);
+        Status().setMessage("Fetching itemOrders from DB");
+        ItemOrder o = null;
+        String sql = scriptResource.readString(ItemOrder.TABLE_NAME + DbObject.SQL_SELECT_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
 
                 while (rs.next()) {
-                    o = new Order();
+                    o = new ItemOrder();
                     o.setId(rs.getLong("id"));
                     o.setName(rs.getString("name"));
                     o.setIconPath(rs.getString("iconPath"));
@@ -735,13 +749,15 @@ public class DatabaseAccess {
                         o.setDateReceived(DateUtils.sqLiteToDate(rs.getString("dateReceived")));
                     }
                     o.setDistributorId(rs.getLong("distributorId"));
+                    o.setVAT(rs.getDouble("VAT"));
                     o.setOrderReference(rs.getString("orderReference"));
                     o.setTrackingNumber(rs.getString("trackingNumber"));
                     o.setLocked(o.getOrderState() != Statics.OrderStates.Planned);
+                    o.setAutoOrder(rs.getBoolean("isAutoOrder"));
 
                     o.setInserted(true);
                     if (o.getId() != DbObject.UNKNOWN_ID) {
-                        orders.add(o);
+                        itemOrders.add(o);
                     }
                 }
             }
@@ -753,35 +769,36 @@ public class DatabaseAccess {
                 e1.printStackTrace();
             }
         }
-        orders.add(0, Order.getUnknownOrder());
-        orders.sort(new Order.SortAllOrders());
+        itemOrders.add(0, ItemOrder.getUnknownOrder());
+        //itemOrders.sort(new ItemOrder.SortAllOrders());
 
-        return orders;
+        return itemOrders;
     }
 
-    public List<OrderLine> updateOrderLines() {
-        List<OrderLine> orderLines = new ArrayList<>();
+    public List<ItemOrderLine> fetchItemOrderLines() {
+        List<ItemOrderLine> itemOrderLines = new ArrayList<>();
         if (Main.CACHE_ONLY) {
-            return orderLines;
+            return itemOrderLines;
         }
         Status().setMessage("Fetching order lines from DB");
-        OrderLine o = null;
-        String sql = scriptResource.readString(OrderLine.TABLE_NAME + DbObject.SQL_SELECT_ALL);
+        ItemOrderLine o = null;
+        String sql = scriptResource.readString(ItemOrderLine.TABLE_NAME + DbObject.SQL_SELECT_ALL);
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ResultSet rs = stmt.executeQuery()) {
 
                 while (rs.next()) {
-                    o = new OrderLine();
+                    o = new ItemOrderLine();
                     o.setId(rs.getLong("id"));
                     o.setOrderId(rs.getLong("orderId"));
                     o.setAmount(rs.getInt("amount"));
-                    o.setItemId(rs.getLong("itemId"));
-                    o.setPcbId(rs.getLong("pcbId"));
+                    o.setLineId(rs.getLong("itemId"));
+                    o.setPending(rs.getBoolean("isPending"));
+                    o.setCorrectedPrice(rs.getDouble("correctedPrice"), rs.getInt("priceUnits"));
 
                     o.setInserted(true);
                     if (o.getId() != DbObject.UNKNOWN_ID) {
-                        orderLines.add(o);
+                        itemOrderLines.add(o);
                     }
                 }
             }
@@ -793,31 +810,99 @@ public class DatabaseAccess {
                 e1.printStackTrace();
             }
         }
-        return orderLines;
+        return itemOrderLines;
     }
 
-//    public void removeItemFromOrder(OrderItem orderItem) {
-//        if (Main.CACHE_ONLY) {
-//            return;
-//        }
-//        Status().setMessage("Removing \"" + orderItem.getItem().toString() + "\" from \"" + orderItem.getOrder().toString());
-//
-//        String sql = scriptResource.readString("orderitems.sqlDeleteItemFromOrder");
-//        try (Connection connection = getConnection()) {
-//            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-//                stmt.setLong(1, orderItem.getOrderId());
-//                stmt.setLong(2, orderItem.getObjectId());
-//                stmt.execute();
-//
-//            } catch (SQLException e) {
-//                Status().setError("Failed to delete item from order");
-//            }
-//        } catch (SQLException e) {
-//            Status().setError("Failed to delete item from order");
-//        }
-//    }
+    public List<PcbOrder> fetchPcbOrders() {
+        List<PcbOrder> pcbOrders = new ArrayList<>();
+        if (Main.CACHE_ONLY) {
+            return pcbOrders;
+        }
+        Status().setMessage("Fetching PcbOrder from DB");
+        PcbOrder o = null;
+        String sql = scriptResource.readString(PcbOrder.TABLE_NAME + DbObject.SQL_SELECT_ALL);
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
 
-    public List<Distributor> updateDistributors() {
+                while (rs.next()) {
+                    o = new PcbOrder();
+                    o.setId(rs.getLong("id"));
+                    o.setName(rs.getString("name"));
+                    o.setIconPath(rs.getString("iconPath"));
+                    if (settings().getDbSettings().getDbType().equals(Statics.DbTypes.Online)) {
+                        o.setDateOrdered(rs.getTimestamp("dateOrdered"));
+                        o.setDateModified(rs.getTimestamp("dateModified"));
+                        o.setDateReceived(rs.getTimestamp("dateReceived"));
+                    } else {
+                        o.setDateOrdered(DateUtils.sqLiteToDate(rs.getString("dateOrdered")));
+                        o.setDateModified(DateUtils.sqLiteToDate(rs.getString("dateModified")));
+                        o.setDateReceived(DateUtils.sqLiteToDate(rs.getString("dateReceived")));
+                    }
+                    o.setDistributorId(rs.getLong("distributorId"));
+                    o.setVAT(rs.getDouble("VAT"));
+                    o.setOrderReference(rs.getString("orderReference"));
+                    o.setTrackingNumber(rs.getString("trackingNumber"));
+                    o.setLocked(o.getOrderState() != Statics.OrderStates.Planned);
+                    o.setAutoOrder(rs.getBoolean("isAutoOrder"));
+
+                    o.setInserted(true);
+                    if (o.getId() != DbObject.UNKNOWN_ID) {
+                        pcbOrders.add(o);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            DbErrorObject object = new DbErrorObject(o, e, Select, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+        }
+
+        return pcbOrders;
+    }
+
+    public List<PcbOrderLine> fetchPcbOrderLines() {
+        List<PcbOrderLine> pcbOrderLines = new ArrayList<>();
+        if (Main.CACHE_ONLY) {
+            return pcbOrderLines;
+        }
+        Status().setMessage("Fetching PcbOrderLine from DB");
+        PcbOrderLine o = null;
+        String sql = scriptResource.readString(PcbOrderLine.TABLE_NAME + DbObject.SQL_SELECT_ALL);
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    o = new PcbOrderLine();
+                    o.setId(rs.getLong("id"));
+                    o.setOrderId(rs.getLong("orderId"));
+                    o.setAmount(rs.getInt("amount"));
+                    o.setLineId(rs.getLong("pcbId"));
+                    o.setPending(rs.getBoolean("isPending"));
+                    o.setCorrectedPrice(rs.getDouble("correctedPrice"), rs.getInt("priceUnits"));
+
+                    o.setInserted(true);
+                    if (o.getId() != DbObject.UNKNOWN_ID) {
+                        pcbOrderLines.add(o);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            DbErrorObject object = new DbErrorObject(o, e, Select, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+        }
+        return pcbOrderLines;
+    }
+
+    public List<Distributor> fetchDistributors() {
         List<Distributor> distributors = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return distributors;
@@ -834,6 +919,7 @@ public class DatabaseAccess {
                     d.setId(rs.getLong("id"));
                     d.setName(rs.getString("name"));
                     d.setIconPath(rs.getString("iconPath"));
+                    d.setImageId(rs.getLong("imageId"));
                     d.setWebsite(rs.getString("website"));
                     d.setOrderLink(rs.getString("orderLink"));
                     d.setOrderFileFormatId(rs.getLong("orderFileFormatId"));
@@ -857,7 +943,7 @@ public class DatabaseAccess {
         return distributors;
     }
 
-    public List<DistributorPartLink> updateDistributorParts() {
+    public List<DistributorPartLink> fetchDistributorParts() {
         List<DistributorPartLink> distributorPartLinks = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return distributorPartLinks;
@@ -898,7 +984,7 @@ public class DatabaseAccess {
         return distributorPartLinks;
     }
 
-    public List<DistributorOrderFlow> updateDistributorOrderFlows() {
+    public List<DistributorOrderFlow> fetchDistributorOrderFlows() {
         List<DistributorOrderFlow> distributorOrderFlows = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return distributorOrderFlows;
@@ -939,7 +1025,7 @@ public class DatabaseAccess {
         return distributorOrderFlows;
     }
 
-    public List<Package> updatePackages() {
+    public List<Package> fetchPackages() {
         List<Package> packages = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return packages;
@@ -973,7 +1059,7 @@ public class DatabaseAccess {
         return packages;
     }
 
-    public List<PackageType> updatePackageTypes() {
+    public List<PackageType> fetchPackageTypes() {
         List<PackageType> packageTypes = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return packageTypes;
@@ -1010,7 +1096,7 @@ public class DatabaseAccess {
         return packageTypes;
     }
 
-    public List<Project> updateProjects() {
+    public List<Project> fetchProjects() {
         List<Project> projects = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return projects;
@@ -1027,6 +1113,7 @@ public class DatabaseAccess {
                     p.setId(rs.getLong("id"));
                     p.setName(rs.getString("name"));
                     p.setIconPath(rs.getString("iconPath"));
+                    p.setImageId(rs.getLong("imageId"));
                     p.setMainDirectory(rs.getString("mainDirectory"));
 
                     p.setInserted(true);
@@ -1047,7 +1134,7 @@ public class DatabaseAccess {
         return projects;
     }
 
-    public List<ProjectCode> updateProjectCodes() {
+    public List<ProjectCode> fetchProjectCodes() {
         List<ProjectCode> projectCodes = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return projectCodes;
@@ -1091,7 +1178,7 @@ public class DatabaseAccess {
         return projectCodes;
     }
 
-    public List<ProjectPcb> updateProjectPcbs() {
+    public List<ProjectPcb> fetchProjectPcbs() {
         List<ProjectPcb> projectPcbs = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return projectPcbs;
@@ -1137,7 +1224,7 @@ public class DatabaseAccess {
         return projectPcbs;
     }
 
-    public List<ProjectOther> updateProjectOthers() {
+    public List<ProjectOther> fetchProjectOthers() {
         List<ProjectOther> projectOthers = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return projectOthers;
@@ -1181,7 +1268,7 @@ public class DatabaseAccess {
         return projectOthers;
     }
 
-    public List<PcbItemProjectLink> updatePcbItemLinks() {
+    public List<PcbItemProjectLink> fetchPcbItemLinks() {
         List<PcbItemProjectLink> pcbItemProjectLinks = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return pcbItemProjectLinks;
@@ -1220,7 +1307,7 @@ public class DatabaseAccess {
         return pcbItemProjectLinks;
     }
 
-    public List<CreatedPcb> updateCreatedPcbs() {
+    public List<CreatedPcb> fetchCreatedPcbs() {
         List<CreatedPcb> createdPcbs = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return createdPcbs;
@@ -1272,7 +1359,7 @@ public class DatabaseAccess {
         return createdPcbs;
     }
 
-    public List<CreatedPcbLink> updateCreatedPcbLinks() {
+    public List<CreatedPcbLink> fetchCreatedPcbLinks() {
         List<CreatedPcbLink> createdPcbLinks = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return createdPcbLinks;
@@ -1314,7 +1401,7 @@ public class DatabaseAccess {
         return createdPcbLinks;
     }
 
-    public List<SolderItem> updateSolderItems() {
+    public List<SolderItem> fetchSolderItems() {
         List<SolderItem> solderItems = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return solderItems;
@@ -1372,7 +1459,7 @@ public class DatabaseAccess {
         return solderItems;
     }
 
-    public List<ProjectIDE> updateProjectIDEs() {
+    public List<ProjectIDE> fetchProjectIDEs() {
         List<ProjectIDE> projectIDES = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return projectIDES;
@@ -1416,7 +1503,7 @@ public class DatabaseAccess {
         return projectIDES;
     }
 
-    public List<ParserItemLink> updateParserItemLinks() {
+    public List<ParserItemLink> fetchParserItemLinks() {
         List<ParserItemLink> parserItemLinks = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return parserItemLinks;
@@ -1450,7 +1537,7 @@ public class DatabaseAccess {
         return parserItemLinks;
     }
 
-    public List<OrderFileFormat> updateOrderFileFormats() {
+    public List<OrderFileFormat> fetchOrderFileFormats() {
         List<OrderFileFormat> orderFileFormats = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return orderFileFormats;
@@ -1483,7 +1570,7 @@ public class DatabaseAccess {
         return orderFileFormats;
     }
 
-    public List<PcbItem> updatePcbItems() {
+    public List<PcbItem> fetchPcbItems() {
         List<PcbItem> pcbItems = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return pcbItems;
@@ -1517,7 +1604,7 @@ public class DatabaseAccess {
         return pcbItems;
     }
 
-    public List<PcbItemItemLink> updateKcItemLinks() {
+    public List<PcbItemItemLink> fetchKcItemLinks() {
         List<PcbItemItemLink> pcbItemItemLinks = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return pcbItemItemLinks;
@@ -1552,7 +1639,7 @@ public class DatabaseAccess {
         return pcbItemItemLinks;
     }
 
-    public List<Log> updateLogs() {
+    public List<Log> fetchLogs() {
         List<Log> logs = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return logs;
@@ -1592,7 +1679,7 @@ public class DatabaseAccess {
         return logs;
     }
 
-    public List<DbHistory> updateDbHistoryList() {
+    public List<DbHistory> fetchDbHistoryList() {
         List<DbHistory> dbHistoryList = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return dbHistoryList;
@@ -1632,7 +1719,7 @@ public class DatabaseAccess {
         return dbHistoryList;
     }
 
-    public List<Set> updateSets() {
+    public List<Set> fetchSets() {
         List<Set> sets = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return sets;
@@ -1691,7 +1778,7 @@ public class DatabaseAccess {
         return sets;
     }
 
-    public List<SetItemLink> updateSetItemLinks() {
+    public List<SetItemLink> fetchSetItemLinks() {
         List<SetItemLink> setItemLinks = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return setItemLinks;
@@ -1726,7 +1813,7 @@ public class DatabaseAccess {
         return setItemLinks;
     }
 
-    public List<DbEvent> updateDbEvents() {
+    public List<DbEvent> fetchDbEvents() {
         List<DbEvent> dbEvents = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return dbEvents;
@@ -1770,7 +1857,7 @@ public class DatabaseAccess {
         return dbEvents;
     }
 
-    public List<Statistics> updateStatistics() {
+    public List<Statistics> fetchStatistics() {
         List<Statistics> statistics = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return statistics;
@@ -1811,7 +1898,7 @@ public class DatabaseAccess {
         return statistics;
     }
 
-    public List<PendingOrder> updatePendingOrders() {
+    public List<PendingOrder> fetchPendingOrders() {
         List<PendingOrder> pendingOrders = new ArrayList<>();
         if (Main.CACHE_ONLY) {
             return pendingOrders;
@@ -1826,9 +1913,7 @@ public class DatabaseAccess {
                 while (rs.next()) {
                     p = new PendingOrder();
                     p.setId(rs.getLong("id"));
-                    p.setItemId(rs.getLong("itemId"));
-                    p.setDistributorId(rs.getLong("distributorId"));
-                    p.setOrderDate(rs.getTimestamp("orderDate"));
+                    p.setOriginalOrderId(rs.getLong("originalOrderId"));
                     p.setInserted(true);
 
                     pendingOrders.add(p);

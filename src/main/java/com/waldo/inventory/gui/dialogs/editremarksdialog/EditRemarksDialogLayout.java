@@ -40,7 +40,7 @@ abstract class EditRemarksDialogLayout extends IDialog {
     @Override
     public void initializeComponents() {
         // Dialog
-        setTitleIcon(imageResource.readIcon("Remarks.Dialog.Title"));
+        setTitleIcon(imageResource.readIcon("Remarks.L"));
         setTitleName(getTitle());
         getButtonNeutral().setVisible(true);
         getButtonNeutral().setEnabled(true);

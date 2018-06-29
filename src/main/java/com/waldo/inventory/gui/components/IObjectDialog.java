@@ -44,9 +44,9 @@ public abstract class IObjectDialog <T extends DbObject> extends IDialog impleme
         if (originalObject != null) {
             ImageIcon icon;
             if (originalObject.getId() > DbObject.UNKNOWN_ID) {
-                icon = imageResource.readIcon("Actions.L.Edit");
+                icon = imageResource.readIcon("Pen.M");
             } else {
-                icon = imageResource.readIcon("Actions.L.Add");
+                icon = imageResource.readIcon("Add.M");
             }
             if (icon != null) {
                 setInfoIcon(icon);
@@ -81,6 +81,10 @@ public abstract class IObjectDialog <T extends DbObject> extends IDialog impleme
 
     protected boolean hasChanged() {
         return originalObject != null && copyObject != null && !(copyObject.equals(originalObject));
+    }
+
+    protected void doDelete() {
+        originalObject.delete();
     }
 
     protected void doSave() {
@@ -155,12 +159,14 @@ public abstract class IObjectDialog <T extends DbObject> extends IDialog impleme
     @Override
     public void onInserted(T object) {
         copyObject = (T) object.createCopy();
+        originalObject = object;
         getButtonNeutral().setEnabled(false);
     }
 
     @Override
     public void onUpdated(T object) {
         copyObject = (T) object.createCopy();
+        originalObject = object;
         getButtonNeutral().setEnabled(false);
     }
 

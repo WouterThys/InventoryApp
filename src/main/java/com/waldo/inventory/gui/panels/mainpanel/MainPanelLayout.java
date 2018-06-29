@@ -221,8 +221,8 @@ abstract class MainPanelLayout extends JPanel implements
         setPanel.add(setPreviewPanel, BorderLayout.SOUTH);
         setPanel.setMinimumSize(new Dimension(200, 200));
 
-        tabbedPane.addTab(TREE_ITEMS, imageResource.readIcon("Items.Tree.Item"), divisionPanel);
-        tabbedPane.addTab(TREE_SETS, imageResource.readIcon("Items.Tree.Set"), setPanel);
+        tabbedPane.addTab(TREE_ITEMS, imageResource.readIcon("Component.SS"), divisionPanel);
+        tabbedPane.addTab(TREE_SETS, imageResource.readIcon("Components.SS"), setPanel);
 
         panel.add(tabbedPane, BorderLayout.CENTER);
 
@@ -285,8 +285,6 @@ abstract class MainPanelLayout extends JPanel implements
 
                 @Override
                 public void onToolBarEdit(IdBToolBar source) {
-                    //ResistorCacheDialog dialog = new ResistorCacheDialog(application, "resistor");
-                    //dialog.showDialog();
                     MainPanelLayout.this.onToolBarEdit(source);
                 }
             };

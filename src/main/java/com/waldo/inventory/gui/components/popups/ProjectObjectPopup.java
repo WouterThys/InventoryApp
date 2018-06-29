@@ -46,7 +46,7 @@ public abstract class ProjectObjectPopup<P extends ProjectObject> extends JPopup
                 onRunIde(projectObject);
             }
         };
-        runIdeAction.setIcon(imageResource.readIcon("Actions.Execute"));
+        runIdeAction.setIcon(imageResource.readIcon("Execute.SS"));
         String name = "Run ";
         if (projectObject != null && projectObject.getProjectIDE() != null) {
             name += projectObject.getProjectIDE().toString();
@@ -59,7 +59,7 @@ public abstract class ProjectObjectPopup<P extends ProjectObject> extends JPopup
                 onBrowseProjectObject(projectObject);
             }
         };
-        openProjectFolderAction.setIcon(imageResource.readIcon("Actions.BrowseFile"));
+        openProjectFolderAction.setIcon(imageResource.readIcon("Browse.Folder.SS"));
 
         boolean enabled = projectObject != null && projectObject.isValid();
         runIdeAction.setEnabled(enabled);

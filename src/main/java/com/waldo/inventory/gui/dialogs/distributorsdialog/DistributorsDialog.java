@@ -2,6 +2,7 @@ package com.waldo.inventory.gui.dialogs.distributorsdialog;
 
 import com.waldo.inventory.Utils.ComparatorUtils;
 import com.waldo.inventory.Utils.GuiUtils;
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.Utils.Statics.DistributorType;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Distributor;
@@ -16,7 +17,6 @@ import com.waldo.inventory.gui.components.tablemodels.IOrderFlowTableModel;
 import com.waldo.inventory.gui.dialogs.editdistributororderflowdialog.EditDistributorOrderflowDialog;
 import com.waldo.inventory.gui.dialogs.editorderfileformatdialog.EditOrderFileFormatDialog;
 import com.waldo.inventory.managers.SearchManager;
-import com.waldo.test.ImageSocketServer.ImageType;
 import com.waldo.utils.icomponents.IComboBox;
 import com.waldo.utils.icomponents.ITable;
 import com.waldo.utils.icomponents.ITextField;
@@ -32,7 +32,7 @@ import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class DistributorsDialog extends IResourceDialog<Distributor> implements IdBToolBar.IdbToolBarListener {
 
-    private static final ImageIcon icon = imageResource.readIcon("Distributors.Title");
+    private static final ImageIcon icon = imageResource.readIcon("Distributor.L");
 
     private ITextField detailName;
     private GuiUtils.IBrowseWebPanel browseDistributorPanel;
@@ -70,7 +70,7 @@ public class DistributorsDialog extends IResourceDialog<Distributor> implements 
 
         detailName = new ITextField("Name");
         detailName.setEnabled(false);
-        detailLogo = new IImagePanel(this, ImageType.DistributorImage, "", this, new Dimension(128, 128));
+        detailLogo = new IImagePanel(this, Statics.ImageType.DistributorImage, null, new Dimension(128, 128), this);
 
         distributorTypeCb = new IComboBox<>(DistributorType.values());
         distributorTypeCb.addItemListener(e -> {
@@ -81,7 +81,7 @@ public class DistributorsDialog extends IResourceDialog<Distributor> implements 
         });
 
         browseDistributorPanel = new GuiUtils.IBrowseWebPanel("Web site", "website", this);
-        browseOrderLinkPanel = new GuiUtils.IBrowseWebPanel("Order link", "orderLink", this);
+        browseOrderLinkPanel = new GuiUtils.IBrowseWebPanel("ItemOrder link", "orderLink", this);
 
         tableModel = new IOrderFlowTableModel();
         orderFlowTable = new ITable<>(tableModel);
@@ -137,7 +137,7 @@ public class DistributorsDialog extends IResourceDialog<Distributor> implements 
         scrollPane.setPreferredSize(new Dimension(400,200));
         orderFlowPanel.add(orderFlowTbPnl, BorderLayout.SOUTH);
         orderFlowPanel.add(scrollPane, BorderLayout.CENTER);
-        orderFlowPanel.setBorder(GuiUtils.createInlineTitleBorder("Order flow"));
+        orderFlowPanel.setBorder(GuiUtils.createInlineTitleBorder("ItemOrder flow"));
 
         // - Text fields
         GuiUtils.GridBagHelper gbh = new GuiUtils.GridBagHelper(textFieldPanel);
@@ -147,15 +147,15 @@ public class DistributorsDialog extends IResourceDialog<Distributor> implements 
         gbh.add(detailLogo, 1, 3, 1, 1);
         textFieldPanel.setBorder(GuiUtils.createInlineTitleBorder("Details"));
 
-        // - Order stuff
+        // - ItemOrder stuff
         gbh = new GuiUtils.GridBagHelper(orderPanel);
-        gbh.addLine("Order link: ", browseOrderLinkPanel);
+        gbh.addLine("ItemOrder link: ", browseOrderLinkPanel);
         gbh.gridwidth = 2;
         gbh.addLine("File format: ", detailOrderFileFormatCb, GridBagConstraints.BOTH);
         gbh.gridwidth = 1;
         gbh.anchor = GridBagConstraints.EAST;
         gbh.add(orderFileTbPnl, 1, 2);
-        orderPanel.setBorder(GuiUtils.createInlineTitleBorder("Order file"));
+        orderPanel.setBorder(GuiUtils.createInlineTitleBorder("ItemOrder file"));
 
         // Add all
         panel.add(textFieldPanel, BorderLayout.NORTH);
@@ -191,14 +191,13 @@ public class DistributorsDialog extends IResourceDialog<Distributor> implements 
 
     @Override
     protected void setDetails(Distributor distributor) {
-        detailLogo.setImage(imageResource.getDefaultImage(ImageType.DistributorImage));
         if (distributor != null) {
             detailName.setText(distributor.getName());
             browseDistributorPanel.setText(distributor.getWebsite());
-            detailLogo.setImage(distributor.getIconPath());
+            detailLogo.updateComponents(distributor);
             distributorTypeCb.setSelectedItem(distributor.getDistributorType());
 
-            // Order flow
+            // ItemOrder flow
             tableModel.setItemList(distributor.getOrderFlowTemplate());
 
             // Orders
@@ -208,6 +207,7 @@ public class DistributorsDialog extends IResourceDialog<Distributor> implements 
             detailName.clearText();
             browseDistributorPanel.clearText();
             distributorTypeCb.setSelectedItem(null);
+            detailLogo.updateComponents((Distributor)null);
             tableModel.clearItemList();
             browseOrderLinkPanel.clearText();
             detailOrderFileFormatCb.setSelectedItem(null);
@@ -236,9 +236,9 @@ public class DistributorsDialog extends IResourceDialog<Distributor> implements 
     public void clearDetails() {
         detailName.setText("");
         browseDistributorPanel.clearText();
-        detailLogo.setImage(imageResource.getDefaultImage(ImageType.DistributorImage));
+        detailLogo.updateComponents((Distributor)null);
 
-        // Order flow
+        // ItemOrder flow
         //..
 
         // List

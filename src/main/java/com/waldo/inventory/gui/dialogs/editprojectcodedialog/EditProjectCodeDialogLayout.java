@@ -50,7 +50,7 @@ abstract class EditProjectCodeDialogLayout extends IObjectDialog<ProjectCode> {
     @Override
     public void initializeComponents() {
         // Dialog
-        setTitleIcon(imageResource.readIcon("Projects.Code.Title"));
+        setTitleIcon(imageResource.readIcon("Code.L"));
 
         // Description
         descriptionTa = new ITextArea();

@@ -1,9 +1,9 @@
 package com.waldo.inventory.database.settings;
 
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.database.interfaces.DbSettingsListener;
 import com.waldo.inventory.database.settings.settingsclasses.*;
 import com.waldo.inventory.gui.Application;
-import com.waldo.inventory.managers.LogManager;
 import org.apache.commons.dbcp2.BasicDataSource;
 
 import javax.sql.DataSource;
@@ -546,6 +546,7 @@ public class SettingsManager {
                     gs.setGuiDetailsView(rs.getString("guiDetailsView"));
                     gs.setGuiLookAndFeel(rs.getString("guiLookAndFeel"));
                     gs.setGuiStartUpFullScreen(rs.getBoolean("guiStartUpFullScreen"));
+                    gs.setAutoOrderEnabled(rs.getBoolean("autoOrderEnabled"));
 
                     gs.setSaved(true);
 
@@ -596,8 +597,18 @@ public class SettingsManager {
                     ImageServerSettings imageServerSettings = new ImageServerSettings();
 
                     imageServerSettings.setName(rs.getString("name"));
+                    //imageServerSettings.setType(rs.getString("type"));
+
                     imageServerSettings.setImageServerName(rs.getString("imageServerName"));
                     imageServerSettings.setConnectAsName(rs.getString("connectAsName"));
+
+                    DbSettings imageDbSettings = new DbSettings();
+                    imageDbSettings.setDbName(rs.getString("dbname"));
+                    imageDbSettings.setDbIp(rs.getString("dbip"));
+                    imageDbSettings.setDbUserName(rs.getString("dbusername"));
+                    imageDbSettings.setDbUserPw(rs.getString("dbuserpw"));
+
+                    imageServerSettings.setImageDbSettings(imageDbSettings);
 
                     imageServerSettings.setSaved(true);
 
@@ -645,6 +656,7 @@ public class SettingsManager {
                 stmt.setString(2, general.getGuiDetailsView().toString());
                 stmt.setString(3, general.getGuiLookAndFeel());
                 stmt.setBoolean(4, general.isGuiStartUpFullScreen());
+                stmt.setBoolean(5, general.isAutoOrderEnabled());
                 stmt.execute();
             }
         } catch (SQLException e) {
@@ -672,9 +684,16 @@ public class SettingsManager {
         String sql = scriptResource.readString("imageserversettings.sqlInsert");
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                stmt.setString(1,  set.getName());
-                stmt.setString(2, set.getImageServerName());
-                stmt.setString(3, set.getConnectAsName());
+                int ndx = 1;
+                stmt.setString(ndx++, set.getName());
+                stmt.setString(ndx++, set.getType().toString());
+                stmt.setString(ndx++, set.getImageServerName());
+                stmt.setString(ndx++, set.getConnectAsName());
+                stmt.setString(ndx++, set.getImageDbSettings().getDbName());
+                stmt.setString(ndx++, set.getImageDbSettings().getDbIp());
+                stmt.setString(ndx++, set.getImageDbSettings().getDbUserName());
+                stmt.setString(ndx++, set.getImageDbSettings().getDbUserPw());
+                stmt.setString(ndx, Statics.DbTypes.Online.toString());
                 stmt.execute();
             }
         } catch (SQLException e) {
@@ -707,8 +726,9 @@ public class SettingsManager {
                 stmt.setString(1, general.getGuiDetailsView().toString());
                 stmt.setString(2, general.getGuiLookAndFeel());
                 stmt.setBoolean(3, general.isGuiStartUpFullScreen());
+                stmt.setBoolean(4, general.isAutoOrderEnabled());
 
-                stmt.setString(4, general.getName()); // Where name
+                stmt.setString(5, general.getName()); // Where name
                 stmt.execute();
             }
         } catch (SQLException e) {
@@ -738,10 +758,16 @@ public class SettingsManager {
         String sql = scriptResource.readString("imageserversettings.sqlUpdate");
         try (Connection connection = getConnection()) {
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                stmt.setString(1, set.getImageServerName());
-                stmt.setString(2, set.getConnectAsName());
-
-                stmt.setString(8,  set.getName()); // Where name
+                int ndx = 1;
+                stmt.setString(ndx++, set.getType().toString());
+                stmt.setString(ndx++, set.getImageServerName());
+                stmt.setString(ndx++, set.getConnectAsName());
+                stmt.setString(ndx++, set.getImageDbSettings().getDbName());
+                stmt.setString(ndx++, set.getImageDbSettings().getDbIp());
+                stmt.setString(ndx++, set.getImageDbSettings().getDbUserName());
+                stmt.setString(ndx++, set.getImageDbSettings().getDbUserPw());
+                stmt.setString(ndx++, Statics.DbTypes.Online.toString());
+                stmt.setString(ndx,  set.getName()); // Where name
 
                 stmt.execute();
             }

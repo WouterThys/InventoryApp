@@ -106,7 +106,7 @@ abstract class SetItemsWizardCacheDialogLayout extends ICacheDialog {
     @Override
     public void initializeComponents() {
         // Dialog
-        setTitleIcon(imageResource.readIcon("SetItem.Series.Title"));
+        setTitleIcon(imageResource.readIcon("Wizard.L"));
         getButtonOK().setText("Next");
         getButtonNeutral().setVisible(true);
         getButtonNeutral().setEnabled(false);

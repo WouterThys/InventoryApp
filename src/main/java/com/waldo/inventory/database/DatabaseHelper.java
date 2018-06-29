@@ -59,7 +59,7 @@ public class DatabaseHelper {
     public static void delete(PreparedStatement stmt, DbObject dbo) throws SQLException {
         stmt.setLong(1, dbo.getId());
         stmt.execute();
-        dbo.setId(-1);// Not in database anymore
+        dbo.setDeleted(true);
 
         // Listeners
         dbo.tableChanged(Delete);

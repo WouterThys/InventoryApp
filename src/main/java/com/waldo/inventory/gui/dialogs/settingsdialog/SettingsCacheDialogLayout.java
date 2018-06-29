@@ -55,7 +55,7 @@ abstract class SettingsCacheDialogLayout extends ICacheDialog implements ChangeL
     public void initializeComponents() {
         // Title
         try {
-            setTitleIcon(imageResource.readIcon("Settings.Title"));
+            setTitleIcon(imageResource.readIcon("Gears.L"));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -82,13 +82,13 @@ abstract class SettingsCacheDialogLayout extends ICacheDialog implements ChangeL
         getContentPanel().setLayout(new BoxLayout(getContentPanel(), BoxLayout.Y_AXIS));
         // Add tabs
         if (!onError) {
-            tabbedPane.addTab("General ", imageResource.readIcon("Settings.Tab.General"), generalPanel, "General settings");
+            tabbedPane.addTab("General ", imageResource.readIcon("Monitor.S"), generalPanel, "General settings");
         }
-        tabbedPane.addTab("Database ", imageResource.readIcon("Settings.Tab.Db"), dbPanel, "Database settings");
+        tabbedPane.addTab("Database ", imageResource.readIcon("dbEdit.S"), dbPanel, "Database settings");
         if (!onError) {
-            tabbedPane.addTab("Images ", imageResource.readIcon("Settings.Tab.Server"), imageServerPanel, "Image server settings");
-            tabbedPane.addTab("Logs ", imageResource.readIcon("Settings.Tab.Log"), logsPanel, "Log settings");
-            tabbedPane.addTab("Events ", imageResource.readIcon("Settings.Tab.Events"), eventsPanel, "Events settings");
+            tabbedPane.addTab("Images ", imageResource.readIcon("Server.S"), imageServerPanel, "Image server settings");
+            tabbedPane.addTab("Logs ", imageResource.readIcon("Log.S"), logsPanel, "Log settings");
+            tabbedPane.addTab("Events ", imageResource.readIcon("Flash.S"), eventsPanel, "Events settings");
         }
         tabbedPane.addChangeListener(this);
 

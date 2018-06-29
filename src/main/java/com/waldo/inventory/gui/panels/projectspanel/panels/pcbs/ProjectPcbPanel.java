@@ -1,16 +1,18 @@
 package com.waldo.inventory.gui.panels.projectspanel.panels.pcbs;
 
-import com.waldo.inventory.Utils.Statics;
-import com.waldo.inventory.classes.dbclasses.*;
+import com.waldo.inventory.classes.dbclasses.CreatedPcb;
+import com.waldo.inventory.classes.dbclasses.PcbOrder;
+import com.waldo.inventory.classes.dbclasses.Project;
+import com.waldo.inventory.classes.dbclasses.ProjectPcb;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.dialogs.createpcbdialog.SelectPcbCacheDialog;
 import com.waldo.inventory.gui.dialogs.editcreatedlinkspcbdialog.EditCreatedPcbLinksDialog;
-import com.waldo.inventory.gui.dialogs.editordersdialog.EditOrdersDialog;
 import com.waldo.inventory.gui.dialogs.editprojectpcbdialog.EditProjectPcbDialog;
 import com.waldo.inventory.gui.dialogs.ordersearchitemdialog.OrderSearchItemsDialog;
 import com.waldo.inventory.gui.panels.projectspanel.panels.ProjectObjectPanel;
 import com.waldo.inventory.gui.panels.projectspanel.preview.ProjectPcbPreviewPanel;
+import com.waldo.inventory.managers.OrderManager;
 import com.waldo.utils.GuiUtils;
 import com.waldo.utils.icomponents.IDialog;
 
@@ -97,12 +99,8 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
 
     private void onOrderPcb() {
         if (selectedProjectObject != null) {
-            Order order = new Order(selectedProjectObject.getName());
-            EditOrdersDialog dialog = new EditOrdersDialog(application, order, Statics.DistributorType.Pcbs, false);
-            if (dialog.showDialog() == IDialog.OK) {
-                OrderLine pcbOrderLine = new OrderLine(order, selectedProjectObject, 1);
-                pcbOrderLine.save();
-            }
+            PcbOrder pcbOrder = OrderManager.createNewPcbOrder(selectedProjectObject.getName());
+            OrderManager.addLineToOrder(selectedProjectObject, pcbOrder);
         }
     }
 
@@ -185,28 +183,28 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
         };
 
         // Actions
-        orderItemsAa = new AbstractAction("Order items", imageResource.readIcon("Items.S.Title")) {
+        orderItemsAa = new AbstractAction("Order items", imageResource.readIcon("Component.SS")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SwingUtilities.invokeLater(() -> onOrderItems());
             }
         };
 
-        orderPcbAa = new AbstractAction("Order PCB", imageResource.readIcon("Projects.Details.Pcb")) {
+        orderPcbAa = new AbstractAction("Order PCB", imageResource.readIcon("Pcb.SS")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SwingUtilities.invokeLater(() -> onOrderPcb());
             }
         };
 
-        createPcbAa = new AbstractAction("Create", imageResource.readIcon("Projects.Pcb.UsedBtn")) {
+        createPcbAa = new AbstractAction("Create", imageResource.readIcon("Used.SS")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SwingUtilities.invokeLater(() -> onSelectForCreation());
             }
         };
 
-        parseAa = new AbstractAction("Parse", imageResource.readIcon("Projects.Pcb.ParseBtn")) {
+        parseAa = new AbstractAction("Parse", imageResource.readIcon("Parse.SS")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SwingUtilities.invokeLater(() -> onParse());
@@ -228,8 +226,8 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
             }
         });
 
-        tabbedPane.addTab("Pcb items ", imageResource.readIcon("Items.S.Title"), pcbItemPanel);
-        tabbedPane.addTab("Created ", imageResource.readIcon("Projects.Details.Pcb"), pcbCreatedPanel);
+        tabbedPane.addTab("Pcb items ", imageResource.readIcon("Component.SS"), pcbItemPanel);
+        tabbedPane.addTab("Created ", imageResource.readIcon("Pcb.SS"), pcbCreatedPanel);
 
         bottomPanel.add(tabbedPane, BorderLayout.CENTER);
     }

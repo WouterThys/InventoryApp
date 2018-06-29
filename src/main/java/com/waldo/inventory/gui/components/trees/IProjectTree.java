@@ -16,9 +16,9 @@ import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class IProjectTree extends ITree<Project> {
 
-    private final ImageIcon codeIcon = imageResource.readIcon("Projects.Tree.Code");
-    private final ImageIcon pcbIcon = imageResource.readIcon("Projects.Tree.Pcb");
-    private final ImageIcon otherIcon = imageResource.readIcon("Projects.Tree.Other");
+    private final ImageIcon codeIcon = imageResource.readIcon("Code.S");
+    private final ImageIcon pcbIcon = imageResource.readIcon("Pcb.S");
+    private final ImageIcon otherIcon = imageResource.readIcon("Other.S");
 
     public IProjectTree(Project root, boolean showRoot, boolean allowMultiSelect) {
         super(root, showRoot, allowMultiSelect);

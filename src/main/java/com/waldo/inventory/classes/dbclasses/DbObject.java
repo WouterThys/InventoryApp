@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static com.waldo.inventory.database.DatabaseAccess.db;
 import static com.waldo.inventory.gui.Application.scriptResource;
@@ -60,10 +61,14 @@ public abstract class DbObject {
 
     protected final String TABLE_NAME;
     protected boolean isInserted = false;
+    protected boolean isDeleted = false;
 
     protected long id = -1;
     protected String name = "";
     protected String iconPath = "";
+
+    protected long imageId;
+
     protected boolean canBeSaved = true;
     protected final AddUpdateDelete aud = new AddUpdateDelete();
 
@@ -93,8 +98,8 @@ public abstract class DbObject {
         if (dbObject instanceof Distributor) return TYPE_DISTRIBUTOR;
         if (dbObject instanceof Location) return TYPE_LOCATION;
         if (dbObject instanceof Manufacturer) return TYPE_MANUFACTURER;
-        if (dbObject instanceof Order) return TYPE_ORDER;
-        if (dbObject instanceof OrderLine) return TYPE_ORDER_LINE;
+        if (dbObject instanceof ItemOrder) return TYPE_ORDER;
+        if (dbObject instanceof ItemOrderLine) return TYPE_ORDER_LINE;
         if (dbObject instanceof PackageType) return TYPE_PACKAGE_TYPE;
         if (dbObject instanceof Project) return TYPE_PROJECT;
         if (dbObject instanceof ProjectIDE) return TYPE_PROJECT_TYPE;
@@ -186,19 +191,49 @@ public abstract class DbObject {
         return name;
     }
 
+//    @Override
+//    public boolean equals(Object obj) {
+//        if (obj != null) {
+//            if (obj instanceof DbObject) {
+//                if (((DbObject) obj).getId() == getId() && ((DbObject) obj).getName().equals(getName())) {
+//                    return true;
+//                }
+//                if (getId() < 0 || ((DbObject) obj).getId() < 0) {
+//                    return getName().equals(((DbObject) obj).getName());
+//                }
+//            }
+//        }
+//        return false;
+//    }
+
+
     @Override
-    public boolean equals(Object obj) {
-        if (obj != null) {
-            if (obj instanceof DbObject) {
-                if (((DbObject) obj).getId() == getId() && ((DbObject) obj).getName().equals(getName())) {
-                    return true;
-                }
-                if (getId() < 0 || ((DbObject) obj).getId() < 0) {
-                    return getName().equals(((DbObject) obj).getName());
-                }
+    public boolean equals(Object o) {
+        DbObject dbObject;
+        try {
+            if (this == o) return true;
+            if (!(o instanceof DbObject)) return false;
+            dbObject = (DbObject) o;
+            if (getId() == dbObject.getId() &&
+                    getImageId() == dbObject.getImageId() &&
+                    Objects.equals(TABLE_NAME, dbObject.TABLE_NAME) &&
+                    Objects.equals(getName(), dbObject.getName())) {
+                return true;
             }
+            // Not saved?
+            if (!dbObject.isSaved() || !isSaved()) {
+                return Objects.equals(getName(), dbObject.getName());
+            }
+            return false;
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            return false;
         }
-        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(TABLE_NAME, getId(), getName());
     }
 
     public List<SearchMatch> searchByKeyWord(String searchTerm) {
@@ -222,9 +257,14 @@ public abstract class DbObject {
         newObject.setId(getId());
         newObject.setName(getName());
         newObject.setIconPath(getIconPath());
+        newObject.setImageId(getImageId());
 
         newObject.setInserted(isInserted);
         newObject.setCanBeSaved(false);
+    }
+
+    public boolean isSaved() {
+        return getId() > 0;
     }
 
     public boolean isUnknown() {
@@ -285,7 +325,23 @@ public abstract class DbObject {
         this.isInserted = inserted;
     }
 
+    public void setDeleted(boolean deleted) {
+        this.isDeleted = deleted;
+    }
+
     public AddUpdateDelete getAud() {
         return aud;
+    }
+
+
+    public long getImageId() {
+        if (imageId < UNKNOWN_ID) {
+            imageId = UNKNOWN_ID;
+        }
+        return imageId;
+    }
+
+    public void setImageId(long imageId) {
+        this.imageId = imageId;
     }
 }

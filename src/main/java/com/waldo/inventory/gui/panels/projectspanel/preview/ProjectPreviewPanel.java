@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.panels.projectspanel.preview;
 
 import com.waldo.inventory.Utils.GuiUtils;
+import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.classes.dbclasses.DbObject;
 import com.waldo.inventory.classes.dbclasses.Project;
 import com.waldo.inventory.classes.dbclasses.ProjectIDE;
@@ -10,7 +11,6 @@ import com.waldo.inventory.gui.components.IImagePanel;
 import com.waldo.inventory.gui.components.IRemarksPanel;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.actions.IActions;
-import com.waldo.test.ImageSocketServer.ImageType;
 import com.waldo.utils.icomponents.IPanel;
 import com.waldo.utils.icomponents.ITextArea;
 import com.waldo.utils.icomponents.ITextField;
@@ -46,16 +46,23 @@ public abstract class ProjectPreviewPanel<P extends ProjectObject> extends IPane
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private final Application application;
     private P selectedProjectObject;
+    private boolean simple;
 
     /*
      *                  CONSTRUCTORS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     ProjectPreviewPanel(Application application) {
+        this(application, false);
+    }
+
+    ProjectPreviewPanel(Application application, boolean simple) {
         super();
         this.application = application;
+        this.simple = true;
         initializeComponents();
         initializeLayouts();
     }
+
 
     abstract void initializeInfoComponents();
     abstract JPanel createInfoPanel();
@@ -135,18 +142,13 @@ public abstract class ProjectPreviewPanel<P extends ProjectObject> extends IPane
 
     private void updateHeader(P projectObject) {
         if (projectObject != null) {
-            if (projectObject.getProject() != null) {
-                imagePanel.setImage(projectObject.getProject().getIconPath());
-            } else {
-                imagePanel.setImage(imageResource.getDefaultImage(ImageType.ProjectImage));
-            }
             nameTf.setText(projectObject.toString());
             descriptionTa.setText(projectObject.getDescription());
         } else {
-
             nameTf.setText("");
             descriptionTa.setText("");
         }
+        imagePanel.updateComponents(projectObject);
     }
 
     private void updateData(P projectObject) {
@@ -221,13 +223,13 @@ public abstract class ProjectPreviewPanel<P extends ProjectObject> extends IPane
         JPanel commonPnl = new JPanel();
         commonPnl.setBorder(BorderFactory.createEmptyBorder(1,1,8,1));
         gbc = new GuiUtils.GridBagHelper(commonPnl, 0);
-        gbc.addLine("Directory", imageResource.readIcon("Actions.BrowseFile"), directoryTf);
+        gbc.addLine("Directory", imageResource.readIcon("Browse.Folder.SS"), directoryTf);
 
         // Specific code/pcb/other
         JPanel infoPnl = createInfoPanel();
         infoPnl.setBorder(BorderFactory.createEmptyBorder(8,1,1,1));
 
-        dataPnl.add(commonPnl);
+        if (!simple) dataPnl.add(commonPnl);
         dataPnl.add(infoPnl);
 
         return dataPnl;
@@ -240,7 +242,7 @@ public abstract class ProjectPreviewPanel<P extends ProjectObject> extends IPane
     @Override
     public void initializeComponents() {
         // Image
-        imagePanel = new IImagePanel(ImageType.ProjectImage, new Dimension(150,150));
+        imagePanel = new IImagePanel(null, Statics.ImageType.ProjectImage, selectedProjectObject, new Dimension(150,150));
 
         // Data
         nameTf = new ITextField(false);
@@ -263,7 +265,7 @@ public abstract class ProjectPreviewPanel<P extends ProjectObject> extends IPane
                 runIde(selectedProjectObject);
             }
         };
-        runIdeAction.putValue(Action.SMALL_ICON, imageResource.readIcon("Actions.M.Execute"));
+        runIdeAction.putValue(Action.SMALL_ICON, imageResource.readIcon("Execute.S"));
 
         openProjectFolderAction = new IActions.BrowseFileAction() {
             @Override
@@ -271,7 +273,7 @@ public abstract class ProjectPreviewPanel<P extends ProjectObject> extends IPane
                 browseProjectObject(selectedProjectObject);
             }
         };
-        openProjectFolderAction.putValue(Action.SMALL_ICON, imageResource.readIcon("Actions.M.BrowseFile"));
+        openProjectFolderAction.putValue(Action.SMALL_ICON, imageResource.readIcon("Browse.Folder.S"));
 
         dbToolbar = new IdBToolBar(this, false, false, true, true);
         actionToolBar = GuiUtils.createNewToolbar(openProjectFolderAction, runIdeAction);
@@ -290,7 +292,6 @@ public abstract class ProjectPreviewPanel<P extends ProjectObject> extends IPane
         JPanel toolbarsPanel = createToolBarPanel();
         JPanel headerPanel = createHeaderPanel();
         JPanel dataPanel = createDataPanel();
-        //JPanel remarksPanel = createRemarksPanel();
 
         setLayout(new BorderLayout());
 
@@ -301,7 +302,7 @@ public abstract class ProjectPreviewPanel<P extends ProjectObject> extends IPane
         panel2.add(panel1, BorderLayout.CENTER);
 
         add(panel2, BorderLayout.NORTH);
-        add(remarksPnl, BorderLayout.CENTER);
+        if (!simple) add(remarksPnl, BorderLayout.CENTER);
     }
 
     @Override
