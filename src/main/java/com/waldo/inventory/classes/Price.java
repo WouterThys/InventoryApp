@@ -1,6 +1,6 @@
 package com.waldo.inventory.classes;
 
-import com.waldo.inventory.Utils.Statics;
+import com.waldo.inventory.Utils.Statics.PriceUnits;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -8,13 +8,14 @@ import java.math.RoundingMode;
 public class Price {
 
     private double value;
-    private Statics.PriceUnits priceUnits;
+    private PriceUnits priceUnits;
 
     public Price() {
-
+        value = 0.0;
+        priceUnits = PriceUnits.Unknown;
     }
 
-    public Price(double value, Statics.PriceUnits priceUnits) {
+    public Price(double value, PriceUnits priceUnits) {
         this.value = value;
         this.priceUnits = priceUnits;
     }
@@ -29,7 +30,7 @@ public class Price {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj != null && obj instanceof Price) {
+        if (obj instanceof Price) {
             Price p = (Price) obj;
             return p.getValue() == getValue() && p.getPriceUnits() == getPriceUnits();
         }
@@ -44,11 +45,11 @@ public class Price {
         this.value = value;
     }
 
-    public Statics.PriceUnits getPriceUnits() {
+    public PriceUnits getPriceUnits() {
         return priceUnits;
     }
 
-    public void setPriceUnits(Statics.PriceUnits priceUnits) {
+    public void setPriceUnits(PriceUnits priceUnits) {
         this.priceUnits = priceUnits;
     }
 

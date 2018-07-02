@@ -442,6 +442,7 @@ public class Statics {
     }
 
     public enum PriceUnits {
+        Unknown (-1),
         Euro    (0),
         Dollar  (1),
         Pound   (2);
@@ -467,7 +468,7 @@ public class Statics {
 
         public static PriceUnits fromInt(int intValue) {
             switch (intValue) {
-                default:
+                default: return Unknown;
                 case 0: return Euro;
                 case 1: return Dollar;
                 case 2: return Pound;

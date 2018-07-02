@@ -14,7 +14,7 @@ import static com.waldo.inventory.gui.Application.imageResource;
 public class IInvoiceOrderLineTableModel extends IAbstractTableModel<AbstractOrderLine> {
 
     private static final String[] COLUMN_NAMES = {"#", "Name", "Unit price", "Price"};
-    private static final Class[] COLUMN_CLASSES = {Integer.class, String.class, Double.class, Double.class};
+    private static final Class[] COLUMN_CLASSES = {Integer.class, String.class, String.class, String.class};
 
     public IInvoiceOrderLineTableModel() {
         super(COLUMN_NAMES, COLUMN_CLASSES);
@@ -36,12 +36,15 @@ public class IInvoiceOrderLineTableModel extends IAbstractTableModel<AbstractOrd
                 case 2: // Price
                     DistributorPartLink pn = line.getDistributorPartLink();
                     if (pn != null) {
-                        return pn.getPrice();
+                        return pn.getPrice().toString();
                     } else {
                         return "";
                     }
                 case 3: // Corrected
-                    return line.getCorrectedPrice();
+                    if (line.getCorrectedPrice() == null) {
+                        return line.getTotalPrice();
+                    }
+                    return line.getCorrectedPrice().toString();
             }
         }
         return null;

@@ -185,7 +185,8 @@ public abstract class AbstractOrder<T extends Orderable> extends DbObject {
     public Price getTotalPriceInc() {
         Price inc = getTotalPriceExc();
         if (getVAT() > 0) {
-            inc = Price.multiply(inc, getVAT());
+            double vat = inc.getValue() * (getVAT() / 100);
+            inc = Price.add(inc, vat);
         }
         return inc;
     }

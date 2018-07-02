@@ -5,13 +5,13 @@ import com.waldo.inventory.classes.dbclasses.AbstractOrderLine;
 import com.waldo.inventory.gui.components.iDialog;
 import com.waldo.inventory.gui.components.tablemodels.IInvoiceOrderLineTableModel;
 import com.waldo.utils.GuiUtils;
-import com.waldo.utils.icomponents.IEditedListener;
-import com.waldo.utils.icomponents.ITable;
-import com.waldo.utils.icomponents.ITextField;
-import com.waldo.utils.icomponents.ITextPane;
+import com.waldo.utils.icomponents.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
@@ -22,7 +22,7 @@ abstract class EditOrderInvoiceDialogLayout extends iDialog implements IEditedLi
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
     // Order
-    private ITextField vatTf;
+    private IFormattedTextField vatTf;
     private ITextField priceIncTf;
     private ITextField priceExcTf;
 
@@ -109,8 +109,13 @@ abstract class EditOrderInvoiceDialogLayout extends iDialog implements IEditedLi
     @Override
     public void initializeComponents() {
 
-        vatTf = new ITextField();
+        NumberFormat format = DecimalFormat.getInstance();
+        format.setMinimumFractionDigits(2);
+        format.setMaximumFractionDigits(3);
+        format.setRoundingMode(RoundingMode.HALF_UP);
+        vatTf = new IFormattedTextField(format);
         vatTf.addEditedListener(this, "VAT", double.class);
+
         priceIncTf = new ITextField(false);
         priceExcTf = new ITextField(false);
 

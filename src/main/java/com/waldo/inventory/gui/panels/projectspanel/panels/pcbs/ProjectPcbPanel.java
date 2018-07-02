@@ -1,12 +1,10 @@
 package com.waldo.inventory.gui.panels.projectspanel.panels.pcbs;
 
-import com.waldo.inventory.classes.dbclasses.CreatedPcb;
-import com.waldo.inventory.classes.dbclasses.Project;
-import com.waldo.inventory.classes.dbclasses.ProjectPcb;
+import com.waldo.inventory.classes.dbclasses.*;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.dialogs.addtoorderdialog.AddToOrderDialog;
-import com.waldo.inventory.gui.dialogs.createpcbdialog.SelectPcbCacheDialog;
+import com.waldo.inventory.gui.dialogs.createpcbdialog.SelectPcbDialog;
 import com.waldo.inventory.gui.dialogs.editcreatedlinkspcbdialog.EditCreatedPcbLinksDialog;
 import com.waldo.inventory.gui.dialogs.editprojectpcbdialog.EditProjectPcbDialog;
 import com.waldo.inventory.gui.dialogs.ordersearchitemdialog.OrderSearchItemsDialog;
@@ -102,14 +100,17 @@ public class ProjectPcbPanel extends ProjectObjectPanel<ProjectPcb> {
             //OrderManager.addLineToOrder(selectedProjectObject, pcbOrder);
             AddToOrderDialog<ProjectPcb> dialog = new AddToOrderDialog<ProjectPcb>(application, selectedProjectObject, true);
             if (dialog.showDialog() == IDialog.OK) {
-
+                // Create new link
+                AbstractOrder order = dialog.getSelectedOrder();
+                DistributorPartLink link = new DistributorPartLink(order.getDistributor(), selectedProjectObject.getId());
+                link.save();
             }
         }
     }
 
     private void onSelectForCreation() {
         if (selectedProjectObject != null) {
-            SelectPcbCacheDialog dialog = new SelectPcbCacheDialog(application, "PCB", selectedProjectObject);
+            SelectPcbDialog dialog = new SelectPcbDialog(application, "PCB", selectedProjectObject);
             if (dialog.showDialog() == IDialog.OK) {
                 CreatedPcb pcb = dialog.getCreatedPcb();
                 if (pcb != null) {

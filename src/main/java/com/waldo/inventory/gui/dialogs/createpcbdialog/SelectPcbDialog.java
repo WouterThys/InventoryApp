@@ -6,9 +6,9 @@ import com.waldo.inventory.classes.dbclasses.ProjectPcb;
 import java.awt.*;
 import java.awt.event.ItemEvent;
 
-public class SelectPcbCacheDialog extends SelectPcbCacheDialogLayout {
+public class SelectPcbDialog extends SelectPcbCacheDialogLayout {
 
-    public SelectPcbCacheDialog(Window window, String title, ProjectPcb projectPcb) {
+    public SelectPcbDialog(Window window, String title, ProjectPcb projectPcb) {
         super(window, title, projectPcb);
 
         initializeComponents();
