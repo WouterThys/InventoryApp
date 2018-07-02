@@ -17,4 +17,18 @@ public class EditOrderInvoiceDialog extends EditOrderInvoiceDialogLayout {
 
     }
 
+
+    @Override
+    public void onValueChanged(Component component, String s, Object o, Object o1) {
+        getButtonNeutral().setEnabled(!originalOrder.equals(selectedOrder));
+        updatePriceFields();
+    }
+
+    @Override
+    public AbstractOrder getGuiObject() {
+        if (isShown) {
+            return selectedOrder;
+        }
+        return null;
+    }
 }

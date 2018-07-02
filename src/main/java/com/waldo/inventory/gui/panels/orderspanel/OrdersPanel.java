@@ -182,8 +182,8 @@ public class OrdersPanel extends OrdersPanelLayout {
         if (order != null) {
             order.updateLineStates();
         }
-        treeReload();
         orderTableRemove(order);
+        treeReload();
         onOrderSelected(null);
     }
 

@@ -7,6 +7,7 @@ import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.IOrderFlowPanel;
 import com.waldo.inventory.gui.components.IdBToolBar;
 import com.waldo.inventory.gui.components.actions.IActions;
+import com.waldo.inventory.gui.dialogs.editorderinvoicedialog.EditOrderInvoiceDialog;
 import com.waldo.inventory.managers.OrderManager;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.utils.GuiUtils;
@@ -77,7 +78,6 @@ public abstract class OrderDetailsPanel extends IPanel implements IdBToolBar.Idb
         boolean hasReference = enabled && !selectedOrder.getOrderReference().isEmpty();
         boolean hasTracking = enabled && !selectedOrder.getTrackingNumber().isEmpty();
         boolean hasWebsite = enabled && selectedOrder.getDistributor() != null && !selectedOrder.getDistributor().getWebsite().isEmpty();
-        boolean canCreateOrderFile = enabled && selectedOrder.canCreateOrderFile();
 
         ordersToolBar.setEditActionEnabled(enabled);
         ordersToolBar.setDeleteActionEnabled(enabled);
@@ -90,8 +90,6 @@ public abstract class OrderDetailsPanel extends IPanel implements IdBToolBar.Idb
         editTrackingAction.setEnabled(!locked);
         deleteTrackingAction.setEnabled(!locked && hasTracking);
         browseTrackingAction.setEnabled(hasTracking);
-
-        viewOrderFileAction.setEnabled(canCreateOrderFile);
 
     }
 
@@ -329,13 +327,8 @@ public abstract class OrderDetailsPanel extends IPanel implements IdBToolBar.Idb
 
     private void showOrderFile() {
         if (selectedOrder != null) {
-            String orderFile = selectedOrder.createOrderText();
-            if (orderFile != null) {
-                JOptionPane.showMessageDialog(
-                        application,
-                        orderFile
-                );
-            }
+            EditOrderInvoiceDialog dialog = new EditOrderInvoiceDialog(application, selectedOrder, null);
+            dialog.showDialog();
         }
     }
 

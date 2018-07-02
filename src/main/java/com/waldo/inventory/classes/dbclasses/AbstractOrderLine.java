@@ -173,7 +173,7 @@ public abstract class AbstractOrderLine<T extends Orderable> extends DbObject {
 
     public Price getCorrectedPrice() {
         if (correctedPrice == null) {
-            correctedPrice = new Price();
+            correctedPrice = new Price(0.0, Statics.PriceUnits.Euro);
         }
         return correctedPrice;
     }
