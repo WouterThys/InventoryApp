@@ -13,8 +13,9 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.Calendar;
 import java.util.List;
+
+import static com.waldo.inventory.database.settings.SettingsManager.settings;
 
 public abstract class AbstractOrder<T extends Orderable> extends DbObject {
 
@@ -34,6 +35,9 @@ public abstract class AbstractOrder<T extends Orderable> extends DbObject {
     protected boolean isLocked;
     protected boolean isAutoOrder;
 
+    // Only @ runtime
+    protected boolean doChecks; // Flag to indicate location or created pcb checks
+
     public AbstractOrder(String tableName) {
         super(tableName);
     }
@@ -47,15 +51,29 @@ public abstract class AbstractOrder<T extends Orderable> extends DbObject {
     public int addParameters(PreparedStatement statement) throws SQLException {
         dateModified = DateUtils.now();
 
+        boolean online = (settings().getDbSettings().getDbType().equals(Statics.DbTypes.Online));
+
         int ndx = addBaseParameters(statement);
         if (dateOrdered != null) {
-            statement.setTimestamp(ndx++, new Timestamp(dateOrdered.getTime()));
+            if (online) {
+                statement.setTimestamp(ndx++, new Timestamp(dateOrdered.getTime()));
+            } else {
+                statement.setString(ndx++, DateUtils.formatMySqlDateTime(dateOrdered));
+            }
         } else {
             statement.setDate(ndx++, null);
         }
-        statement.setTimestamp(ndx++, new Timestamp(dateModified.getTime()), Calendar.getInstance());
+        if (online) {
+            statement.setTimestamp(ndx++, new Timestamp(dateModified.getTime()));
+        } else {
+            statement.setString(ndx++, DateUtils.formatMySqlDateTime(dateModified));
+        }
         if (dateReceived != null) {
-            statement.setTimestamp(ndx++, new Timestamp(dateReceived.getTime()));
+            if (online) {
+                statement.setTimestamp(ndx++, new Timestamp(dateReceived.getTime()));
+            } else {
+                statement.setString(ndx++, DateUtils.formatMySqlDateTime(dateReceived));
+            }
         } else {
             statement.setDate(ndx++, null);
         }
@@ -372,5 +390,13 @@ public abstract class AbstractOrder<T extends Orderable> extends DbObject {
 
     public void setAutoOrder(boolean autoOrder) {
         isAutoOrder = autoOrder;
+    }
+
+    public boolean isDoChecks() {
+        return doChecks;
+    }
+
+    public void setDoChecks(boolean doChecks) {
+        this.doChecks = doChecks;
     }
 }

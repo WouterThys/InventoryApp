@@ -69,8 +69,6 @@ public class OrderManager {
                 }
             }
 
-            LOG.info("Auto ordering " + list.size() + " for " + order);
-
             // Add
             for (T line : list) {
                 AbstractOrderLine orderLine = line.createOrderLine(order);
@@ -166,6 +164,7 @@ public class OrderManager {
             // Do receive
             order.setDateReceived(DateUtils.now());
             order.setLocked(true);
+            order.setDoChecks(true);
             order.updateLineStates();
             order.updateLineAmounts(true);
             order.save();

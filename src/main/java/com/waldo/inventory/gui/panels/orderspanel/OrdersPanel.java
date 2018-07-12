@@ -10,6 +10,7 @@ import com.waldo.inventory.gui.components.popups.OrderPopup;
 import com.waldo.inventory.gui.dialogs.editdistributorpartlinkdialog.EditDistributorPartLinkDialog;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 import com.waldo.inventory.gui.dialogs.ordersearchitemdialog.OrderSearchItemsDialog;
+import com.waldo.inventory.managers.SearchManager;
 import com.waldo.utils.icomponents.IDialog;
 
 import javax.swing.*;
@@ -47,6 +48,12 @@ public class OrdersPanel extends OrdersPanelLayout {
             @Override
             public void onUpdated(ItemOrder order) {
                 onOrderUpdated(order);
+                if (order.isDoChecks()) {
+                    order.setDoChecks(false);
+                    SwingUtilities.invokeLater(() -> {
+                        checkLocationsForItemOrder(order);
+                    });
+                }
             }
 
             @Override
@@ -71,6 +78,16 @@ public class OrdersPanel extends OrdersPanelLayout {
             @Override
             public void onUpdated(PcbOrder order) {
                 onOrderUpdated(order);
+                if (order.isDoChecks()) {
+                    SwingUtilities.invokeLater(() -> {
+                        order.setDoChecks(false);
+                        if (order.isReceived()) {
+                            for (AbstractOrderLine l : order.getOrderLines()) {
+                                createPcbs((PcbOrderLine) l);
+                            }
+                        }
+                    });
+                }
             }
 
             @Override
@@ -298,6 +315,43 @@ public class OrdersPanel extends OrdersPanelLayout {
             if (dialog.showDialog() == IDialog.OK) {
                 link.save();
             }
+        }
+    }
+
+    private void createPcbs(PcbOrderLine pcbOrderLine) {
+        if (pcbOrderLine != null) {
+
+            List<CreatedPcb> createdPcbs = (SearchManager.sm().findCreatedPcbsByPcbAndOrder(pcbOrderLine.getLineId(), pcbOrderLine.getOrderId()));
+            String message;
+            if (createdPcbs.size() > 0) {
+                message = "There are already some created PCB's for " + pcbOrderLine.getLine() + ", add new PCB's to that list?";
+            } else {
+                message = "Do you want to create PCB's from this order?";
+            }
+
+            SpinnerNumberModel model = new SpinnerNumberModel(pcbOrderLine.getAmount(), 1, Integer.MAX_VALUE, 1);
+            JSpinner spinner = new JSpinner(model);
+
+            Object[] objects = {message, spinner};
+
+            int res = JOptionPane.showOptionDialog(
+                    application,
+                    objects,
+                    "Create PCB",
+                    JOptionPane.OK_CANCEL_OPTION,
+                    JOptionPane.QUESTION_MESSAGE
+                    , null, null, null);
+            if (res == JOptionPane.OK_OPTION) {
+                int amount = model.getNumber().intValue();
+                CreatedPcb createdPcb = new CreatedPcb();
+            }
+
+        }
+    }
+
+    private void checkLocationsForItemOrder(ItemOrder itemOrder) {
+        if (itemOrder != null && itemOrder.isReceived()) {
+
         }
     }
 
