@@ -11,6 +11,7 @@ import com.waldo.inventory.gui.dialogs.editdistributorpartlinkdialog.EditDistrib
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
 import com.waldo.inventory.gui.dialogs.ordersearchitemdialog.OrderSearchItemsDialog;
 import com.waldo.inventory.managers.SearchManager;
+import com.waldo.utils.DateUtils;
 import com.waldo.utils.icomponents.IDialog;
 
 import javax.swing.*;
@@ -343,7 +344,12 @@ public class OrdersPanel extends OrdersPanelLayout {
                     , null, null, null);
             if (res == JOptionPane.OK_OPTION) {
                 int amount = model.getNumber().intValue();
-                CreatedPcb createdPcb = new CreatedPcb();
+                for (int i = 1; i < (amount + 1); i++) {
+                    CreatedPcb createdPcb = new CreatedPcb(pcbOrderLine.getName() + i, pcbOrderLine.getLine(), pcbOrderLine.getOrder());
+                    createdPcb.setDateCreated(DateUtils.now());
+                    createdPcb.save();
+                }
+
             }
 
         }

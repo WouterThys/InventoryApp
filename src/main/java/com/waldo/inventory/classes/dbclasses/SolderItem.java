@@ -3,6 +3,7 @@ package com.waldo.inventory.classes.dbclasses;
 import com.waldo.inventory.Utils.Statics;
 import com.waldo.inventory.Utils.Statics.SolderItemState;
 import com.waldo.inventory.managers.SearchManager;
+import com.waldo.utils.DateUtils;
 import com.waldo.utils.FileUtils;
 
 import javax.sql.rowset.serial.SerialBlob;
@@ -13,6 +14,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Objects;
 
+import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class SolderItem extends DbObject {
@@ -81,6 +83,8 @@ public class SolderItem extends DbObject {
     public int addParameters(PreparedStatement statement) throws SQLException {
         int ndx = 1;
 
+        boolean online = (settings().getDbSettings().getDbType().equals(Statics.DbTypes.Online));
+
         statement.setString(ndx++, getName());
         statement.setLong(ndx++, getCreatedPcbLinkId());
         statement.setLong(ndx++, getUsedItemId());
@@ -90,13 +94,21 @@ public class SolderItem extends DbObject {
         statement.setInt(ndx++, getNumTimesDesoldered());
 
         if (getSolderDate() != null) {
-            statement.setTimestamp(ndx++, new Timestamp(solderDate.getTime()));
+            if (online) {
+                statement.setTimestamp(ndx++, new Timestamp(solderDate.getTime()));
+            } else {
+                statement.setString(ndx++, DateUtils.formatMySqlDateTime(solderDate));
+            }
         } else {
             statement.setDate(ndx++, null);
         }
 
         if (getDesolderDate() != null) {
-            statement.setTimestamp(ndx++, new Timestamp(desolderDate.getTime()));
+            if (online) {
+                statement.setTimestamp(ndx++, new Timestamp(desolderDate.getTime()));
+            } else {
+                statement.setString(ndx++, DateUtils.formatMySqlDateTime(desolderDate));
+            }
         } else {
             statement.setDate(ndx++, null);
         }
