@@ -1948,7 +1948,7 @@ public class DatabaseAccess {
                 while (rs.next()) {
                     ll = new LocationLabel();
                     ll.setId(rs.getLong("id"));
-
+                    ll.setName(rs.getString("name"));
                     //
 
                     ll.setInserted(true);

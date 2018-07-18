@@ -12,6 +12,7 @@ import com.waldo.inventory.gui.components.ILocationMapPanel;
 import com.waldo.inventory.gui.components.IResourceDialog;
 import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.dialogs.customlocationdialog.CustomLocationDialog;
+import com.waldo.inventory.gui.dialogs.editlocationlabeldialog.EditLocationLabelDialog;
 import com.waldo.inventory.gui.dialogs.inventorydialog.InventoryCacheDialog;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.utils.icomponents.IComboBox;
@@ -94,8 +95,9 @@ public class LocationTypeDialog extends IResourceDialog<LocationType>  {
     }
 
     private void editLocationLabel(final LocationType locationType) {
-        if (locationType != null) {
-
+        if (locationType != null && locationType.getLocationLabel() != null) {
+            EditLocationLabelDialog dialog = new EditLocationLabelDialog(LocationTypeDialog.this, locationType.getLocationLabel());
+            dialog.showDialog();
         }
     }
 
