@@ -27,6 +27,7 @@ public class LocationTypeDialog extends IResourceDialog<LocationType> {
     private ITextField detailName;
     private IActions.EditAction editAction;
     private IActions.InventoryAction inventoryAction;
+    private IActions.PrintAction printAction;
     private ILocationMapPanel locationMapPanel;
 
     public LocationTypeDialog(Window window) {
@@ -50,6 +51,7 @@ public class LocationTypeDialog extends IResourceDialog<LocationType> {
 
     @Override
     protected void initializeDetailComponents() {
+        setResizable(true);
         setTitleIcon(icon);
         detailName = new ITextField("Name");
         detailName.setEnabled(false);
@@ -68,6 +70,13 @@ public class LocationTypeDialog extends IResourceDialog<LocationType> {
             }
         };
 
+        printAction = new IActions.PrintAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                doPrint(getSelectedResource());
+            }
+        };
+
         locationMapPanel = new ILocationMapPanel(this, null, true);
     }
 
@@ -75,7 +84,7 @@ public class LocationTypeDialog extends IResourceDialog<LocationType> {
     protected JPanel createDetailPanel() {
         JPanel panel = new JPanel(new BorderLayout(5,5));
         JPanel northPanel = new JPanel(new GridBagLayout());
-        JToolBar toolBar = GuiUtils.createNewToolbar(inventoryAction, editAction);
+        JToolBar toolBar = GuiUtils.createNewToolbar(inventoryAction, editAction, printAction);
 
         GuiUtils.GridBagHelper gbh = new GuiUtils.GridBagHelper(northPanel);
         gbh.addLine("Name: ", detailName);
@@ -139,6 +148,12 @@ public class LocationTypeDialog extends IResourceDialog<LocationType> {
         if (locationType != null) {
             InventoryCacheDialog dialog = new InventoryCacheDialog(LocationTypeDialog.this, "Inventory", locationType);
             dialog.showDialog();
+        }
+    }
+
+    private void doPrint(LocationType locationType) {
+        if ( locationType != null) {
+
         }
     }
 }

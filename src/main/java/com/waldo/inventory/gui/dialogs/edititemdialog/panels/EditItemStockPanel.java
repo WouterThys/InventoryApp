@@ -9,6 +9,7 @@ import com.waldo.inventory.classes.dbclasses.Location;
 import com.waldo.inventory.classes.dbclasses.Set;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.ICacheDialog;
+import com.waldo.inventory.gui.components.ILocationPrintable;
 import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.dialogs.edititemlocationdialog.EditItemLocation;
 import com.waldo.utils.icomponents.IEditedListener;
@@ -29,16 +30,21 @@ public class EditItemStockPanel<T extends Item> extends JPanel implements GuiUti
     // Listener
     private final IEditedListener editedListener;
 
+    // Amounts
     private ISpinner amountSpinner;
     private ISpinner minimumSpinner;
     private ISpinner maximumSpinner;
-    //private JComboBox<ItemAmountTypes> amountTypeCb;
 
+    // Location
     private ITextField locationTypeTf;
     private ITextField rowTf;
     private ITextField colTf;
     private IActions.EditAction editAction;
     private IActions.DeleteAction deleteAction;
+
+    // Printing
+    private ILocationPrintable locationPrintable;
+
 
     public EditItemStockPanel(Window parent, @NotNull T selectedItem,@NotNull IEditedListener editedListener) {
         this.parent = parent;
@@ -52,7 +58,6 @@ public class EditItemStockPanel<T extends Item> extends JPanel implements GuiUti
             selectedItem.setAmount(set.getAmount());
             selectedItem.setLocationId(set.getLocationId());
 
-            //amountTypeCb.setSelectedItem(set.getAmountType());
             amountSpinner.setValue(set.getAmount());
             minimumSpinner.setValue(set.getMinimum());
             maximumSpinner.setValue(set.getMaximum());
@@ -69,6 +74,50 @@ public class EditItemStockPanel<T extends Item> extends JPanel implements GuiUti
             rowTf.clearText();
             colTf.clearText();
             locationTypeTf.clearText();
+        }
+    }
+
+    private void onEditLocation() {
+        EditItemLocation dialog;
+        dialog = new EditItemLocation(parent,
+                "Select",
+                selectedItem.getLocation());
+        if (dialog.showDialog() == ICacheDialog.OK) {
+            Location newLocation = dialog.getItemLocation();
+            if (newLocation != null) {
+                selectedItem.setLocationId(newLocation.getId());
+                newLocation.updateItemList();
+            } else {
+                selectedItem.setLocationId(DbObject.UNKNOWN_ID);
+            }
+            updateLocationFields(newLocation);
+            editedListener.onValueChanged(
+                    EditItemStockPanel.this,
+                    "locationId",
+                    0,
+                    0);
+        }
+    }
+
+    private void onDeleteLocation() {
+        int res = JOptionPane.showConfirmDialog(
+                EditItemStockPanel.this,
+                "Are you sure you want to delete the location?",
+                "Delete location",
+                JOptionPane.YES_NO_OPTION);
+
+        if (res == JOptionPane.YES_OPTION) {
+            Location oldLocation = selectedItem.getLocation();
+            if (oldLocation != null) {
+                oldLocation.updateItemList();
+            }
+            selectedItem.setLocationId(-1);
+            updateLocationFields(null);
+            editedListener.onValueChanged(
+                    EditItemStockPanel.this,
+                    "locationId",
+                    0,
+                    -1);
         }
     }
 
@@ -142,8 +191,21 @@ public class EditItemStockPanel<T extends Item> extends JPanel implements GuiUti
         return locationPanel;
     }
 
+    private JPanel createPrintPanel() {
+        JPanel printPanel = new JPanel(new BorderLayout());
+
+        printPanel.add(locationPrintable);
+
+
+        printPanel.setBorder(GuiUtils.createInlineTitleBorder("Printing"));
+
+        return printPanel;
+    }
+
     @Override
     public void initializeComponents() {
+
+        // Amounts
         SpinnerModel amountModel = new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1);
         amountSpinner = new ISpinner(amountModel);
         amountSpinner.addEditedListener(editedListener, "amount");
@@ -156,6 +218,8 @@ public class EditItemStockPanel<T extends Item> extends JPanel implements GuiUti
         maximumSpinner = new ISpinner(maximumModel);
         maximumSpinner.addEditedListener(editedListener, "maximum");
 
+
+        // Location
         rowTf = new ITextField();
         rowTf.setEnabled(false);
         colTf = new ITextField();
@@ -167,52 +231,20 @@ public class EditItemStockPanel<T extends Item> extends JPanel implements GuiUti
         editAction = new IActions.EditAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                EditItemLocation dialog;
-                dialog = new EditItemLocation(parent,
-                        "Select",
-                        selectedItem.getLocation());
-                if (dialog.showDialog() == ICacheDialog.OK) {
-                    Location newLocation = dialog.getItemLocation();
-                    if (newLocation != null) {
-                        selectedItem.setLocationId(newLocation.getId());
-                        newLocation.updateItemList();
-                    } else {
-                        selectedItem.setLocationId(DbObject.UNKNOWN_ID);
-                    }
-                    updateLocationFields(newLocation);
-                    editedListener.onValueChanged(
-                            EditItemStockPanel.this,
-                            "locationId",
-                            0,
-                            0);
-                }
+                SwingUtilities.invokeLater(() -> onEditLocation());
             }
         };
 
         deleteAction = new IActions.DeleteAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int res = JOptionPane.showConfirmDialog(
-                        EditItemStockPanel.this,
-                        "Are you sure you want to delete the location?",
-                        "Delete location",
-                        JOptionPane.YES_NO_OPTION);
-
-                if (res == JOptionPane.YES_OPTION) {
-                    Location oldLocation = selectedItem.getLocation();
-                    if (oldLocation != null) {
-                        oldLocation.updateItemList();
-                    }
-                    selectedItem.setLocationId(-1);
-                    updateLocationFields(null);
-                    editedListener.onValueChanged(
-                            EditItemStockPanel.this,
-                            "locationId",
-                            0,
-                            -1);
-                }
+                SwingUtilities.invokeLater(() -> onDeleteLocation());
             }
         };
+
+        // Print
+        locationPrintable = new ILocationPrintable();
+
     }
 
     @Override
@@ -224,6 +256,7 @@ public class EditItemStockPanel<T extends Item> extends JPanel implements GuiUti
 
         stockPnl.add(createAmountPanel());
         stockPnl.add(createLocationPanel());
+        stockPnl.add(createPrintPanel());
 
         add(stockPnl, BorderLayout.NORTH);
     }

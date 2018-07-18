@@ -1476,6 +1476,7 @@ public class DatabaseAccess {
                     p.setId(rs.getLong("id"));
                     p.setName(rs.getString("name"));
                     p.setIconPath(rs.getString("iconpath"));
+                    p.setImageId(rs.getLong("imageId"));
                     p.setProjectType(rs.getString("projectType"));
                     p.setOpenAsFolder(rs.getBoolean("openasfolder"));
                     p.setUseDefaultLauncher(rs.getBoolean("usedefaultlauncher"));
