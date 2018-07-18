@@ -9,7 +9,7 @@ import com.waldo.inventory.classes.dbclasses.Location;
 import com.waldo.inventory.classes.dbclasses.Set;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.ICacheDialog;
-import com.waldo.inventory.gui.components.ILocationPrintable;
+import com.waldo.inventory.gui.components.ILocationLabelPreview;
 import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.dialogs.edititemlocationdialog.EditItemLocation;
 import com.waldo.utils.icomponents.IEditedListener;
@@ -43,7 +43,7 @@ public class EditItemStockPanel<T extends Item> extends JPanel implements GuiUti
     private IActions.DeleteAction deleteAction;
 
     // Printing
-    private ILocationPrintable locationPrintable;
+    private ILocationLabelPreview locationPrintable;
 
 
     public EditItemStockPanel(Window parent, @NotNull T selectedItem,@NotNull IEditedListener editedListener) {
@@ -243,7 +243,7 @@ public class EditItemStockPanel<T extends Item> extends JPanel implements GuiUti
         };
 
         // Print
-        locationPrintable = new ILocationPrintable();
+        locationPrintable = new ILocationLabelPreview();
 
     }
 

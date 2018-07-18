@@ -98,6 +98,8 @@ public class CacheManager {
     private final CacheList<DbEvent> dbEvents = new CacheList<>();
     private final CacheList<Statistics> statistics = new CacheList<>();
     private final CacheList<PendingOrder> pendingOrders = new CacheList<>();
+    private final CacheList<LocationLabel> locationLabels = new CacheList<>();
+    private final CacheList<LabelAnnotation> labelAnnotations = new CacheList<>();
 
     // Other
     private List<String> aliasList = null;
@@ -205,6 +207,8 @@ public class CacheManager {
         pendingOrders.clear();
         createdPcbLinks.clear();
         createdPcbs.clear();
+        locationLabels.clear();
+        labelAnnotations.clear();
     }
 
 
@@ -879,5 +883,43 @@ public class CacheManager {
 
     public synchronized void remove(PendingOrder element) {
         getPendingOrders().remove(element);
+    }
+
+
+    public synchronized CacheList<LocationLabel> getLocationLabels() {
+        if (!locationLabels.isFetched()) {
+            long start = System.nanoTime();
+            locationLabels.setList(db().fetchLocationLabels(), (System.nanoTime() - start));
+        }
+        return locationLabels;
+    }
+
+    public synchronized void add(LocationLabel element) {
+        if (!getLocationLabels().contains(element)) {
+            locationLabels.add(element);
+        }
+    }
+
+    public synchronized void remove(LocationLabel element) {
+        getLocationLabels().remove(element);
+    }
+
+
+    public synchronized CacheList<LabelAnnotation> getLabelAnnotations() {
+        if (!labelAnnotations.isFetched()) {
+            long start = System.nanoTime();
+            labelAnnotations.setList(db().fetchLabelAnnotations(), (System.nanoTime() - start));
+        }
+        return labelAnnotations;
+    }
+
+    public synchronized void add(LabelAnnotation element) {
+        if (!getLabelAnnotations().contains(element)) {
+            labelAnnotations.add(element);
+        }
+    }
+
+    public synchronized void remove(LabelAnnotation element) {
+        getLabelAnnotations().remove(element);
     }
 }

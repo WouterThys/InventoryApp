@@ -930,6 +930,40 @@ public class Statics {
             }
         }
     }
+
+    public enum LabelAnnotationType {
+        Unknown (0, ""),
+        Text    (1, "Text"),
+        Image   (2, "Image");
+
+        private final int intValue;
+        private final String name;
+
+        LabelAnnotationType(int intValue, String name) {
+            this.intValue = intValue;
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+
+        public int getIntValue() {
+            return intValue;
+        }
+
+        public static LabelAnnotationType fromInt(int intValue) {
+            switch(intValue) {
+                case 1:
+                    return Text;
+                case 2:
+                    return Image;
+                default:
+                    return Unknown;
+            }
+        }
+    }
 }
 
 
