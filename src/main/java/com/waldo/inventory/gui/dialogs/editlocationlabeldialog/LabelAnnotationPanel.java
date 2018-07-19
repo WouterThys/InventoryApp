@@ -7,8 +7,14 @@ import com.waldo.utils.icomponents.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
-public class LabelAnnotationPanel extends IPanel implements IEditedListener, CacheChangedListener<LabelAnnotation> {
+public class LabelAnnotationPanel extends IPanel implements IEditedListener, CacheChangedListener<LabelAnnotation>, MouseListener {
+
+    interface AnnotationPanelListener {
+        void onClicked(MouseEvent e, LabelAnnotation annotation);
+    }
 
     /*
      *                  COMPONENTS
@@ -31,12 +37,18 @@ public class LabelAnnotationPanel extends IPanel implements IEditedListener, Cac
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private final LabelAnnotation annotation;
+    private final Color backGround;
+    private boolean selected = false;
+    private AnnotationPanelListener listener;
 
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     public LabelAnnotationPanel(LabelAnnotation annotation) {
         this.annotation = annotation;
+        this.backGround = getBackground();
+        addMouseListener(this);
+
         initializeComponents();
         initializeLayouts();
         updateComponents();
@@ -48,6 +60,23 @@ public class LabelAnnotationPanel extends IPanel implements IEditedListener, Cac
 
     LabelAnnotation getAnnotation() {
         return annotation;
+    }
+
+    void addAnnotationListener(AnnotationPanelListener listener) {
+        this.listener = listener;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+        if (selected) {
+            setBackground(backGround.darker());
+        } else {
+            setBackground(backGround);
+        }
+    }
+
+    public boolean isSelected() {
+        return selected;
     }
 
     /*
@@ -90,36 +119,49 @@ public class LabelAnnotationPanel extends IPanel implements IEditedListener, Cac
         imageHSp.setPreferredSize(new Dimension(60, 28));
     }
 
+    private ILabel createLabel(String text) {
+        ILabel lbl = new ILabel(text);
+        lbl.setOpaque(true);
+        return lbl;
+    }
+
     @Override
     public void initializeLayouts() {
 
         JPanel startXPnl = new JPanel(new BorderLayout());
-        startXPnl.add(new ILabel("X:"), BorderLayout.WEST);
+        startXPnl.setOpaque(true);
+        startXPnl.add(createLabel("X:"), BorderLayout.WEST);
         startXPnl.add(startXSp, BorderLayout.CENTER);
 
         JPanel startYPnl = new JPanel(new BorderLayout());
-        startYPnl.add(new ILabel(" Y:"), BorderLayout.WEST);
+        startYPnl.setOpaque(true);
+        startYPnl.add(createLabel(" Y:"), BorderLayout.WEST);
         startYPnl.add(startYSp, BorderLayout.CENTER);
 
         Box startPosBox = Box.createHorizontalBox();
+        startPosBox.setOpaque(true);
         startPosBox.add(startXPnl);
         startPosBox.add(startYPnl);
 
 
         Box textFontBox = Box.createHorizontalBox();
+        textFontBox.setOpaque(true);
         textFontBox.add(textFontCb);
         textFontBox.add(textSizeSp);
 
 
         JPanel imageWPnl = new JPanel(new BorderLayout());
-        imageWPnl.add(new ILabel("W:"), BorderLayout.WEST);
+        imageWPnl.setOpaque(true);
+        imageWPnl.add(createLabel("W:"), BorderLayout.WEST);
         imageWPnl.add(imageWSp, BorderLayout.CENTER);
 
         JPanel imageHPnl = new JPanel(new BorderLayout());
-        imageHPnl.add(new ILabel(" H:"), BorderLayout.WEST);
+        imageHPnl.setOpaque(true);
+        imageHPnl.add(createLabel(" H:"), BorderLayout.WEST);
         imageHPnl.add(imageHSp, BorderLayout.CENTER);
 
         Box imageWHBox = Box.createHorizontalBox();
+        imageWHBox.setOpaque(true);
         imageWHBox.add(imageWPnl);
         imageWHBox.add(imageHPnl);
 
@@ -142,7 +184,6 @@ public class LabelAnnotationPanel extends IPanel implements IEditedListener, Cac
                 default:
                     break;
         }
-
 
         setBorder(GuiUtils.createInlineTitleBorder(annotation.getType().toString()));
         //setPreferredSize(new Dimension(200, 60));
@@ -194,5 +235,39 @@ public class LabelAnnotationPanel extends IPanel implements IEditedListener, Cac
     @Override
     public void onCacheCleared() {
 
+    }
+
+    // Mouse listener
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        if (listener != null) {
+            e.setSource(this);
+            listener.onClicked(e, annotation);
+        }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        if (!selected) {
+            setBackground(backGround.brighter());
+        }
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+        if (!selected) {
+            setBackground(backGround);
+        }
     }
 }

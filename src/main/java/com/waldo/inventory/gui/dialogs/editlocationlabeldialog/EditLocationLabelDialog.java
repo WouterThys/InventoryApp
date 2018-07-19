@@ -17,7 +17,7 @@ public class EditLocationLabelDialog extends IObjectDialog<LocationLabel> {
     private ILocationLabelPreview labelPreview;
     private ITextField imageNameTv;
 
-    private JPanel annotationsPanel;
+    private AnnotationPanel annotationPanel;
 
 
     public EditLocationLabelDialog(Window window, LocationLabel locationLabel) {
@@ -34,15 +34,7 @@ public class EditLocationLabelDialog extends IObjectDialog<LocationLabel> {
     }
 
     private void updateAnnotationPanel(List<LabelAnnotation> annotations) {
-        annotationsPanel.removeAll();
-        Box box = Box.createVerticalBox();
-        for (LabelAnnotation a : annotations) {
-            LabelAnnotationPanel lap = new LabelAnnotationPanel(a);
-            box.add(lap);
-        }
-        annotationsPanel.add(box, BorderLayout.NORTH);
-        annotationsPanel.revalidate();
-        annotationsPanel.repaint();
+
     }
 
 
@@ -55,11 +47,7 @@ public class EditLocationLabelDialog extends IObjectDialog<LocationLabel> {
         headerPnl.setBorder(GuiUtils.createInlineTitleBorder("Image"));
 
         JPanel centerPnl = new JPanel(new BorderLayout());
-        //JScrollPane scrollPane = new JScrollPane();
-        //scrollPane.add(annotationsPanel);
-        //scrollPane.setPreferredSize(new Dimension(200, 300));
-        //centerPnl.add(scrollPane, BorderLayout.CENTER);
-        centerPnl.add(annotationsPanel);
+        centerPnl.add(annotationPanel, BorderLayout.CENTER);
         centerPnl.setBorder(GuiUtils.createInlineTitleBorder("Annotations"));
 
         panel.add(headerPnl, BorderLayout.NORTH);
@@ -89,8 +77,7 @@ public class EditLocationLabelDialog extends IObjectDialog<LocationLabel> {
 
         labelPreview = new ILocationLabelPreview();
 
-        annotationsPanel = new JPanel(new BorderLayout());
-       // annotationsPanel.setPreferredSize(new Dimension(200, 300));
+        annotationPanel = new AnnotationPanel(getLocationLabel());
     }
 
     @Override
