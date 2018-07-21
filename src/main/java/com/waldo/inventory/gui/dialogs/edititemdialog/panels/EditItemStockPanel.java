@@ -243,7 +243,7 @@ public class EditItemStockPanel<T extends Item> extends JPanel implements GuiUti
         };
 
         // Print
-        locationPrintable = new ILocationLabelPreview();
+        locationPrintable = new ILocationLabelPreview(null);
 
     }
 

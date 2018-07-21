@@ -1,16 +1,23 @@
 package com.waldo.inventory.gui.dialogs.editlocationlabeldialog;
 
+import com.waldo.inventory.Utils.Statics.LabelAnnotationType;
 import com.waldo.inventory.classes.dbclasses.LabelAnnotation;
 import com.waldo.inventory.classes.dbclasses.LocationLabel;
+import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.inventory.gui.components.IdBToolBar;
+import com.waldo.utils.icomponents.IComboBox;
 import com.waldo.utils.icomponents.IPanel;
+import com.waldo.utils.icomponents.ITextField;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
-public class AnnotationPanel extends IPanel implements LabelAnnotationPanel.AnnotationPanelListener, IdBToolBar.IdbToolBarListener {
+public abstract class AnnotationPanel extends IPanel implements
+        LabelAnnotationPanel.AnnotationPanelListener,
+        IdBToolBar.IdbToolBarListener,
+        CacheChangedListener<LabelAnnotation> {
 
     /*
      *                  COMPONENTS
@@ -28,7 +35,7 @@ public class AnnotationPanel extends IPanel implements LabelAnnotationPanel.Anno
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public AnnotationPanel(LocationLabel locationLabel) {
+    AnnotationPanel(LocationLabel locationLabel) {
         this.locationLabel = locationLabel;
         initializeComponents();
         initializeLayouts();
@@ -57,11 +64,39 @@ public class AnnotationPanel extends IPanel implements LabelAnnotationPanel.Anno
             gbc.weightx = 1;
             gbc.fill = GridBagConstraints.HORIZONTAL;
             container.add(panel, gbc, 0);
-
-            validate();
-            repaint();
         }
     }
+
+    void updateView() {
+        validate();
+        repaint();
+    }
+
+    void createNewAnnotation() {
+
+        String message = "Create new annotation, set name and type";
+        ITextField nameTf = new ITextField();
+        IComboBox<LabelAnnotationType> typeCb = new IComboBox<>(LabelAnnotationType.values());
+
+        Object[] obj = {message, nameTf, typeCb};
+
+        int res = JOptionPane.showConfirmDialog(
+                AnnotationPanel.this,
+                obj,
+                "New annotation",
+                JOptionPane.OK_CANCEL_OPTION
+        );
+
+        if (res == JOptionPane.YES_OPTION) {
+            String name = nameTf.getText();
+            LabelAnnotationType type = (LabelAnnotationType) typeCb.getSelectedItem();
+
+            LabelAnnotation newAnnotation = new LabelAnnotation(locationLabel.getId(), name, type);
+            newAnnotation.save();
+        }
+
+    }
+
 
     /*
      *                  LISTENERS
@@ -84,7 +119,7 @@ public class AnnotationPanel extends IPanel implements LabelAnnotationPanel.Anno
         setLayout(new BorderLayout());
 
         JScrollPane pane = new JScrollPane(container);
-        pane.setPreferredSize(new Dimension(300, 500));
+        pane.setPreferredSize(new Dimension(400, 500));
 
         add(pane, BorderLayout.CENTER);
         add(annotationTb, BorderLayout.SOUTH);
@@ -97,6 +132,8 @@ public class AnnotationPanel extends IPanel implements LabelAnnotationPanel.Anno
         for (LabelAnnotation la : annotationList) {
             addPanel(new LabelAnnotationPanel(la));
         }
+        updateView();
+        updateEnabledComponents();
     }
 
     // Listener
@@ -109,6 +146,7 @@ public class AnnotationPanel extends IPanel implements LabelAnnotationPanel.Anno
         currentPanel = (LabelAnnotationPanel) e.getSource();
         currentPanel.setSelected(true);
 
+        updateView();
         updateEnabledComponents();
     }
 
@@ -121,16 +159,48 @@ public class AnnotationPanel extends IPanel implements LabelAnnotationPanel.Anno
 
     @Override
     public void onToolBarAdd(IdBToolBar source) {
-
+        SwingUtilities.invokeLater(this::createNewAnnotation);
     }
 
     @Override
     public void onToolBarDelete(IdBToolBar source) {
+        if (currentPanel != null) {
+            int res = JOptionPane.showConfirmDialog(
+                    AnnotationPanel.this,
+                    "Delete " + currentPanel.getAnnotation() + "?",
+                    "Delete",
+                    JOptionPane.YES_NO_OPTION
+            );
 
+            if (res == JOptionPane.YES_OPTION) {
+                currentPanel.getAnnotation().delete();
+            }
+        }
     }
 
     @Override
     public void onToolBarEdit(IdBToolBar source) {
+
+    }
+
+
+
+    // Cache changed
+    @Override
+    public void onInserted(LabelAnnotation annotation) {
+        addPanel(new LabelAnnotationPanel(annotation));
+        updateView();
+        updateEnabledComponents();
+    }
+
+    @Override
+    public void onDeleted(LabelAnnotation annotation) {
+        updateComponents();
+        updateEnabledComponents();
+    }
+
+    @Override
+    public void onCacheCleared() {
 
     }
 }

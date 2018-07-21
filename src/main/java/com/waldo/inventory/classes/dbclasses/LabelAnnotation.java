@@ -37,13 +37,22 @@ public class LabelAnnotation extends DbObject {
     private double imageW;
     private double imageH;
 
-    public LabelAnnotation() {
+    public LabelAnnotation(long locationLabelId) {
         super(TABLE_NAME);
+        setLocationLabelId(locationLabelId);
+    }
+
+    public LabelAnnotation(long locationLabelId, String name, LabelAnnotationType type) {
+        this(locationLabelId);
+        setName(name);
+        setType(type);
     }
 
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
-        int ndx = addBaseParameters(statement);
+        int ndx = 1;
+
+        statement.setString(ndx++, getName());
 
         statement.setLong(ndx++, getLocationLabelId());
         statement.setInt(ndx++, getType().getIntValue());
@@ -79,15 +88,14 @@ public class LabelAnnotation extends DbObject {
 
     @Override
     public LabelAnnotation createCopy() {
-        return createCopy(new LabelAnnotation());
+        return createCopy(new LabelAnnotation(getLocationLabelId()));
     }
 
     @Override
     public LabelAnnotation createCopy(DbObject copyInto) {
-        LabelAnnotation cpy = new LabelAnnotation();
+        LabelAnnotation cpy = new LabelAnnotation(getLocationLabelId());
         copyBaseFields(cpy);
 
-        cpy.setLocationLabelId(getLocationLabelId());
         cpy.setType(getType());
         cpy.setStartX(getStartX());
         cpy.setStartY(getStartY());

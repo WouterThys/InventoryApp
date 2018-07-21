@@ -1,7 +1,6 @@
 package com.waldo.inventory.gui.dialogs.editlocationlabeldialog;
 
 import com.waldo.inventory.classes.dbclasses.LabelAnnotation;
-import com.waldo.inventory.database.interfaces.CacheChangedListener;
 import com.waldo.utils.GuiUtils;
 import com.waldo.utils.icomponents.*;
 
@@ -10,7 +9,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-public class LabelAnnotationPanel extends IPanel implements IEditedListener, CacheChangedListener<LabelAnnotation>, MouseListener {
+public class LabelAnnotationPanel extends IPanel implements IEditedListener, MouseListener {
 
     interface AnnotationPanelListener {
         void onClicked(MouseEvent e, LabelAnnotation annotation);
@@ -44,7 +43,7 @@ public class LabelAnnotationPanel extends IPanel implements IEditedListener, Cac
     /*
      *                  CONSTRUCTOR
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public LabelAnnotationPanel(LabelAnnotation annotation) {
+    LabelAnnotationPanel(LabelAnnotation annotation) {
         this.annotation = annotation;
         this.backGround = getBackground();
         addMouseListener(this);
@@ -69,7 +68,7 @@ public class LabelAnnotationPanel extends IPanel implements IEditedListener, Cac
     public void setSelected(boolean selected) {
         this.selected = selected;
         if (selected) {
-            setBackground(backGround.darker());
+            setBackground(backGround.brighter());
         } else {
             setBackground(backGround);
         }
@@ -87,12 +86,12 @@ public class LabelAnnotationPanel extends IPanel implements IEditedListener, Cac
     public void initializeComponents() {
         nameTf = new ITextField(this, "name");
 
-        SpinnerNumberModel startXModel = new SpinnerNumberModel(1.0, Double.MIN_VALUE, Double.MAX_VALUE, 0.1);
+        SpinnerNumberModel startXModel = new SpinnerNumberModel(1, 0, 1000, 1);
         startXSp = new ISpinner(startXModel);
         startXSp.addEditedListener(this, "startX", double.class);
         startXSp.setPreferredSize(new Dimension(60, 28));
 
-        SpinnerNumberModel startYModel = new SpinnerNumberModel(1.0, Double.MIN_VALUE, Double.MAX_VALUE, 0.1);
+        SpinnerNumberModel startYModel = new SpinnerNumberModel(1, 0, 1000, 1);
         startYSp = new ISpinner(startYModel);
         startYSp.addEditedListener(this, "startY", double.class);
         startYSp.setPreferredSize(new Dimension(60, 28));
@@ -103,7 +102,7 @@ public class LabelAnnotationPanel extends IPanel implements IEditedListener, Cac
 
         SpinnerNumberModel testSizeModel = new SpinnerNumberModel(10, 6, Integer.MAX_VALUE, 1);
         textSizeSp = new ISpinner(testSizeModel);
-        textSizeSp.addEditedListener(this, "textFontSize", double.class);
+        textSizeSp.addEditedListener(this, "textFontSize", int.class);
         textSizeSp.setPreferredSize(new Dimension(60, 28));
 
         imageNameTf = new ITextField();
@@ -167,7 +166,7 @@ public class LabelAnnotationPanel extends IPanel implements IEditedListener, Cac
 
 
 
-        GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(this, 50);
+        GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(this, 60);
         gbc.addLine("Name: ", nameTf);
         gbc.addLine(" ", startPosBox);
 
@@ -186,7 +185,6 @@ public class LabelAnnotationPanel extends IPanel implements IEditedListener, Cac
         }
 
         setBorder(GuiUtils.createInlineTitleBorder(annotation.getType().toString()));
-        //setPreferredSize(new Dimension(200, 60));
     }
 
     @Override
@@ -208,33 +206,14 @@ public class LabelAnnotationPanel extends IPanel implements IEditedListener, Cac
     // Edited
     @Override
     public void onValueChanged(Component component, String s, Object o, Object o1) {
-
+        if (listener != null) {
+            annotation.save();
+        }
     }
 
     @Override
     public Object getGuiObject() {
         return annotation;
-    }
-
-    // Cache changed
-    @Override
-    public void onInserted(LabelAnnotation annotation) {
-
-    }
-
-    @Override
-    public void onUpdated(LabelAnnotation annotation) {
-
-    }
-
-    @Override
-    public void onDeleted(LabelAnnotation annotation) {
-
-    }
-
-    @Override
-    public void onCacheCleared() {
-
     }
 
     // Mouse listener
@@ -260,7 +239,7 @@ public class LabelAnnotationPanel extends IPanel implements IEditedListener, Cac
     @Override
     public void mouseEntered(MouseEvent e) {
         if (!selected) {
-            setBackground(backGround.brighter());
+            setBackground(backGround.darker());
         }
     }
 

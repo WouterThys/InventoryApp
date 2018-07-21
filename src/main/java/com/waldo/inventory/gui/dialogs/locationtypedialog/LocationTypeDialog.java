@@ -200,7 +200,7 @@ public class LocationTypeDialog extends IResourceDialog<LocationType>  {
 
         locationLabelCb = new IComboBox<>(cache().getLocationLabels(), new ComparatorUtils.DbObjectNameComparator<>(), true);
         locationLabelCb.addEditedListener(this, "locationLabelId");
-        locationLabelPreview = new ILocationLabelPreview();
+        locationLabelPreview = new ILocationLabelPreview(null);
 
         editLocationLabelAction = new IActions.EditAction() {
             @Override
