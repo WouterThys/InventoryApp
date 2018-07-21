@@ -1,6 +1,7 @@
 package com.waldo.inventory.gui.dialogs.editlocationlabeldialog;
 
 import com.waldo.inventory.classes.dbclasses.LabelAnnotation;
+import com.waldo.inventory.gui.components.INavigator;
 import com.waldo.utils.GuiUtils;
 import com.waldo.utils.icomponents.*;
 
@@ -19,8 +20,7 @@ public class LabelAnnotationPanel extends IPanel implements IEditedListener, Mou
      *                  COMPONENTS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private ITextField nameTf;
-    private ISpinner startXSp;
-    private ISpinner startYSp;
+    private INavigator startXYNavigator;
 
     // Text
     private ITextField textTf;
@@ -86,15 +86,7 @@ public class LabelAnnotationPanel extends IPanel implements IEditedListener, Mou
     public void initializeComponents() {
         nameTf = new ITextField(this, "name");
 
-        SpinnerNumberModel startXModel = new SpinnerNumberModel(1, 0, 1000, 1);
-        startXSp = new ISpinner(startXModel);
-        startXSp.addEditedListener(this, "startX", double.class);
-        startXSp.setPreferredSize(new Dimension(60, 28));
-
-        SpinnerNumberModel startYModel = new SpinnerNumberModel(1, 0, 1000, 1);
-        startYSp = new ISpinner(startYModel);
-        startYSp.addEditedListener(this, "startY", double.class);
-        startYSp.setPreferredSize(new Dimension(60, 28));
+        startXYNavigator = new INavigator();
 
         textTf = new ITextField(this, "text");
         GraphicsEnvironment e = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -127,27 +119,10 @@ public class LabelAnnotationPanel extends IPanel implements IEditedListener, Mou
     @Override
     public void initializeLayouts() {
 
-        JPanel startXPnl = new JPanel(new BorderLayout());
-        startXPnl.setOpaque(true);
-        startXPnl.add(createLabel("X:"), BorderLayout.WEST);
-        startXPnl.add(startXSp, BorderLayout.CENTER);
-
-        JPanel startYPnl = new JPanel(new BorderLayout());
-        startYPnl.setOpaque(true);
-        startYPnl.add(createLabel(" Y:"), BorderLayout.WEST);
-        startYPnl.add(startYSp, BorderLayout.CENTER);
-
-        Box startPosBox = Box.createHorizontalBox();
-        startPosBox.setOpaque(true);
-        startPosBox.add(startXPnl);
-        startPosBox.add(startYPnl);
-
-
         Box textFontBox = Box.createHorizontalBox();
         textFontBox.setOpaque(true);
         textFontBox.add(textFontCb);
         textFontBox.add(textSizeSp);
-
 
         JPanel imageWPnl = new JPanel(new BorderLayout());
         imageWPnl.setOpaque(true);
@@ -165,11 +140,9 @@ public class LabelAnnotationPanel extends IPanel implements IEditedListener, Mou
         imageWHBox.add(imageHPnl);
 
 
-
-        GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(this, 60);
+       JPanel panel = new JPanel();
+        GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(panel, 60);
         gbc.addLine("Name: ", nameTf);
-        gbc.addLine(" ", startPosBox);
-
         switch (annotation.getType()) {
             case Text:
                 gbc.addLine("Text: ", textTf);
@@ -180,9 +153,14 @@ public class LabelAnnotationPanel extends IPanel implements IEditedListener, Mou
                 gbc.addLine("", imageWHBox);
                 break;
 
-                default:
-                    break;
+            default:
+                break;
         }
+
+
+        setLayout(new BorderLayout());
+        add(panel, BorderLayout.CENTER);
+        add(startXYNavigator, BorderLayout.EAST);
 
         setBorder(GuiUtils.createInlineTitleBorder(annotation.getType().toString()));
     }
@@ -191,8 +169,6 @@ public class LabelAnnotationPanel extends IPanel implements IEditedListener, Mou
     public void updateComponents(Object... args) {
 
         nameTf.setText(annotation.getName());
-        startXSp.setTheValue(annotation.getStartX());
-        startYSp.setTheValue(annotation.getStartY());
         textTf.setText(annotation.getText());
         textFontCb.setSelectedItem(annotation.getTextFontName());
         textSizeSp.setTheValue(annotation.getTextFontSize());
