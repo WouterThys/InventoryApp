@@ -193,27 +193,25 @@ public class ImageResource extends Resource implements ImageChangedListener {
         if (imageIcon == null || boundary == null) {
             return null;
         }
-        Dimension newScale = getScaledDimension(imageIcon, boundary);
+        Dimension newScale = getScaledDimension(imageIcon.getIconWidth(), imageIcon.getIconHeight(), boundary);
         Image icon = imageIcon.getImage();
         Image scaledImage = icon.getScaledInstance(newScale.width, newScale.height, Image.SCALE_SMOOTH);
         return new ImageIcon(scaledImage);
     }
 
-    private static Dimension getScaledDimension(ImageIcon icon, Dimension boundary) {
+    public static Dimension getScaledDimension(int originalWidth, int originalHeight, Dimension boundary) {
 
-        int original_width = icon.getIconWidth();
-        int original_height = icon.getIconHeight();
         int bound_width = boundary.width;
         int bound_height = boundary.height;
-        int new_width = original_width;
-        int new_height = original_height;
+        int new_width = originalWidth;
+        int new_height = originalHeight;
 
         // first check if we need to scale width
-        if (original_width > bound_width) {
+        if (originalWidth > bound_width) {
             //scale width to fit
             new_width = bound_width;
             //scale height to maintain aspect ratio
-            new_height = (new_width * original_height) / original_width;
+            new_height = (new_width * originalHeight) / originalWidth;
         }
 
         // then check if we need to scale even with the new height
@@ -221,7 +219,7 @@ public class ImageResource extends Resource implements ImageChangedListener {
             //scale height to fit instead
             new_height = bound_height;
             //scale width to maintain aspect ratio
-            new_width = (new_height * original_width) / original_height;
+            new_width = (new_height * originalWidth) / originalHeight;
         }
 
         return new Dimension(new_width, new_height);

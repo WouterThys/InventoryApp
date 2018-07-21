@@ -28,7 +28,11 @@ public class LocationLabel extends DbObject {
 
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
-        return addBaseParameters(statement);
+        int ndx = addBaseParameters(statement);
+
+        statement.setLong(ndx++, getImageId());
+
+        return ndx;
     }
 
     @Override

@@ -1949,6 +1949,8 @@ public class DatabaseAccess {
                     ll = new LocationLabel();
                     ll.setId(rs.getLong("id"));
                     ll.setName(rs.getString("name"));
+                    ll.setIconPath(rs.getString("iconPath"));
+                    ll.setImageId(rs.getLong("imageId"));
                     //
 
                     ll.setInserted(true);
@@ -1982,11 +1984,10 @@ public class DatabaseAccess {
                  ResultSet rs = stmt.executeQuery()) {
 
                 while (rs.next()) {
-                    la = new LabelAnnotation();
+                    la = new LabelAnnotation(rs.getLong("locationLabelId"));
                     la.setId(rs.getLong("id"));
                     la.setName(rs.getString("name"));
 
-                    la.setLocationLabelId(rs.getLong("locationLabelId"));
                     la.setType(rs.getInt("type"));
                     la.setStartX(rs.getDouble("startX"));
                     la.setStartY(rs.getDouble("startY"));
