@@ -95,38 +95,41 @@ public class ILocationLabelPreview extends JPanel implements GuiUtils.GuiInterfa
         if (paintImage) {
             if (image == null && locationLabel.getImageId() > DbObject.UNKNOWN_ID) {
                 DbImage dbImage = imageResource.getImage(Statics.ImageType.Other, locationLabel.getImageId());
-                image = dbImage.getImageIcon().getImage();
+                if (dbImage != null) {
+                    image = dbImage.getImageIcon().getImage();
+                }
             }
 
-            int imW = image.getWidth(this);
-            int imH = image.getHeight(this);
+            if (image != null) {
+                int imW = image.getWidth(this);
+                int imH = image.getHeight(this);
 
-            int myW = getWidth();
-            int myH = getHeight();
+                int myW = getWidth();
+                int myH = getHeight();
 
-            // Resize ?
-            if (zoom < 0) {
-                double autoZoom = 0;
+                // Resize ?
+                if (zoom < 0) {
+                    double autoZoom = 0;
 
-                Dimension newDimension = new Dimension(imW, imH);
-                while ((newDimension.getWidth() < (myW - (0.1 * myW))) && (newDimension.getHeight() < (myH - (0.1 * myH)))) {
-                    autoZoom += 0.1; // Add 10%
-                    newDimension.setSize((int) (imW + (imW * autoZoom)), (int) (imH + (imH * autoZoom)));
+                    Dimension newDimension = new Dimension(imW, imH);
+                    while ((newDimension.getWidth() < (myW - (0.1 * myW))) && (newDimension.getHeight() < (myH - (0.1 * myH)))) {
+                        autoZoom += 0.1; // Add 10%
+                        newDimension.setSize((int) (imW + (imW * autoZoom)), (int) (imH + (imH * autoZoom)));
+                    }
+
+                    image = image.getScaledInstance(newDimension.width, newDimension.height, Image.SCALE_SMOOTH);
+                    imW = image.getWidth(this);
+                    imH = image.getHeight(this);
+
+                    zoom = autoZoom;
                 }
 
-                image = image.getScaledInstance(newDimension.width, newDimension.height, Image.SCALE_SMOOTH);
-                imW = image.getWidth(this);
-                imH = image.getHeight(this);
+                imageX = ((myW / 2) - (imW / 2));
+                imageY = ((myH / 2) - (imH / 2));
 
-                zoom = autoZoom;
+                System.out.println(drawCnt + " Drawing image");
+                drawCnt++;
             }
-
-            imageX = ((myW / 2) - (imW / 2));
-            imageY = ((myH / 2) - (imH / 2));
-
-        System.out.println(drawCnt + " Drawing image");
-        drawCnt++;
-
         }
 
         if (image != null) {
@@ -172,8 +175,11 @@ public class ILocationLabelPreview extends JPanel implements GuiUtils.GuiInterfa
             font = new Font(font.getName(), Font.PLAIN, a.getTextFontSize());
         }
 
+        int fX = (int)(a.getStartX() + zoom * a.getStartX());
+        int fY = (int)(a.getStartY() + zoom * a.getStartY());
+
         g.setFont(font);
-        g.drawString(a.getText(), (int)a.getStartX(), (int)a.getStartY());
+        g.drawString(a.getText(), fX, fY);
     }
 
     private void paintAnnotationImage(Graphics2D g, LabelAnnotation a) {

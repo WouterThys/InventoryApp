@@ -117,7 +117,9 @@ public class ITileView<IT extends ProjectObject> extends JPanel implements GuiUt
 
         if (ide != null && ide.getImageId() > DbObject.UNKNOWN_ID) {
             DbImage dbImage = imageResource.getImage(Statics.ImageType.IdeImage, ide.getImageId());
-            setImage(dbImage.getImageIcon());
+            if (dbImage != null) {
+                setImage(dbImage.getImageIcon());
+            }
         } else {
             String extension = FileUtils.getExtension(new File(projectObject.getDirectory()));
             String iconPath = "";
