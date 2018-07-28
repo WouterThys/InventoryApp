@@ -121,43 +121,44 @@ public class ITileView<IT extends ProjectObject> extends JPanel implements GuiUt
         } else {
             String extension = FileUtils.getExtension(new File(projectObject.getDirectory()));
             String iconPath = "";
+
             if (extension != null) {
                 switch (extension) {
                     case "ods":
-                        iconPath = "ods.png";
+                        iconPath += "ods.png";
                         break;
                     case "pdf":
-                        iconPath = "pdf.png";
+                        iconPath += "pdf.png";
                         break;
                     case "avi":
-                        iconPath = "avi-icon.png";
+                        iconPath += "avi-icon.png";
                         break;
                     case "csv":
-                        iconPath = "csv-icon.png";
+                        iconPath += "csv-icon.png";
                         break;
                     case "xls":
-                        iconPath = "excel-xls-icon.png";
+                        iconPath += "excel-xls-icon.png";
                         break;
                     case "jpg":
-                        iconPath = "jpg-icon.png";
+                        iconPath += "jpg-icon.png";
                         break;
                     case "mp3":
-                        iconPath = "mp3-icon.png";
+                        iconPath += "mp3-icon.png";
                         break;
                     case "png":
-                        iconPath = "png-icon.png";
+                        iconPath += "png-icon.png";
                         break;
                     case "ppt":
-                        iconPath = "ppt-icon.png";
+                        iconPath += "ppt-icon.png";
                         break;
                     case "rar":
-                        iconPath = "rar-icon.png";
+                        iconPath += "rar-icon.png";
                         break;
                     case "txt":
-                        iconPath = "txt-icon.png";
+                        iconPath += "txt-icon.png";
                         break;
                     case "zip":
-                        iconPath = "zip-icon.png";
+                        iconPath += "zip-icon.png";
                         break;
                     default:
                         break;
@@ -174,13 +175,13 @@ public class ITileView<IT extends ProjectObject> extends JPanel implements GuiUt
     private void setIcon(String path, boolean isValid) {
         if (!path.isEmpty()) {
             try {
-//                ImageIcon ideIcon = ImageResource.scaleImage(imageResource.readIdeIcon(path), new Dimension(60,60));
-//                if (isValid) {
-//                    iconBtn.setIcon(ideIcon);
-//                } else {
-//                    ImageIcon warnIcon = imageResource.readIcon("ErrorProvider.WarningIcon");
-//                    iconBtn.setIcon(new CombinedIcon(ideIcon, warnIcon));
-//                }
+                ImageIcon ideIcon = ImageResource.scaleImage(imageResource.getImageFromDisc(path), new Dimension(60,60));
+                if (isValid) {
+                    iconBtn.setIcon(ideIcon);
+                } else {
+                    ImageIcon warnIcon = imageResource.readIcon("ErrorProvider.WarningIcon");
+                    iconBtn.setIcon(new CombinedIcon(ideIcon, warnIcon));
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }

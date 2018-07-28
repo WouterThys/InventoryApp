@@ -117,6 +117,26 @@ public class ImageResource extends Resource implements ImageChangedListener {
         }
     }
 
+    public ImageIcon getImageFromDisc(String path) {
+
+        if (iconImageMap.containsKey(path)) {
+            return iconImageMap.get(path);
+        }
+
+        ImageIcon icon;
+        try (InputStream is = this.getClass().getClassLoader().getResourceAsStream("images/" + path)) {
+            icon = new ImageIcon(ImageIO.read(is));
+        } catch (Exception e) {
+            icon = null;
+        }
+
+        if (icon != null) {
+            iconImageMap.put(path, icon);
+        }
+
+        return icon;
+    }
+
     /*
      *                  IMAGES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
