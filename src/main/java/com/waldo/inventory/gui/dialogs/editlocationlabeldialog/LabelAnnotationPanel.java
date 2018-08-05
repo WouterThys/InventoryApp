@@ -1,0 +1,228 @@
+package com.waldo.inventory.gui.dialogs.editlocationlabeldialog;
+
+import com.waldo.inventory.classes.dbclasses.LabelAnnotation;
+import com.waldo.inventory.gui.components.INavigator;
+import com.waldo.utils.GuiUtils;
+import com.waldo.utils.icomponents.*;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
+public class LabelAnnotationPanel extends IPanel implements IEditedListener, MouseListener {
+
+    interface AnnotationPanelListener {
+        void onClicked(MouseEvent e, LabelAnnotation annotation);
+    }
+
+    /*
+     *                  COMPONENTS
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    private ITextField nameTf;
+    private INavigator startXYNavigator;
+
+    // Text
+    private ITextField textTf;
+    private IComboBox<Font> textFontCb;
+    private ISpinner textSizeSp;
+
+    // Image
+    private ITextField imageNameTf;
+    private ISpinner imageWSp;
+    private ISpinner imageHSp;
+
+    /*
+     *                  VARIABLES
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    private final LabelAnnotation annotation;
+    private final Color backGround;
+    private boolean selected = false;
+    private AnnotationPanelListener listener;
+
+    /*
+     *                  CONSTRUCTOR
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    LabelAnnotationPanel(LabelAnnotation annotation) {
+        this.annotation = annotation;
+        this.backGround = getBackground();
+        addMouseListener(this);
+
+        initializeComponents();
+        initializeLayouts();
+        updateComponents();
+    }
+
+    /*
+     *                  METHODS
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+    LabelAnnotation getAnnotation() {
+        return annotation;
+    }
+
+    void addAnnotationListener(AnnotationPanelListener listener) {
+        this.listener = listener;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+        if (selected) {
+            setBackground(backGround.brighter());
+        } else {
+            setBackground(backGround);
+        }
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    /*
+     *                  LISTENERS
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    // Layout
+    @Override
+    public void initializeComponents() {
+        nameTf = new ITextField(this, "name");
+
+        startXYNavigator = new INavigator();
+
+        textTf = new ITextField(this, "text");
+        GraphicsEnvironment e = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        textFontCb = new IComboBox<>();
+
+        SpinnerNumberModel testSizeModel = new SpinnerNumberModel(10, 6, Integer.MAX_VALUE, 1);
+        textSizeSp = new ISpinner(testSizeModel);
+        textSizeSp.addEditedListener(this, "textFontSize", int.class);
+        textSizeSp.setPreferredSize(new Dimension(60, 28));
+
+        imageNameTf = new ITextField();
+
+        SpinnerNumberModel imageWModel = new SpinnerNumberModel(16.0, 8.0, Double.MAX_VALUE, 1.0);
+        imageWSp = new ISpinner(imageWModel);
+        imageWSp.addEditedListener(this, "imageW", double.class);
+        imageWSp.setPreferredSize(new Dimension(60, 28));
+
+        SpinnerNumberModel imageHModel = new SpinnerNumberModel(16.0, 8.0, Double.MAX_VALUE, 1.0);
+        imageHSp = new ISpinner(imageHModel);
+        imageHSp.addEditedListener(this, "imageH", double.class);
+        imageHSp.setPreferredSize(new Dimension(60, 28));
+    }
+
+    private ILabel createLabel(String text) {
+        ILabel lbl = new ILabel(text);
+        lbl.setOpaque(true);
+        return lbl;
+    }
+
+    @Override
+    public void initializeLayouts() {
+
+        Box textFontBox = Box.createHorizontalBox();
+        textFontBox.setOpaque(true);
+        textFontBox.add(textFontCb);
+        textFontBox.add(textSizeSp);
+
+        JPanel imageWPnl = new JPanel(new BorderLayout());
+        imageWPnl.setOpaque(true);
+        imageWPnl.add(createLabel("W:"), BorderLayout.WEST);
+        imageWPnl.add(imageWSp, BorderLayout.CENTER);
+
+        JPanel imageHPnl = new JPanel(new BorderLayout());
+        imageHPnl.setOpaque(true);
+        imageHPnl.add(createLabel(" H:"), BorderLayout.WEST);
+        imageHPnl.add(imageHSp, BorderLayout.CENTER);
+
+        Box imageWHBox = Box.createHorizontalBox();
+        imageWHBox.setOpaque(true);
+        imageWHBox.add(imageWPnl);
+        imageWHBox.add(imageHPnl);
+
+
+       JPanel panel = new JPanel();
+        GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(panel, 60);
+        gbc.addLine("Name: ", nameTf);
+        switch (annotation.getType()) {
+            case Text:
+                gbc.addLine("Text: ", textTf);
+                gbc.addLine("", textFontBox);
+                break;
+            case Image:
+                gbc.addLine("Image: ", imageNameTf);
+                gbc.addLine("", imageWHBox);
+                break;
+
+            default:
+                break;
+        }
+
+
+        setLayout(new BorderLayout());
+        add(panel, BorderLayout.CENTER);
+        add(startXYNavigator, BorderLayout.EAST);
+
+        setBorder(GuiUtils.createInlineTitleBorder(annotation.getType().toString()));
+    }
+
+    @Override
+    public void updateComponents(Object... args) {
+
+        nameTf.setText(annotation.getName());
+        textTf.setText(annotation.getText());
+        textFontCb.setSelectedItem(annotation.getTextFontName());
+        textSizeSp.setTheValue(annotation.getTextFontSize());
+        imageNameTf.setText(annotation.getImagePath());
+        imageWSp.setTheValue(annotation.getImageW());
+        imageHSp.setTheValue(annotation.getImageH());
+
+    }
+
+
+    // Edited
+    @Override
+    public void onValueChanged(Component component, String s, Object o, Object o1) {
+        if (listener != null) {
+            annotation.save();
+        }
+    }
+
+    @Override
+    public Object getGuiObject() {
+        return annotation;
+    }
+
+    // Mouse listener
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        if (listener != null) {
+            e.setSource(this);
+            listener.onClicked(e, annotation);
+        }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        if (!selected) {
+            setBackground(backGround.darker());
+        }
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+        if (!selected) {
+            setBackground(backGround);
+        }
+    }
+}

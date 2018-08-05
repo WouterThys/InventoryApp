@@ -7,6 +7,7 @@ import com.waldo.inventory.classes.Value;
 import com.waldo.inventory.classes.search.SearchMatch;
 import com.waldo.inventory.managers.OrderManager;
 import com.waldo.inventory.managers.SearchManager;
+import com.waldo.utils.DateUtils;
 import com.waldo.utils.FileUtils;
 
 import javax.sql.rowset.serial.SerialBlob;
@@ -16,10 +17,10 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
+import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.managers.CacheManager.cache;
 import static com.waldo.inventory.managers.SearchManager.sm;
 
@@ -110,9 +111,10 @@ public class Item extends DbObject implements Orderable {
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
         int ndx = 1;
+        boolean online = (settings().getDbSettings().getDbType().equals(Statics.DbTypes.Online));
         statement.setString(ndx++, getName());
         statement.setString(ndx++, getAlias());
-        statement.setNString(ndx++, getDescription());
+        statement.setString(ndx++, getDescription());
         statement.setLong(ndx++, getDivisionId());
         statement.setString(ndx++, getLocalDataSheet());
         statement.setString(ndx++, getOnlineDataSheet());
@@ -144,13 +146,21 @@ public class Item extends DbObject implements Orderable {
         // Value
         statement.setDouble(ndx++, getValue().getDoubleValue());
         statement.setInt(ndx++, getValue().getMultiplier().getMultiplier());
-        statement.setNString(ndx++, getValue().getUnit().toString());
+        statement.setString(ndx++, getValue().getUnit().toString());
 
         // Aud
         statement.setString(ndx++, getAud().getInsertedBy());
-        statement.setTimestamp(ndx++, new Timestamp(getAud().getInsertedDate().getTime()), Calendar.getInstance());
+        if (online) {
+            statement.setTimestamp(ndx++, new Timestamp(getAud().getInsertedDate().getTime()));
+        } else {
+            statement.setString(ndx++, DateUtils.formatMySqlDateTime(getAud().getInsertedDate()));
+        }
         statement.setString(ndx++, getAud().getUpdatedBy());
-        statement.setTimestamp(ndx++, new Timestamp(getAud().getUpdatedDate().getTime()), Calendar.getInstance());
+        if (online) {
+            statement.setTimestamp(ndx++, new Timestamp(getAud().getUpdatedDate().getTime()));
+        } else {
+            statement.setString(ndx++, DateUtils.formatMySqlDateTime(getAud().getUpdatedDate()));
+        }
 
         // Linked items
         statement.setLong(ndx++, getRelatedItemId());

@@ -51,8 +51,14 @@ public abstract class AbstractOrderLine<T extends Orderable> extends DbObject {
         statement.setLong(ndx++, getOrderId());
         statement.setLong(ndx++, getLineId());
         statement.setBoolean(ndx++, isPending());
-        statement.setDouble(ndx++, getCorrectedPrice().getValue());
-        statement.setInt(ndx++, getCorrectedPrice().getPriceUnits().getIntValue());
+        if (getCorrectedPrice() != null) {
+            statement.setDouble(ndx++, getCorrectedPrice().getValue());
+            statement.setInt(ndx++, getCorrectedPrice().getPriceUnits().getIntValue());
+        } else {
+            statement.setDouble(ndx++, 0.0);
+            statement.setInt(ndx++, Statics.PriceUnits.Unknown.getIntValue());
+        }
+
 
         return ndx;
     }
@@ -172,9 +178,6 @@ public abstract class AbstractOrderLine<T extends Orderable> extends DbObject {
 
 
     public Price getCorrectedPrice() {
-        if (correctedPrice == null) {
-            correctedPrice = new Price();
-        }
         return correctedPrice;
     }
 
@@ -187,6 +190,8 @@ public abstract class AbstractOrderLine<T extends Orderable> extends DbObject {
     }
 
     public void setCorrectedPrice(double price, int priceUnits) {
-        this.correctedPrice = new Price(price, Statics.PriceUnits.fromInt(priceUnits));
+        if (price > 0 && priceUnits >= 0) {
+            this.correctedPrice = new Price(price, Statics.PriceUnits.fromInt(priceUnits));
+        }
     }
 }

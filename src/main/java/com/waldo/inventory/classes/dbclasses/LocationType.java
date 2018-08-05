@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static com.waldo.inventory.managers.CacheManager.cache;
 
@@ -24,15 +25,27 @@ public class LocationType extends DbObject {
     private String layoutDefinition;
     private List<Location> locations;
 
+    private long locationLabelId;
+    private LocationLabel locationLabel;
+
     public LocationType() {
         super(TABLE_NAME);
     }
 
 
     @Override
-    public boolean equals(Object obj) {
-        boolean result = super.equals(obj);
-        return result && obj instanceof LocationType && ((LocationType) obj).getLayoutDefinition().equals(getLayoutDefinition());
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        LocationType that = (LocationType) o;
+        return getLocationLabelId() == that.getLocationLabelId() &&
+                Objects.equals(getLayoutDefinition(), that.getLayoutDefinition());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getLayoutDefinition(), getLocationLabelId());
     }
 
     @Override
@@ -40,6 +53,7 @@ public class LocationType extends DbObject {
         int ndx = addBaseParameters(statement);
 
         statement.setString(ndx++, getLayoutDefinition());
+        statement.setLong(ndx++, getLocationLabelId());
 
         return ndx;
     }
@@ -50,6 +64,7 @@ public class LocationType extends DbObject {
         copyBaseFields(cpy);
 
         cpy.setLayoutDefinition(getLayoutDefinition());
+        cpy.setLocationLabelId(getLocationLabelId());
 
         return cpy;
     }
@@ -247,5 +262,27 @@ public class LocationType extends DbObject {
 
     public boolean hasLayoutDefinition() {
         return !getLayoutDefinition().isEmpty();
+    }
+
+
+    public long getLocationLabelId() {
+        if (locationLabelId < DbObject.UNKNOWN_ID) {
+            locationLabelId = UNKNOWN_ID;
+        }
+        return locationLabelId;
+    }
+
+    public void setLocationLabelId(long locationLabelId) {
+        if (locationLabel != null && locationLabel.getId() != locationLabelId) {
+            locationLabel = null;
+        }
+        this.locationLabelId = locationLabelId;
+    }
+
+    public LocationLabel getLocationLabel() {
+        if (locationLabel == null && getLocationLabelId() > UNKNOWN_ID) {
+            locationLabel = SearchManager.sm().findLocationLabelById(locationLabelId);
+        }
+        return locationLabel;
     }
 }

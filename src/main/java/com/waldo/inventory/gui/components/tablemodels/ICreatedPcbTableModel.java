@@ -16,7 +16,7 @@ import static com.waldo.inventory.gui.Application.imageResource;
 
 public class ICreatedPcbTableModel extends IAbstractTableModel<CreatedPcb> {
 
-    private static final String[] COLUMN_NAMES = {"", "Name", "ItemOrder", "Created"};
+    private static final String[] COLUMN_NAMES = {"", "Name", "Order", "Created"};
     private static final Class[] COLUMN_CLASSES = {ILabel.class, ILabel.class, ILabel.class, ILabel.class};
 
     public ICreatedPcbTableModel() {

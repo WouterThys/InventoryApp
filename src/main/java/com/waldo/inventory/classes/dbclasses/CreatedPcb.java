@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.waldo.inventory.Utils.Statics.SolderItemState.*;
+import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class CreatedPcb extends DbObject {
@@ -56,7 +57,7 @@ public class CreatedPcb extends DbObject {
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
         int ndx = addBaseParameters(statement);
-
+        boolean online = (settings().getDbSettings().getDbType().equals(Statics.DbTypes.Online));
         if (projectPcbId <= UNKNOWN_ID) {
             setProjectPcbId(UNKNOWN_ID);
         }
@@ -64,19 +65,31 @@ public class CreatedPcb extends DbObject {
         statement.setLong(ndx++, getOrderId());
 
         if (getDateCreated() != null) {
-            statement.setTimestamp(ndx++, new Timestamp(dateCreated.getTime()));
+            if (online) {
+                statement.setTimestamp(ndx++, new Timestamp(dateCreated.getTime()));
+            } else {
+                statement.setString(ndx++, DateUtils.formatMySqlDateTime(dateCreated));
+            }
         } else {
             statement.setDate(ndx++, null);
         }
 
         if (getDateSoldered() != null) {
-            statement.setTimestamp(ndx++, new Timestamp(dateSoldered.getTime()));
+            if (online) {
+                statement.setTimestamp(ndx++, new Timestamp(dateSoldered.getTime()));
+            } else {
+                statement.setString(ndx++, DateUtils.formatMySqlDateTime(dateSoldered));
+            }
         } else {
             statement.setDate(ndx++, null);
         }
 
         if (getDateDestroyed() != null) {
-            statement.setTimestamp(ndx++, new Timestamp(dateDestroyed.getTime()));
+            if (online) {
+                statement.setTimestamp(ndx++, new Timestamp(dateDestroyed.getTime()));
+            } else {
+                statement.setString(ndx++, DateUtils.formatMySqlDateTime(dateDestroyed));
+            }
         } else {
             statement.setDate(ndx++, null);
         }

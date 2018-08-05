@@ -119,7 +119,7 @@ public class EditDistributorPartLinkDialog extends IObjectDialog<DistributorPart
         GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(panel);
         gbc.addLine("Distributor: ", GuiUtils.createComponentWithAddAction(distributorCb, this));
         gbc.addLine("Reference: ", referenceTf);
-        gbc.addLine("Price: ", pricePnl);
+        gbc.addLine("Unit price: ", pricePnl);
 
         getContentPanel().add(panel, BorderLayout.CENTER);
         getContentPanel().setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));

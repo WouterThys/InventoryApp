@@ -705,6 +705,7 @@ public class DatabaseAccess {
                     l.setName(rs.getString("name"));
                     l.setIconPath(rs.getString("iconPath"));
                     l.setLayoutDefinition(rs.getString("layoutDefinition"));
+                    l.setLocationLabelId(rs.getLong("locationLabelId"));
 
                     l.setInserted(true);
                     locationTypes.add(l);
@@ -1476,6 +1477,7 @@ public class DatabaseAccess {
                     p.setId(rs.getLong("id"));
                     p.setName(rs.getString("name"));
                     p.setIconPath(rs.getString("iconpath"));
+                    p.setImageId(rs.getLong("imageId"));
                     p.setProjectType(rs.getString("projectType"));
                     p.setOpenAsFolder(rs.getBoolean("openasfolder"));
                     p.setUseDefaultLauncher(rs.getBoolean("usedefaultlauncher"));
@@ -1929,5 +1931,89 @@ public class DatabaseAccess {
         }
 
         return pendingOrders;
+    }
+
+    public List<LocationLabel> fetchLocationLabels() {
+        List<LocationLabel> locationLabels = new ArrayList<>();
+        if (Main.CACHE_ONLY) {
+            return locationLabels;
+        }
+        Status().setMessage("Fetching LocationLabel orders from DB");
+        LocationLabel ll = null;
+        String sql = scriptResource.readString(LocationLabel.TABLE_NAME + DbObject.SQL_SELECT_ALL);
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    ll = new LocationLabel();
+                    ll.setId(rs.getLong("id"));
+                    ll.setName(rs.getString("name"));
+                    ll.setIconPath(rs.getString("iconPath"));
+                    ll.setImageId(rs.getLong("imageId"));
+                    //
+
+                    ll.setInserted(true);
+
+                    locationLabels.add(ll);
+                }
+            }
+        } catch (SQLException e) {
+            DbErrorObject object = new DbErrorObject(ll, e, Select, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+        }
+
+        return locationLabels;
+    }
+
+
+    public List<LabelAnnotation> fetchLabelAnnotations() {
+        List<LabelAnnotation> labelAnnotations = new ArrayList<>();
+        if (Main.CACHE_ONLY) {
+            return labelAnnotations;
+        }
+        Status().setMessage("Fetching LabelAnnotation orders from DB");
+        LabelAnnotation la = null;
+        String sql = scriptResource.readString(LabelAnnotation.TABLE_NAME + DbObject.SQL_SELECT_ALL);
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    la = new LabelAnnotation(rs.getLong("locationLabelId"));
+                    la.setId(rs.getLong("id"));
+                    la.setName(rs.getString("name"));
+
+                    la.setType(rs.getInt("type"));
+                    la.setStartX(rs.getDouble("startX"));
+                    la.setStartY(rs.getDouble("startY"));
+
+                    la.setText(rs.getString("text"));
+                    la.setTextFontName(rs.getString("textFontName"));
+                    la.setTextFontSize(rs.getInt("textFontSize"));
+
+                    la.setImagePath(rs.getString("imagePath"));
+                    la.setImageH(rs.getDouble("imageH"));
+                    la.setImageW(rs.getDouble("imageW"));
+
+                    la.setInserted(true);
+
+                    labelAnnotations.add(la);
+                }
+            }
+        } catch (SQLException e) {
+            DbErrorObject object = new DbErrorObject(la, e, Select, sql);
+            try {
+                nonoList.put(object);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+        }
+
+        return labelAnnotations;
     }
 }

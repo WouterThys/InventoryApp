@@ -996,4 +996,49 @@ public class SearchManager {
         }
         return null;
     }
+
+    public LocationLabel findLocationLabelById(long id) {
+        if (id > DbObject.UNKNOWN_ID) {
+            for (LocationLabel ll : cache().getLocationLabels()) {
+                if (ll.getId() == id) {
+                    return ll;
+                }
+            }
+        }
+        return null;
+    }
+
+    public LocationLabel findLocationLabelByName(String name) {
+        if (name != null && !name.isEmpty()) {
+            for (LocationLabel ll : cache().getLocationLabels()) {
+                if (ll.getName().equalsIgnoreCase(name)) {
+                    return ll;
+                }
+            }
+        }
+        return null;
+    }
+
+    public LabelAnnotation findLabelAnnotationById(long id) {
+        if (id > DbObject.UNKNOWN_ID) {
+            for (LabelAnnotation la : cache().getLabelAnnotations()) {
+                if (la.getId() == id) {
+                    return la;
+                }
+            }
+        }
+        return null;
+    }
+
+    public List<LabelAnnotation> findLabelAnnotationsForLocation(long locationLabelId) {
+        List<LabelAnnotation> annotations = new ArrayList<>();
+        if (locationLabelId > DbObject.UNKNOWN_ID) {
+            for (LabelAnnotation la : cache().getLabelAnnotations()) {
+                if (la.getLocationLabelId() == locationLabelId) {
+                    annotations.add(la);
+                }
+            }
+        }
+        return annotations;
+    }
 }

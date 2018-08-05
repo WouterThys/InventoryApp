@@ -13,8 +13,8 @@ import static com.waldo.inventory.gui.Application.imageResource;
 
 public class IInvoiceOrderLineTableModel extends IAbstractTableModel<AbstractOrderLine> {
 
-    private static final String[] COLUMN_NAMES = {"#", "Name", "Price", "Corrected"};
-    private static final Class[] COLUMN_CLASSES = {Integer.class, String.class, Double.class, Double.class};
+    private static final String[] COLUMN_NAMES = {"#", "Name", "Unit price", "Price"};
+    private static final Class[] COLUMN_CLASSES = {Integer.class, String.class, String.class, String.class};
 
     public IInvoiceOrderLineTableModel() {
         super(COLUMN_NAMES, COLUMN_CLASSES);
@@ -25,39 +25,34 @@ public class IInvoiceOrderLineTableModel extends IAbstractTableModel<AbstractOrd
         AbstractOrderLine line = getItemAt(rowIndex);
         if (line != null) {
             switch (columnIndex) {
-                case 0:
                 case -1: // Reference to object itself
                     return line;
-                case 1: // Amount
+                case 0: // Amount
                     return line.getAmount();
-                case 2: // Name
+                case 1: // Name
                     if (line.getLine() != null) {
                         return line.getLine().toString();
                     }
-                case 3: // Reference
+                case 2: // Price
                     DistributorPartLink pn = line.getDistributorPartLink();
                     if (pn != null) {
-                        return pn.toString();
+                        return pn.getPrice().toString();
                     } else {
                         return "";
                     }
-                case 4: // Price
-                    return line.getPrice();
-                case 5: // Total
-                    return line.getTotalPrice(); // Amount * price
+                case 3: // Corrected
+                    if (line.getCorrectedPrice() == null) {
+                        return line.getTotalPrice();
+                    }
+                    return line.getCorrectedPrice().toString();
             }
         }
         return null;
     }
 
     @Override
-    public boolean isCellEditable(int rowIndex, int columnIndex) {
-        return columnIndex == 1 && isEditable;
-    }
-
-    @Override
     public boolean hasTableCellRenderer() {
-        return true;
+        return false;
     }
 
     private static final OrderLineRenderer renderer = new OrderLineRenderer();

@@ -390,7 +390,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
 
         // ItemOrder
         if (result == JOptionPane.YES_OPTION) {
-            AddToOrderDialog dialog = new AddToOrderDialog(this, item, true);
+            AddToOrderDialog<Item> dialog = new AddToOrderDialog<>(this, item, true);
             dialog.showDialog();
         }
     }
@@ -433,7 +433,7 @@ public class Application extends JFrame implements ChangeListener, DbErrorListen
 
         // ItemOrder
         if (itemList.size() > 0) {
-            AddToOrderDialog dialog = new AddToOrderDialog(this, itemList, true);
+            AddToOrderDialog<Item> dialog = new AddToOrderDialog<>(this, itemList, true);
             dialog.showDialog();
         }
     }

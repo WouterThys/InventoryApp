@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.managers.CacheManager.cache;
 
 public class ProjectPcb extends ProjectObject implements Orderable {
@@ -48,6 +49,7 @@ public class ProjectPcb extends ProjectObject implements Orderable {
     @Override
     public int addParameters(PreparedStatement statement) throws SQLException {
         int ndx = addBaseParameters(statement);
+        boolean online = (settings().getDbSettings().getDbType().equals(Statics.DbTypes.Online));
 
         // Add parameters
         statement.setString(ndx++, getDirectory());
@@ -60,7 +62,11 @@ public class ProjectPcb extends ProjectObject implements Orderable {
             statement.setString(ndx++, null);
         }
         if (lastParsedDate != null) {
-            statement.setTimestamp(ndx++, new Timestamp(lastParsedDate.getTime()));
+            if (online) {
+                statement.setTimestamp(ndx++, new Timestamp(lastParsedDate.getTime()));
+            } else {
+                statement.setString(ndx++, DateUtils.formatMySqlDateTime(lastParsedDate));
+            }
         } else {
             statement.setTimestamp(ndx++, null);
         }
