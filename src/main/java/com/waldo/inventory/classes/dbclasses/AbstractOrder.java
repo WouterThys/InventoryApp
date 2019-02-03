@@ -139,10 +139,12 @@ public abstract class AbstractOrder<T extends Orderable> extends DbObject {
     public String createOrderText() {
         StringBuilder builder = new StringBuilder();
         for (AbstractOrderLine<T> orderLine : getOrderLines()) {
-            builder.append(orderLine.getDistributorPartLink().getReference());
-            builder.append(getDistributor().getOrderFileFormat().getSeparator());
-            builder.append(orderLine.getAmount());
-            builder.append("\n");
+            if (orderLine.getDistributorPartLink() != null) {
+                builder.append(orderLine.getDistributorPartLink().getReference());
+                builder.append(getDistributor().getOrderFileFormat().getSeparator());
+                builder.append(orderLine.getAmount());
+                builder.append("\n");
+            }
         }
         return builder.toString();
     }

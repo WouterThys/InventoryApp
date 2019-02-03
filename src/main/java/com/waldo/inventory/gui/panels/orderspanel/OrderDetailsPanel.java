@@ -84,10 +84,10 @@ public abstract class OrderDetailsPanel extends IPanel implements IdBToolBar.Idb
 
         editDistributorAction.setEnabled(!locked);
         browseDistributorAction.setEnabled(hasWebsite);
-        editReferenceAction.setEnabled(!locked);
+        editReferenceAction.setEnabled(enabled);
         deleteReferenceAction.setEnabled(!locked && hasReference);
         browseReferenceAction.setEnabled(hasReference);
-        editTrackingAction.setEnabled(!locked);
+        editTrackingAction.setEnabled(enabled);
         deleteTrackingAction.setEnabled(!locked && hasTracking);
         browseTrackingAction.setEnabled(hasTracking);
 
@@ -162,7 +162,7 @@ public abstract class OrderDetailsPanel extends IPanel implements IdBToolBar.Idb
 
     private void editReference() {
         if (selectedOrder != null) {
-            if (!selectedOrder.isLocked()) {
+            //if (!selectedOrder.isLocked()) {
                 String input = JOptionPane.showInputDialog(
                         application,
                         "Enter a order reference",
@@ -180,14 +180,14 @@ public abstract class OrderDetailsPanel extends IPanel implements IdBToolBar.Idb
                         browseReferenceAction.setTooltip(input);
                     }
                 }
-            } else {
-                JOptionPane.showMessageDialog(
-                        application,
-                        "Can not edit reference when the order is locked..",
-                        "Locked",
-                        JOptionPane.WARNING_MESSAGE
-                );
-            }
+//            } else {
+//                JOptionPane.showMessageDialog(
+//                        application,
+//                        "Can not edit reference when the order is locked..",
+//                        "Locked",
+//                        JOptionPane.WARNING_MESSAGE
+//                );
+//            }
         }
     }
 
@@ -244,7 +244,7 @@ public abstract class OrderDetailsPanel extends IPanel implements IdBToolBar.Idb
 
     private void editTracking() {
         if (selectedOrder != null) {
-            if (!selectedOrder.isLocked()) {
+            //if (!selectedOrder.isLocked()) {
                 String input = JOptionPane.showInputDialog(
                         application,
                         "Enter a order tracking",
@@ -262,14 +262,14 @@ public abstract class OrderDetailsPanel extends IPanel implements IdBToolBar.Idb
                         browseTrackingAction.setTooltip(input);
                     }
                 }
-            } else {
-                JOptionPane.showMessageDialog(
-                        application,
-                        "Can not edit reference when the order is locked..",
-                        "Locked",
-                        JOptionPane.WARNING_MESSAGE
-                );
-            }
+//            } else {
+//                JOptionPane.showMessageDialog(
+//                        application,
+//                        "Can not edit reference when the order is locked..",
+//                        "Locked",
+//                        JOptionPane.WARNING_MESSAGE
+//                );
+//            }
         }
     }
 
