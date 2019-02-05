@@ -964,6 +964,44 @@ public class Statics {
             }
         }
     }
+
+    public enum LabelAnnotationLink {
+        Unknown (0, "Just text"),
+        Name    (1, "Item name"),
+        Alias   (2, "Item alias"),
+        Manufacturer (3, "Item manufacturer"),
+        Location     (4, "Item location"),
+        Distributor  (5, "Item distributor");
+
+        private final int intValue;
+        private final String name;
+
+        LabelAnnotationLink(int intValue, String name) {
+            this.intValue = intValue;
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+
+        public int getIntValue() {
+            return intValue;
+        }
+
+        public static LabelAnnotationLink fromInt(int intValue) {
+            switch (intValue) {
+                default:
+                case 0: return Unknown;
+                case 1: return Name;
+                case 2: return Alias;
+                case 3: return Manufacturer;
+                case 4: return Location;
+                case 5: return Distributor;
+            }
+        }
+    }
 }
 
 

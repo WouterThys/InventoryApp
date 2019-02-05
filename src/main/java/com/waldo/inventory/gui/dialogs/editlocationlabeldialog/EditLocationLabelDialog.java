@@ -8,13 +8,13 @@ import com.waldo.inventory.classes.dbclasses.LocationLabel;
 import com.waldo.inventory.database.ImageDbAccess;
 import com.waldo.inventory.database.interfaces.ImageChangedListener;
 import com.waldo.inventory.gui.components.ILocationLabelPreview;
+import com.waldo.inventory.gui.components.INavigator;
 import com.waldo.inventory.gui.components.IObjectDialog;
 import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.dialogs.imagedialogs.selectimagedialog.SelectImageDialog;
 import com.waldo.utils.GuiUtils;
 import com.waldo.utils.icomponents.IDialog;
 import com.waldo.utils.icomponents.ILabel;
-import com.waldo.utils.icomponents.ISpinner;
 import com.waldo.utils.icomponents.ITextField;
 
 import javax.imageio.ImageIO;
@@ -29,7 +29,7 @@ import static com.waldo.inventory.gui.Application.imageResource;
 public class EditLocationLabelDialog extends IObjectDialog<LocationLabel> implements ImageChangedListener {
 
     private ILocationLabelPreview labelPreview;
-    private ISpinner zoomSp;
+    private ILabel scaleLbl;
 
     private IActions.BrowseFileAction editImageAction;
     private ITextField imageNameTv;
@@ -52,6 +52,22 @@ public class EditLocationLabelDialog extends IObjectDialog<LocationLabel> implem
 
     private LocationLabel getLocationLabel() {
         return getObject();
+    }
+
+    private void moveAnnotation(LabelAnnotation annotation, INavigator.Direction direction) {
+
+        switch (direction) {
+            case Up: annotation.setStartY(annotation.getStartY() - 1);
+                break;
+            case Down: annotation.setStartY(annotation.getStartY() + 1);
+                break;
+            case Left: annotation.setStartX(annotation.getStartX() - 1);
+                break;
+            case Right: annotation.setStartX(annotation.getStartX() + 1);
+                break;
+        }
+
+        labelPreview.updateAnnotations();
     }
 
     private void onEditImage() {
@@ -102,8 +118,7 @@ public class EditLocationLabelDialog extends IObjectDialog<LocationLabel> implem
         JPanel panel = new JPanel(new BorderLayout());
 
         JPanel zoomPnl = new JPanel(new BorderLayout());
-        zoomPnl.add(new ILabel("Zoom: (%)"), BorderLayout.WEST);
-        zoomPnl.add(zoomSp, BorderLayout.CENTER);
+        zoomPnl.add(scaleLbl, BorderLayout.WEST);
 
         Box bottomBox = Box.createHorizontalBox();
         bottomBox.add(zoomPnl);
@@ -139,18 +154,17 @@ public class EditLocationLabelDialog extends IObjectDialog<LocationLabel> implem
         };
 
         labelPreview = new ILocationLabelPreview(getLocationLabel());
-        SpinnerNumberModel snm = new SpinnerNumberModel(0, 0, 50, 1);
-        zoomSp = new ISpinner(snm);
-        zoomSp.addChangeListener(e -> {
-            double z = snm.getNumber().doubleValue();
-            z /= 10;
-            labelPreview.setZoom(z);
-        });
+        scaleLbl = new ILabel(" ");
 
         annotationPanel = new AnnotationPanel(getLocationLabel()) {
             @Override
             public void onUpdated(LabelAnnotation a) {
                 labelPreview.updateAnnotations();
+            }
+
+            @Override
+            public void onMoved(LabelAnnotation annotation, INavigator.Direction direction) {
+                moveAnnotation(annotation, direction);
             }
         };
     }
@@ -175,6 +189,9 @@ public class EditLocationLabelDialog extends IObjectDialog<LocationLabel> implem
             if (image != null) {
                 imageNameTv.setText(image.getName());
             }
+        }
+        if (labelPreview.getScaleFactor() >= 0) {
+            scaleLbl.setText("Scale: " + labelPreview.getScaleFactor());
         }
     }
 

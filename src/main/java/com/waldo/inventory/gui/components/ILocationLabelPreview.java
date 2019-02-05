@@ -20,15 +20,18 @@ public class ILocationLabelPreview extends JPanel implements GuiUtils.GuiInterfa
     private int imageX;
     private int imageY;
 
-
     private boolean paintImage = true;
-    private double zoom = -1; // -1 == auto zoom
+    private double scaleFactor = -1;
 
     public ILocationLabelPreview(LocationLabel locationLabel) {
         super();
         this.locationLabel = locationLabel;
         setOpaque(true);
         setBackground(Color.WHITE);
+    }
+
+    public double getScaleFactor() {
+        return scaleFactor;
     }
 
     @Override
@@ -41,33 +44,6 @@ public class ILocationLabelPreview extends JPanel implements GuiUtils.GuiInterfa
         }
 
     }
-
-
-    public double getZoom() {
-        return zoom;
-    }
-
-    public void setZoom(double zoom) {
-//        this.zoom = zoom;
-//
-//        if (zoom > 0) {
-//
-//            int imW = image.getWidth(this);
-//            int imH = image.getHeight(this);
-//
-//            image = image.getScaledInstance((int) (imW * zoom), (int) (imH * zoom), Image.SCALE_SMOOTH);
-//        } else {
-//            this.zoom = -1;
-//        }
-//        updateAll();
-    }
-
-    public void autoZoom() {
-        zoom = -1;
-        updateAll();
-    }
-
-
 
 
     public void repaintAll() {
@@ -108,7 +84,7 @@ public class ILocationLabelPreview extends JPanel implements GuiUtils.GuiInterfa
                 int myH = getHeight();
 
                 // Resize ?
-                if (zoom < 0) {
+                if (scaleFactor < 0) {
                     double autoZoom = 0;
 
                     Dimension newDimension = new Dimension(imW, imH);
@@ -117,11 +93,11 @@ public class ILocationLabelPreview extends JPanel implements GuiUtils.GuiInterfa
                         newDimension.setSize((int) (imW + (imW * autoZoom)), (int) (imH + (imH * autoZoom)));
                     }
 
+                    scaleFactor = newDimension.width / imW;
+
                     image = image.getScaledInstance(newDimension.width, newDimension.height, Image.SCALE_SMOOTH);
                     imW = image.getWidth(this);
                     imH = image.getHeight(this);
-
-                    zoom = autoZoom;
                 }
 
                 imageX = ((myW / 2) - (imW / 2));
@@ -172,11 +148,12 @@ public class ILocationLabelPreview extends JPanel implements GuiUtils.GuiInterfa
         }
 
         if (a.getTextFontSize() > 0) {
-            font = new Font(font.getName(), Font.PLAIN, a.getTextFontSize());
+            int size = (int) (a.getTextFontSize() * scaleFactor);
+            font = new Font(font.getName(), Font.PLAIN, size);
         }
 
-        int fX = (int)(a.getStartX() + zoom * a.getStartX());
-        int fY = (int)(a.getStartY() + zoom * a.getStartY());
+        int fX = imageX + (int)(a.getStartX() * scaleFactor);
+        int fY = imageY + (int)(a.getStartY() * scaleFactor);
 
         g.setFont(font);
         g.drawString(a.getText(), fX, fY);
@@ -184,6 +161,26 @@ public class ILocationLabelPreview extends JPanel implements GuiUtils.GuiInterfa
 
     private void paintAnnotationImage(Graphics2D g, LabelAnnotation a) {
 
+        int aImX = (int) (a.getStartX() * scaleFactor);
+        int aImY = (int) (a.getStartY() * scaleFactor);
+
+        if (a.getPreviewImage() == null) {
+            Image previewImage;
+            if (a.getImage() == null) {
+                previewImage = imageResource.readIcon("Unknown.SS").getImage();
+            } else {
+                previewImage = a.getImage().getImage();
+            }
+
+            previewImage = previewImage.getScaledInstance(
+                    (int) (a.getImageW() * scaleFactor),
+                    (int) (a.getImageH() * scaleFactor),
+                    Image.SCALE_SMOOTH);
+
+            a.setPreviewImage(previewImage);
+        }
+
+        g.drawImage(a.getPreviewImage(), imageX + aImX, imageY + aImY, this);
     }
 
 

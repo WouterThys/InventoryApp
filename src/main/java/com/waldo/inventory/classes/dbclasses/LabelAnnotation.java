@@ -1,6 +1,7 @@
 package com.waldo.inventory.classes.dbclasses;
 
 import com.waldo.inventory.Utils.Statics;
+import com.waldo.inventory.Utils.Statics.LabelAnnotationLink;
 import com.waldo.inventory.Utils.Statics.LabelAnnotationType;
 import com.waldo.inventory.managers.SearchManager;
 
@@ -23,6 +24,7 @@ public class LabelAnnotation extends DbObject {
     private LocationLabel locationLabel;
 
     private LabelAnnotationType type;
+    private LabelAnnotationLink link;
     private double startX;
     private double startY;
 
@@ -36,6 +38,9 @@ public class LabelAnnotation extends DbObject {
     private String imagePath;
     private double imageW;
     private double imageH;
+
+    // Runtime
+    private Image previewImage;
 
     public LabelAnnotation(long locationLabelId) {
         super(TABLE_NAME);
@@ -56,6 +61,7 @@ public class LabelAnnotation extends DbObject {
 
         statement.setLong(ndx++, getLocationLabelId());
         statement.setInt(ndx++, getType().getIntValue());
+        statement.setInt(ndx++, getLink().getIntValue());
         statement.setDouble(ndx++, getStartX());
         statement.setDouble(ndx++, getStartY());
 
@@ -97,6 +103,7 @@ public class LabelAnnotation extends DbObject {
         copyBaseFields(cpy);
 
         cpy.setType(getType());
+        cpy.setLink(getLink());
         cpy.setStartX(getStartX());
         cpy.setStartY(getStartY());
 
@@ -150,11 +157,30 @@ public class LabelAnnotation extends DbObject {
         this.type = type;
     }
 
+
+    public LabelAnnotationLink getLink() {
+        if (link == null) {
+            link = LabelAnnotationLink.Unknown;
+        }
+        return link;
+    }
+
+    public void setLink(LabelAnnotationLink link) {
+        this.link = link;
+    }
+
+    public void setLink(int link) {
+        this.link = LabelAnnotationLink.fromInt(link);
+    }
+
     public double getStartX() {
         return startX;
     }
 
     public void setStartX(double startX) {
+        if (startX < 0) {
+            startX = 0;
+        }
         this.startX = startX;
     }
 
@@ -163,6 +189,9 @@ public class LabelAnnotation extends DbObject {
     }
 
     public void setStartY(double startY) {
+        if (startY < 0) {
+            startY = 0;
+        }
         this.startY = startY;
     }
 
@@ -221,6 +250,7 @@ public class LabelAnnotation extends DbObject {
     public void setImagePath(String imagePath) {
         if (imagePath != null && !imagePath.equalsIgnoreCase(getImagePath())) {
             image = null;
+            previewImage = null;
         }
         this.imagePath = imagePath;
     }
@@ -230,6 +260,12 @@ public class LabelAnnotation extends DbObject {
     }
 
     public void setImageW(double imageW) {
+        if (imageW < 0) {
+            imageW = 0;
+        }
+        if (imageW != this.imageW) {
+            previewImage = null;
+        }
         this.imageW = imageW;
     }
 
@@ -238,6 +274,20 @@ public class LabelAnnotation extends DbObject {
     }
 
     public void setImageH(double imageH) {
+        if (imageH < 0) {
+            imageH = 0;
+        }
+        if (imageH != this.imageH) {
+            previewImage = null;
+        }
         this.imageH = imageH;
+    }
+
+    public Image getPreviewImage() {
+        return previewImage;
+    }
+
+    public void setPreviewImage(Image previewImage) {
+        this.previewImage = previewImage;
     }
 }

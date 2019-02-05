@@ -97,7 +97,7 @@ public class DatabaseAccess {
     private void initMySql(DbSettings settings) {
         mainDataSource = new BasicDataSource(); // new MySqlDataSource
         mainDataSource.setDriverClassName("com.mysql.jdbc.Driver");
-        mainDataSource.setUrl(settings.createMySqlUrl() + "?zeroDateTimeBehavior=convertToNull&connectTimeout=5000&socketTimeout=30000");
+        mainDataSource.setUrl(settings.createMySqlUrl() + "?zeroDateTimeBehavior=convertToNull&connectTimeout=20000&socketTimeout=30000");
         mainDataSource.setUsername(settings.getDbUserName());
         mainDataSource.setPassword(settings.getDbUserPw());
         LOG.info("Database initialized with connection: " + settings.createMySqlUrl());
@@ -1989,6 +1989,7 @@ public class DatabaseAccess {
                     la.setName(rs.getString("name"));
 
                     la.setType(rs.getInt("type"));
+                    la.setLink(rs.getInt("link"));
                     la.setStartX(rs.getDouble("startX"));
                     la.setStartY(rs.getDouble("startY"));
 

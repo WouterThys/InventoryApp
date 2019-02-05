@@ -1,19 +1,29 @@
 package com.waldo.inventory.gui.dialogs.editlocationlabeldialog;
 
+import com.waldo.inventory.Utils.Statics;
+import com.waldo.inventory.Utils.Statics.LabelAnnotationLink;
 import com.waldo.inventory.classes.dbclasses.LabelAnnotation;
 import com.waldo.inventory.gui.components.INavigator;
+import com.waldo.inventory.gui.components.actions.IActions;
+import com.waldo.inventory.gui.dialogs.imagedialogs.selectimagedialog.SelectImageDialog;
 import com.waldo.utils.GuiUtils;
 import com.waldo.utils.icomponents.*;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
 
-public class LabelAnnotationPanel extends IPanel implements IEditedListener, MouseListener {
+public class LabelAnnotationPanel extends IPanel implements IEditedListener, MouseListener, INavigator.NavigatorListener {
 
     interface AnnotationPanelListener {
         void onClicked(MouseEvent e, LabelAnnotation annotation);
+        void onMoved(LabelAnnotation annotation, INavigator.Direction direction);
     }
 
     /*
@@ -21,6 +31,7 @@ public class LabelAnnotationPanel extends IPanel implements IEditedListener, Mou
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private ITextField nameTf;
     private INavigator startXYNavigator;
+    private IComboBox<LabelAnnotationLink> linkCb;
 
     // Text
     private ITextField textTf;
@@ -31,11 +42,16 @@ public class LabelAnnotationPanel extends IPanel implements IEditedListener, Mou
     private ITextField imageNameTf;
     private ISpinner imageWSp;
     private ISpinner imageHSp;
+    private IActions.BrowseFileAction editImageAction;
+
+    // Save
+    private IActions.SaveAction saveAction;
 
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    private final LabelAnnotation annotation;
+    private LabelAnnotation annotation;
+
     private final Color backGround;
     private boolean selected = false;
     private AnnotationPanelListener listener;
@@ -78,6 +94,51 @@ public class LabelAnnotationPanel extends IPanel implements IEditedListener, Mou
         return selected;
     }
 
+    private void setAnnotationImage(String file, ImageIcon image) {
+        annotation.setImagePath(file);
+        annotation.setImageW(image.getIconWidth());
+        annotation.setImageH(image.getIconHeight());
+
+        imageNameTf.setText(file);
+        imageWSp.setValue(image.getIconWidth());
+        imageHSp.setValue(image.getIconHeight());
+
+        saveAnnotation();
+    }
+
+    private void onEditImage() {
+        SelectImageDialog dialog = new SelectImageDialog(null, false, Statics.ImageType.Other);
+        if (dialog.showDialog() == IDialog.OK) {
+            File imageFile = dialog.getSelectedFile();
+            String name = dialog.getImageName();
+
+            try {
+                BufferedImage bufferedImage = ImageIO.read(imageFile);
+                ImageIcon image = new ImageIcon(bufferedImage);
+
+                // TODO save in db
+
+                setAnnotationImage(imageFile.getAbsolutePath(), image);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Failed to read image..",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE
+                );
+            }
+        }
+    }
+
+
+    private void saveAnnotation() {
+        annotation.save();
+        saveAction.setEnabled(false);
+    }
+
+
     /*
      *                  LISTENERS
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -85,8 +146,14 @@ public class LabelAnnotationPanel extends IPanel implements IEditedListener, Mou
     @Override
     public void initializeComponents() {
         nameTf = new ITextField(this, "name");
-
-        startXYNavigator = new INavigator();
+        startXYNavigator = new INavigator(this);
+        linkCb = new IComboBox<>(LabelAnnotationLink.values());
+        linkCb.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                annotation.setLink((LabelAnnotationLink) linkCb.getSelectedItem());
+                this.onValueChanged(linkCb, "link", 0, 0);
+            }
+        });
 
         textTf = new ITextField(this, "text");
         GraphicsEnvironment e = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -97,17 +164,32 @@ public class LabelAnnotationPanel extends IPanel implements IEditedListener, Mou
         textSizeSp.addEditedListener(this, "textFontSize", int.class);
         textSizeSp.setPreferredSize(new Dimension(60, 28));
 
-        imageNameTf = new ITextField();
+        imageNameTf = new ITextField(this, "imagePath");
+        imageNameTf.setEnabled(false);
 
-        SpinnerNumberModel imageWModel = new SpinnerNumberModel(16.0, 8.0, Double.MAX_VALUE, 1.0);
+        SpinnerNumberModel imageWModel = new SpinnerNumberModel(0.0, 0.0, Double.MAX_VALUE, 1.0);
         imageWSp = new ISpinner(imageWModel);
         imageWSp.addEditedListener(this, "imageW", double.class);
         imageWSp.setPreferredSize(new Dimension(60, 28));
 
-        SpinnerNumberModel imageHModel = new SpinnerNumberModel(16.0, 8.0, Double.MAX_VALUE, 1.0);
+        SpinnerNumberModel imageHModel = new SpinnerNumberModel(0.0, 0.0, Double.MAX_VALUE, 1.0);
         imageHSp = new ISpinner(imageHModel);
         imageHSp.addEditedListener(this, "imageH", double.class);
         imageHSp.setPreferredSize(new Dimension(60, 28));
+
+        saveAction = new IActions.SaveAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SwingUtilities.invokeLater(() -> saveAnnotation());
+            }
+        };
+
+        editImageAction = new IActions.BrowseFileAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SwingUtilities.invokeLater(() -> onEditImage());
+            }
+        };
     }
 
     private ILabel createLabel(String text) {
@@ -139,17 +221,23 @@ public class LabelAnnotationPanel extends IPanel implements IEditedListener, Mou
         imageWHBox.add(imageWPnl);
         imageWHBox.add(imageHPnl);
 
+        JPanel savePnl = new JPanel(new BorderLayout());
+        savePnl.add(GuiUtils.createNewToolbar(saveAction), BorderLayout.EAST);
+        JPanel navPnl = new JPanel(new BorderLayout());
+        navPnl.add(savePnl, BorderLayout.NORTH);
+        navPnl.add(startXYNavigator, BorderLayout.CENTER);
 
        JPanel panel = new JPanel();
         GuiUtils.GridBagHelper gbc = new GuiUtils.GridBagHelper(panel, 60);
         gbc.addLine("Name: ", nameTf);
+        gbc.addLine("Link: ", linkCb);
         switch (annotation.getType()) {
             case Text:
                 gbc.addLine("Text: ", textTf);
                 gbc.addLine("", textFontBox);
                 break;
             case Image:
-                gbc.addLine("Image: ", imageNameTf);
+                gbc.addLine("Image: ", GuiUtils.createComponentWithActions(imageNameTf, editImageAction));
                 gbc.addLine("", imageWHBox);
                 break;
 
@@ -160,7 +248,7 @@ public class LabelAnnotationPanel extends IPanel implements IEditedListener, Mou
 
         setLayout(new BorderLayout());
         add(panel, BorderLayout.CENTER);
-        add(startXYNavigator, BorderLayout.EAST);
+        add(navPnl, BorderLayout.EAST);
 
         setBorder(GuiUtils.createInlineTitleBorder(annotation.getType().toString()));
     }
@@ -169,6 +257,7 @@ public class LabelAnnotationPanel extends IPanel implements IEditedListener, Mou
     public void updateComponents(Object... args) {
 
         nameTf.setText(annotation.getName());
+        linkCb.setSelectedItem(annotation.getLink());
         textTf.setText(annotation.getText());
         textFontCb.setSelectedItem(annotation.getTextFontName());
         textSizeSp.setTheValue(annotation.getTextFontSize());
@@ -183,7 +272,7 @@ public class LabelAnnotationPanel extends IPanel implements IEditedListener, Mou
     @Override
     public void onValueChanged(Component component, String s, Object o, Object o1) {
         if (listener != null) {
-            annotation.save();
+            saveAnnotation();
         }
     }
 
@@ -223,6 +312,16 @@ public class LabelAnnotationPanel extends IPanel implements IEditedListener, Mou
     public void mouseExited(MouseEvent e) {
         if (!selected) {
             setBackground(backGround);
+        }
+    }
+
+    // Navigator
+
+    @Override
+    public void onMoved(INavigator.Direction direction) {
+        if (listener != null) {
+            listener.onMoved(annotation, direction);
+            saveAction.setEnabled(true);
         }
     }
 }
