@@ -156,6 +156,7 @@ abstract class EditOrderInvoiceDialogLayout extends iDialog implements IEditedLi
         if (selectedOrder != null) {
             updatePriceFields();
             initTable();
+            orderTextPane.setText(selectedOrder.createOrderText());
         }
     }
 }

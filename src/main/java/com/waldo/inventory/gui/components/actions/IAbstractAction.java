@@ -16,6 +16,11 @@ public abstract class IAbstractAction extends AbstractAction {
         super(name, imageIcon);
     }
 
+    public IAbstractAction(String name, ImageIcon imageIcon, String toolTip) {
+        super(name, imageIcon);
+        setTooltip(toolTip);
+    }
+
     public void setName(String name) {
         putValue(Action.NAME, name);
     }
