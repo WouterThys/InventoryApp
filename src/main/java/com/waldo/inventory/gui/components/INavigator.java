@@ -3,14 +3,17 @@ package com.waldo.inventory.gui.components;
 import com.waldo.utils.icomponents.IPanel;
 
 import javax.swing.*;
-
 import java.awt.*;
 
 import static com.waldo.inventory.gui.Application.imageResource;
 
 public class INavigator extends IPanel {
 
-    private enum Direction {
+    public interface NavigatorListener {
+        void onMoved(Direction direction);
+    }
+
+    public enum Direction {
         Up   (imageResource.readIcon("Arrow.Open.SS")),
         Right(imageResource.readIcon("Arrow.Right.SS")),
         Down (imageResource.readIcon("Arrow.Close.SS")),
@@ -26,25 +29,53 @@ public class INavigator extends IPanel {
         }
     }
 
-    private class NavigationButton extends JButton {
+    private class NavigationButton extends JButton  {
 
-        private Direction direction;
+        private final Direction direction;
+        private final NavigatorListener navigatorListener;
+        private final Timer timer;
+        private final int timeDelay = 100;
 
-        NavigationButton(Direction direction) {
+        NavigationButton(Direction direction, NavigatorListener navigatorListener) {
             super(direction.getIcon());
             setPreferredSize(new Dimension(20,20));
+
+            this.direction = direction;
+            this.navigatorListener = navigatorListener;
+            this.timer = new Timer(timeDelay, e -> move());
+
+            addActionListener(e -> {
+                move();
+                timer.stop();
+            });
+
+            final ButtonModel model = getModel();
+            model.addChangeListener(e -> {
+                if (model.isPressed() && !timer.isRunning()) {
+                    timer.start();
+                } else if (!model.isPressed() && timer.isRunning()) {
+                    timer.stop();
+                }
+            });
+        }
+
+        private void move() {
+            if (navigatorListener != null) {
+                SwingUtilities.invokeLater(() -> navigatorListener.onMoved(direction));
+            }
         }
     }
-
 
     private NavigationButton uBtn;
     private NavigationButton rBtn;
     private NavigationButton dBtn;
     private NavigationButton lBtn;
 
-    public INavigator() {
-        super();
+    private NavigatorListener navigatorListener;
 
+    public INavigator(NavigatorListener navigatorListener) {
+        super();
+        this.navigatorListener = navigatorListener;
         initializeComponents();
         initializeLayouts();
     }
@@ -52,10 +83,10 @@ public class INavigator extends IPanel {
     @Override
     public void initializeComponents() {
 
-        uBtn = new NavigationButton(Direction.Up);
-        rBtn = new NavigationButton(Direction.Right);
-        dBtn = new NavigationButton(Direction.Down);
-        lBtn = new NavigationButton(Direction.Left);
+        uBtn = new NavigationButton(Direction.Up, navigatorListener);
+        rBtn = new NavigationButton(Direction.Right, navigatorListener);
+        dBtn = new NavigationButton(Direction.Down, navigatorListener);
+        lBtn = new NavigationButton(Direction.Left, navigatorListener);
 
     }
 
@@ -63,6 +94,7 @@ public class INavigator extends IPanel {
     public void initializeLayouts() {
 
         setLayout(new GridBagLayout());
+        setOpaque(false);
 
         GridBagConstraints gbc = new GridBagConstraints();
 
