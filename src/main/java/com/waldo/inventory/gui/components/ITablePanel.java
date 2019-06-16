@@ -118,6 +118,11 @@ public class ITablePanel<T extends DbObject> extends JPanel implements GuiUtils.
         }
     }
 
+    public String getColumnNameAtPoint(Point point) {
+        int col = table.convertColumnIndexToModel(getColumnAtPoint(point));
+        return tableModel.getColumnName(col);
+    }
+
     public T getItemAtRow(int row) {
         return table.getValueAtRow(row);
     }

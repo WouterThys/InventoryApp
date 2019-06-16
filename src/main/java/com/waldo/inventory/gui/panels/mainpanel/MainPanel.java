@@ -263,13 +263,16 @@ public class MainPanel extends MainPanelLayout {
                 }
             } else {
                 int row = itemTable.getRowAtPoint(e.getPoint());
-                int col = itemTable.getColumnAtPoint(e.getPoint());
-                if (row >= 0 && col == 4) {
-                    if (selectedItem.getLocationId() > DbObject.UNKNOWN_ID
-                            && selectedItem.getLocation().getLocationTypeId() > DbObject.UNKNOWN_ID) {
+                //int col = itemTable.getColumnAtPoint(e.getPoint());
+                if (row >= 0) {
+                    String colName = itemTable.getColumnNameAtPoint(e.getPoint());
+                    if (colName != null && colName.equalsIgnoreCase("Location")) {
+                        if (selectedItem.getLocationId() > DbObject.UNKNOWN_ID
+                                && selectedItem.getLocation().getLocationTypeId() > DbObject.UNKNOWN_ID) {
 
-                        LocationPopup popup = new LocationPopup(application, selectedItem.getLocation());
-                        popup.show(e.getComponent(), e.getX(), e.getY());
+                            LocationPopup popup = new LocationPopup(application, selectedItem.getLocation());
+                            popup.show(e.getComponent(), e.getX(), e.getY());
+                        }
                     }
                 }
             }
