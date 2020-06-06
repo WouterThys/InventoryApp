@@ -38,6 +38,26 @@ public class IActions {
         }
     }
 
+    public static abstract class ClearAction extends IAbstractAction {
+        protected ClearAction() {
+            super("Clear", imageResource.readIcon("Clear.SS"));
+        }
+        protected ClearAction(String tooltip) {
+            this();
+            setTooltip(tooltip);
+        }
+    }
+
+    public static abstract class ShowSelectionAction extends IAbstractAction {
+        protected ShowSelectionAction() {
+            super("Show", imageResource.readIcon("Arrow.Left.SS"));
+        }
+        protected ShowSelectionAction(String tooltip) {
+            this();
+            setTooltip(tooltip);
+        }
+    }
+
     public static abstract class DeleteAction extends IAbstractAction {
         protected DeleteAction() {
             super("Delete", imageResource.readIcon("Delete.SS"));

@@ -23,12 +23,12 @@ public class DivisionPreviewPanel extends IPanel implements IdbToolBarListener {
     private ITextField totalPriceTf;
     private IdBToolBar divisionTb;
 
+
     /*
      *                  VARIABLES
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     private final Application application;
     private final Division rootDivision;
-
     private Division selectedDivision;
 
     /*

@@ -327,6 +327,20 @@ public class MainPanel extends MainPanelLayout {
     }
 
     @Override
+    void onClearDivision() {
+        selectedDivision = divisionTree.getRootDivision();
+        divisionTree.setSelectedItem(selectedDivision);
+    }
+
+    @Override
+    void onShowDivision() {
+        if (selectedItem != null) {
+            selectedDivision = selectedItem.getDivision();
+            divisionTree.setSelectedItem(selectedDivision);
+        }
+    }
+
+    @Override
     void onTreeRowClick(MouseEvent e) {
         if (e.getSource().equals(divisionTree)) {
             selectedDivision = divisionTree.getSelectedItem();

@@ -68,12 +68,7 @@ public abstract class ItemPreviewPanel extends AbstractDetailPanel implements Id
     private void updateToolbar(Item item) {
         if (item != null) {
             aliasLbl.setText(item.getAlias());
-
-            if (item.getOnlineDataSheet().isEmpty() && item.getLocalDataSheet().isEmpty()) {
-                dataSheetAa.setEnabled(false);
-            } else {
-                dataSheetAa.setEnabled(true);
-            }
+            dataSheetAa.setEnabled(!item.getOnlineDataSheet().isEmpty() || !item.getLocalDataSheet().isEmpty());
         } else {
             aliasLbl.setText("");
             dataSheetAa.setEnabled(false);

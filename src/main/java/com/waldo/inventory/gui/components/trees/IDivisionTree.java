@@ -42,6 +42,10 @@ public class IDivisionTree extends ITree<Division> {
         return node;
     }
 
+    public Division getRootDivision() {
+        return root;
+    }
+
     public void removeDivision(Division division) {
         super.removeItem(division.getParentDivision(), division);
     }

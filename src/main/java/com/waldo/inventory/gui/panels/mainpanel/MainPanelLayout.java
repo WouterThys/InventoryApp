@@ -9,6 +9,8 @@ import com.waldo.inventory.classes.dbclasses.Set;
 import com.waldo.inventory.gui.Application;
 import com.waldo.inventory.gui.components.ITablePanel;
 import com.waldo.inventory.gui.components.IdBToolBar;
+import com.waldo.inventory.gui.components.actions.IAbstractAction;
+import com.waldo.inventory.gui.components.actions.IActions;
 import com.waldo.inventory.gui.components.popups.TableOptionsPopup;
 import com.waldo.inventory.gui.components.tablemodels.IItemTableModel;
 import com.waldo.inventory.gui.components.trees.IDivisionTree;
@@ -23,11 +25,13 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeSelectionListener;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.waldo.inventory.classes.dbclasses.DbObject.UNKNOWN_ID;
 import static com.waldo.inventory.database.settings.SettingsManager.settings;
 import static com.waldo.inventory.gui.Application.imageResource;
 import static com.waldo.inventory.managers.CacheManager.cache;
@@ -51,6 +55,9 @@ abstract class MainPanelLayout extends JPanel implements
 
     DivisionPreviewPanel divisionPreviewPanel;
     IDivisionTree divisionTree;
+    JToolBar divisionTb;
+    IActions.ClearAction clearDivisionAa;
+    IActions.ShowSelectionAction showDivisionAa;
 
     SetPreviewPanel setPreviewPanel;
     ISetTree setTree;
@@ -83,16 +90,21 @@ abstract class MainPanelLayout extends JPanel implements
     void updateEnabledComponents() {
         boolean enabled =  !(selectedItem == null || selectedItem.isUnknown() || !selectedItem.canBeSaved());
         itemTable.setDbToolBarEditDeleteEnabled(enabled);
+        showDivisionAa.setEnabled(enabled && selectedItem.getDivisionId() > UNKNOWN_ID);
+        clearDivisionAa.setEnabled(selectedDivision != null);
     }
 
     void updateDetails() {
         itemDetailPanel.updateComponents(selectedItem);
         divisionPreviewPanel.updateComponents(selectedDivision);
         setPreviewPanel.updateComponents(selectedSet);
+        updateEnabledComponents();
     }
 
     abstract void onTreeRowClick(MouseEvent e);
     abstract void onTableRowClicked(MouseEvent e);
+    abstract void onClearDivision();
+    abstract void onShowDivision();
 
     //
     // Table stuff
@@ -210,6 +222,7 @@ abstract class MainPanelLayout extends JPanel implements
         JPanel divisionPanel = new JPanel(new BorderLayout());
         JScrollPane pane = new JScrollPane(divisionTree);
         pane.setPreferredSize(new Dimension(300, 400));
+        divisionPanel.add(divisionTb, BorderLayout.NORTH);
         divisionPanel.add(pane, BorderLayout.CENTER);
         divisionPanel.add(divisionPreviewPanel, BorderLayout.SOUTH);
         divisionPanel.setMinimumSize(new Dimension(200,200));
@@ -253,6 +266,22 @@ abstract class MainPanelLayout extends JPanel implements
         });
         divisionPreviewPanel = new DivisionPreviewPanel(application, rootDivision);
         selectedDivision = rootDivision;
+
+        // Division toolbar
+        clearDivisionAa = new IActions.ClearAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onClearDivision();
+            }
+        };
+        showDivisionAa = new IActions.ShowSelectionAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onShowDivision();
+            }
+        };
+
+        divisionTb = GuiUtils.createNewToolbar(clearDivisionAa, showDivisionAa);
 
         // Sets
         List<Set> rootSets = cache().getSets();
