@@ -9,6 +9,8 @@ import com.waldo.inventory.gui.components.popups.OrderLinePopup;
 import com.waldo.inventory.gui.components.popups.OrderPopup;
 import com.waldo.inventory.gui.dialogs.editdistributorpartlinkdialog.EditDistributorPartLinkDialog;
 import com.waldo.inventory.gui.dialogs.edititemdialog.EditItemDialog;
+import com.waldo.inventory.gui.dialogs.editordersdialog.EditOrdersDialog;
+import com.waldo.inventory.gui.dialogs.orderdetailsdialog.OrderDetailsCacheDialog;
 import com.waldo.inventory.gui.dialogs.ordersearchitemdialog.OrderSearchItemsDialog;
 import com.waldo.inventory.managers.SearchManager;
 import com.waldo.utils.DateUtils;
@@ -244,7 +246,12 @@ public class OrdersPanel extends OrdersPanelLayout {
     }
 
     private void onEditOrder(AbstractOrder order) {
-
+        if (order instanceof ItemOrder) {
+//            EditOrdersDialog<Item> dialog = new EditOrdersDialog<Item>(application, order, order.getDistributorType(), true);
+//            dialog.showDialog();
+            OrderDetailsCacheDialog dialog = new OrderDetailsCacheDialog(application, order.getName(), (ItemOrder) order);
+            dialog.showDialog();
+        }
     }
 
     private void onDeleteOrder(AbstractOrder order) {
